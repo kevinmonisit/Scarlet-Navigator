@@ -22,10 +22,21 @@ interface CourseSchema {
   prerequisites: CourseSchema[];
 }
 
-function CourseCreate(
+function CreateUser(
+  major: String,
+  courses: Array<String>,
+  startingYear: Number
+) {
+  const userDocument = new User({ major, courses, startingYear });
+  User.save(userDocument, (err) => {
+    if (err) console.warn(err);
+  });
+}
+
+function CreateCourse(
   course: String,
   credits: Number,
-  prerequisites: Array<CourseSchema>
+  prerequisites: Array<String>
 ) {
   const courseDocument = new Course({ course, credits, prerequisites });
   Course.save(courseDocument, (err) => {
@@ -33,4 +44,15 @@ function CourseCreate(
   });
 }
 
-CourseCreate('h', 2, []);
+CreateCourse('test #1', 2, []);
+CreateCourse('test #2', 2, []);
+CreateCourse('test #3', 2, []);
+CreateCourse('test #4', 2, []);
+CreateCourse('test #5', 2, []);
+CreateUser(
+  'test_user',
+  ['test #1', 'test #2', 'test #3', 'test #4', 'test #5'],
+  2
+);
+
+export {};

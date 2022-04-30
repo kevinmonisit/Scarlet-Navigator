@@ -14,7 +14,8 @@
     "comma-dangle": [
       "error",
       {
-        "functions": "never"
+        "functions": "never",
+        "objects": "always-multiline"
       }
     ]
   },
