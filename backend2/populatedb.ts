@@ -9,7 +9,7 @@ dotenv.config();
 mongoose
   .connect('mongodb://localhost:27017/scarlet-navigator-test')
   .catch((err) => {
-    console.log(err);
+    console.warn(err);
   })
   .then(() => {
     mongoose.connection.db.dropDatabase();
@@ -21,8 +21,7 @@ mongoose
           createCourses(callback);
         },
         (courses: Array<Course>, callback: CallableFunction) => {
-          createUsers(courses);
-          callback(null);
+          createUsers(courses, callback);
         },
       ],
       (err) => {
@@ -42,29 +41,32 @@ mongoose.connection.on('error', (err) => {
 
 function createUser(
   courses: Array<Schema.Types.ObjectId>,
-  startingYear: Number
+  startingYear: Number,
+  callback: CallableFunction
 ) {
   const userDocument = new UserModel({ courses, startingYear });
-  userDocument.save(userDocument, (err: any) => {
+  userDocument.save((err: any) => {
     if (err) console.warn(err);
+    console.log('User created');
+    callback(null);
   });
 }
 
 function createCourse(
-  course: String,
+  title: String,
   credits: Number,
   prerequisites: Array<String>,
   callback: CallableFunction
 ) {
-  console.log(`Creating course ${course}`);
-  const courseDocument = new CourseModel({ course, credits, prerequisites });
+  console.log(`Creating course ${title}`);
+  const courseDocument = new CourseModel({ title, credits, prerequisites });
   courseDocument.save((err: any) => {
     if (err) console.warn(err);
     callback(null, courseDocument);
   });
 }
 
-async function createCourses(callback: CallableFunction) {
+function createCourses(callback: CallableFunction) {
   console.log('Creating courses');
   async.parallel(
     [
@@ -87,12 +89,13 @@ async function createCourses(callback: CallableFunction) {
   );
 }
 
-async function createUsers(courses: Array<Course>) {
+function createUsers(courses: Array<Course>, callback: CallableFunction) {
   console.log('Creating users');
   createUser(
     courses.map((course: Course) => {
       return course._id;
     }),
-    2
+    2,
+    callback
   );
 }

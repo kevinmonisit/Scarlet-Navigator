@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const mongoose_2 = require("mongoose");
 const CourseSchema = new mongoose_2.Schema({
-    title: String,
-    credits: { type: Number, min: 0, max: 4 },
+    title: { type: String, required: true },
+    credits: { type: Number, min: 0, max: 4, required: true },
     prerequisites: [{ type: mongoose_2.Schema.Types.ObjectId, ref: 'Course' }],
 });
 exports.default = mongoose_1.default.model('Course', CourseSchema);

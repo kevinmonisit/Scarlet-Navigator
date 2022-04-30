@@ -9,8 +9,8 @@ interface Course {
 }
 
 const CourseSchema = new Schema<Course>({
-  title: String,
-  credits: { type: Number, min: 0, max: 4 },
+  title: { type: String, required: true },
+  credits: { type: Number, min: 0, max: 4, required: true },
   prerequisites: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
 });
 

@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -21,7 +12,7 @@ dotenv_1.default.config();
 mongoose_1.default
     .connect('mongodb://localhost:27017/scarlet-navigator-test')
     .catch((err) => {
-    console.log(err);
+    console.warn(err);
 })
     .then(() => {
     mongoose_1.default.connection.db.dropDatabase();
@@ -31,8 +22,7 @@ mongoose_1.default
             createCourses(callback);
         },
         (courses, callback) => {
-            createUsers(courses);
-            callback(null);
+            createUsers(courses, callback);
         },
     ], (err) => {
         if (err) {
@@ -47,16 +37,18 @@ mongoose_1.default
 mongoose_1.default.connection.on('error', (err) => {
     console.warn(`Error: ${err}`);
 });
-function createUser(courses, startingYear) {
+function createUser(courses, startingYear, callback) {
     const userDocument = new UserModel_1.default({ courses, startingYear });
-    userDocument.save(userDocument, (err) => {
+    userDocument.save((err) => {
         if (err)
             console.warn(err);
+        console.log('User created');
+        callback(null);
     });
 }
-function createCourse(course, credits, prerequisites, callback) {
-    console.log(`Creating course ${course}`);
-    const courseDocument = new CourseModel_1.default({ course, credits, prerequisites });
+function createCourse(title, credits, prerequisites, callback) {
+    console.log(`Creating course ${title}`);
+    const courseDocument = new CourseModel_1.default({ title, credits, prerequisites });
     courseDocument.save((err) => {
         if (err)
             console.warn(err);
@@ -64,31 +56,27 @@ function createCourse(course, credits, prerequisites, callback) {
     });
 }
 function createCourses(callback) {
-    return __awaiter(this, void 0, void 0, function* () {
-        console.log('Creating courses');
-        async_1.default.parallel([
-            (callback) => {
-                createCourse('test #1', 2, [], callback);
-            },
-            (callback) => {
-                createCourse('test #2', 3, [], callback);
-            },
-            (callback) => {
-                createCourse('test #3', 2, [], callback);
-            },
-            (callback) => {
-                createCourse('test #4', 2, [], callback);
-            },
-        ], (err, result) => {
-            callback(err, result);
-        });
+    console.log('Creating courses');
+    async_1.default.parallel([
+        (callback) => {
+            createCourse('test #1', 2, [], callback);
+        },
+        (callback) => {
+            createCourse('test #2', 3, [], callback);
+        },
+        (callback) => {
+            createCourse('test #3', 2, [], callback);
+        },
+        (callback) => {
+            createCourse('test #4', 2, [], callback);
+        },
+    ], (err, result) => {
+        callback(err, result);
     });
 }
-function createUsers(courses) {
-    return __awaiter(this, void 0, void 0, function* () {
-        console.log('Creating users');
-        createUser(courses.map((course) => {
-            return course._id;
-        }), 2);
-    });
+function createUsers(courses, callback) {
+    console.log('Creating users');
+    createUser(courses.map((course) => {
+        return course._id;
+    }), 2, callback);
 }

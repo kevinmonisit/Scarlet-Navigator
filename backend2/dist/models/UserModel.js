@@ -8,6 +8,6 @@ const mongoose_2 = require("mongoose");
 const UserSchema = new mongoose_2.Schema({
     // major: { type: Schema.Types.ObjectId, ref: 'Major' },
     courses: [{ type: mongoose_2.Schema.Types.ObjectId, ref: 'Course' }],
-    startingYear: Number,
+    startingYear: { type: Number, required: true },
 });
 exports.default = mongoose_1.default.model('User', UserSchema);
