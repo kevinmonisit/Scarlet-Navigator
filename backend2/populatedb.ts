@@ -4,6 +4,8 @@ import UserModel from './models/UserModel';
 import CourseModel, { Course } from './models/CourseModel';
 import async from 'async';
 
+const coursesArray: Array<Schema.Types.ObjectId> = [];
+
 dotenv.config();
 
 mongoose
@@ -42,9 +44,10 @@ mongoose.connection.on('error', (err) => {
 function createUser(
   courses: Array<Schema.Types.ObjectId>,
   startingYear: Number,
+  plan: Array<Array<Schema.Types.ObjectId>>,
   callback: CallableFunction
 ) {
-  const userDocument = new UserModel({ courses, startingYear });
+  const userDocument = new UserModel({ courses, startingYear, plan });
   userDocument.save((err: any) => {
     if (err) console.warn(err);
     console.log('User created');
@@ -62,6 +65,7 @@ function createCourse(
   const courseDocument = new CourseModel({ title, credits, prerequisites });
   courseDocument.save((err: any) => {
     if (err) console.warn(err);
+    coursesArray.push(courseDocument._id);
     callback(null, courseDocument);
   });
 }
@@ -96,6 +100,7 @@ function createUsers(courses: Array<Course>, callback: CallableFunction) {
       return course._id;
     }),
     2,
+    [],
     callback
   );
 }

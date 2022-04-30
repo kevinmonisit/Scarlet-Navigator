@@ -8,6 +8,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const UserModel_1 = __importDefault(require("./models/UserModel"));
 const CourseModel_1 = __importDefault(require("./models/CourseModel"));
 const async_1 = __importDefault(require("async"));
+const coursesArray = [];
 dotenv_1.default.config();
 mongoose_1.default
     .connect('mongodb://localhost:27017/scarlet-navigator-test')
@@ -37,8 +38,8 @@ mongoose_1.default
 mongoose_1.default.connection.on('error', (err) => {
     console.warn(`Error: ${err}`);
 });
-function createUser(courses, startingYear, callback) {
-    const userDocument = new UserModel_1.default({ courses, startingYear });
+function createUser(courses, startingYear, plan, callback) {
+    const userDocument = new UserModel_1.default({ courses, startingYear, plan });
     userDocument.save((err) => {
         if (err)
             console.warn(err);
@@ -52,6 +53,7 @@ function createCourse(title, credits, prerequisites, callback) {
     courseDocument.save((err) => {
         if (err)
             console.warn(err);
+        coursesArray.push(courseDocument._id);
         callback(null, courseDocument);
     });
 }
@@ -78,5 +80,5 @@ function createUsers(courses, callback) {
     console.log('Creating users');
     createUser(courses.map((course) => {
         return course._id;
-    }), 2, callback);
+    }), 2, [], callback);
 }

@@ -7,7 +7,8 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const mongoose_2 = require("mongoose");
 const UserSchema = new mongoose_2.Schema({
     // major: { type: Schema.Types.ObjectId, ref: 'Major' },
-    courses: [{ type: mongoose_2.Schema.Types.ObjectId, ref: 'Course' }],
+    courses: [{ type: mongoose_2.Schema.Types.ObjectId, ref: 'Course', default: [] }],
     startingYear: { type: Number, required: true },
+    plan: [{ type: Array, default: [] }],
 });
 exports.default = mongoose_1.default.model('User', UserSchema);
