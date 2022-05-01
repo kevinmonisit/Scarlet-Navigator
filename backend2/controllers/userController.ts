@@ -1,12 +1,14 @@
 require('../models/CourseModel');
 import UserModel, { User } from '../models/UserModel';
-import Schema from 'mongoose';
+import CourseModel from '../models/CourseModel';
+import mongoose, { Schema, HydratedDocument } from 'mongoose';
+import { Course } from '../models/CourseModel';
 
 /**
  * Implements user db-level functions
  */
 
-async function getScheduleOfUser(user_id: Schema.Types.ObjectId) {
+async function getCoursesOfUser(user_id: Schema.Types.ObjectId) {
   const userDocument = await getUser(user_id);
   if (!userDocument) {
     return null;
@@ -17,7 +19,49 @@ async function getScheduleOfUser(user_id: Schema.Types.ObjectId) {
   });
 }
 
-function getUser(user_id: Schema.Types.ObjectId) {
+async function getPlanOfUser(user_id: Schema.Types.ObjectId) {
+  const userDocument = await getUser(user_id);
+  if (userDocument == null) {
+    return null;
+  }
+
+  const plan: Array<Array<Schema.Types.ObjectId>> = userDocument['plan'];
+  const planWithCourseDocs: Array<Array<HydratedDocument<Course> | null>> = [];
+
+  for (let semester = 0; semester < plan.length; semester++) {
+    const classesOfSemester = plan[semester];
+    planWithCourseDocs.push([]);
+
+    for (
+      let course = 0;
+      classesOfSemester && course < classesOfSemester.length;
+      course++
+    ) {
+      const courseId = classesOfSemester[course];
+      const courseDocument = await CourseModel.findById(courseId)
+        .exec()
+        .catch((err) => {
+          console.warn('Error: ' + err);
+
+          return null;
+
+          //https://stackoverflow.com/questions/26076511/handling-multiple-catches-in-promise-chain
+          //when i want to do error handling
+        });
+
+      planWithCourseDocs[semester]!.push(courseDocument);
+    }
+  }
+
+  return planWithCourseDocs;
+}
+
+async function updatePlanOfUser(
+  user_id: Schema.Types.ObjectId,
+  newPlan: Array<Array<Schema.Types.ObjectId>>
+) {}
+
+async function getUser(user_id: Schema.Types.ObjectId) {
   return UserModel.findById(user_id)
     .exec()
     .catch((err) => {
@@ -26,7 +70,9 @@ function getUser(user_id: Schema.Types.ObjectId) {
 }
 
 const UserController = {
-  getScheduleOfUser,
+  getCoursesOfUser,
+  updatePlanOfUser,
+  getPlanOfUser,
   getUser,
 };
 

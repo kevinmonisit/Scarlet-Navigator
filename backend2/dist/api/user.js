@@ -28,8 +28,8 @@ router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(404).send('Invalid user query');
     }
 }));
-router.get('/:id/schedule/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const coursesQuery = yield userController_1.default.getScheduleOfUser(req.params['id']);
+router.get('/:id/courses/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const coursesQuery = yield userController_1.default.getCoursesOfUser(req.params['id']);
     if (coursesQuery) {
         res.status(200).send({ courses: coursesQuery['courses'] });
     }
@@ -38,4 +38,5 @@ router.get('/:id/schedule/', (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
 }));
 router.patch('/:id/schedule', (req, res) => __awaiter(void 0, void 0, void 0, function* () { }));
+router.get('/:id/schedule', (req, res) => __awaiter(void 0, void 0, void 0, function* () { }));
 module.exports = router;

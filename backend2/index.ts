@@ -22,9 +22,10 @@ mongoose.connection
 const app: Express = express();
 const port = process.env['PORT'];
 
-const userRouter = require('./api/user');
+const userRouter = require('./api/userAPI');
 
 app.use(morgan('tiny'));
+app.set('json spaces', 2);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

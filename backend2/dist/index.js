@@ -22,8 +22,9 @@ mongoose_1.default.connection
 });
 const app = (0, express_1.default)();
 const port = process.env['PORT'];
-const userRouter = require('./api/user');
+const userRouter = require('./api/userAPI');
 app.use((0, morgan_1.default)('tiny'));
+app.set('json spaces', 2);
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use('/api/v1/user', userRouter);

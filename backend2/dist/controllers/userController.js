@@ -14,10 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require('../models/CourseModel');
 const UserModel_1 = __importDefault(require("../models/UserModel"));
+const CourseModel_1 = __importDefault(require("../models/CourseModel"));
 /**
  * Implements user db-level functions
  */
-function getScheduleOfUser(user_id) {
+function getCoursesOfUser(user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         const userDocument = yield getUser(user_id);
         if (!userDocument) {
@@ -28,15 +29,49 @@ function getScheduleOfUser(user_id) {
         });
     });
 }
+function getPlanOfUser(user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const userDocument = yield getUser(user_id);
+        if (userDocument == null) {
+            return null;
+        }
+        const plan = userDocument['plan'];
+        const planWithCourseDocs = [];
+        for (let semester = 0; semester < plan.length; semester++) {
+            const classesOfSemester = plan[semester];
+            planWithCourseDocs.push([]);
+            for (let course = 0; classesOfSemester && course < classesOfSemester.length; course++) {
+                const courseId = classesOfSemester[course];
+                const courseDocument = yield CourseModel_1.default.findById(courseId)
+                    .exec()
+                    .catch((err) => {
+                    console.warn('Error: ' + err);
+                    return null;
+                    //https://stackoverflow.com/questions/26076511/handling-multiple-catches-in-promise-chain
+                    //when i want to do error handling
+                });
+                planWithCourseDocs[semester].push(courseDocument);
+            }
+        }
+        return planWithCourseDocs;
+    });
+}
+function updatePlanOfUser(user_id, newPlan) {
+    return __awaiter(this, void 0, void 0, function* () { });
+}
 function getUser(user_id) {
-    return UserModel_1.default.findById(user_id)
-        .exec()
-        .catch((err) => {
-        console.warn('Error finding user: ' + err);
+    return __awaiter(this, void 0, void 0, function* () {
+        return UserModel_1.default.findById(user_id)
+            .exec()
+            .catch((err) => {
+            console.warn('Error finding user: ' + err);
+        });
     });
 }
 const UserController = {
-    getScheduleOfUser,
+    getCoursesOfUser,
+    updatePlanOfUser,
+    getPlanOfUser,
     getUser,
 };
 exports.default = UserController;

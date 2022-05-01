@@ -39,7 +39,11 @@ mongoose_1.default.connection.on('error', (err) => {
     console.warn(`Error: ${err}`);
 });
 function createUser(courses, startingYear, plan, callback) {
-    const userDocument = new UserModel_1.default({ courses, startingYear, plan });
+    const userDocument = new UserModel_1.default({
+        courses,
+        startingYear,
+        plan,
+    });
     userDocument.save((err) => {
         if (err)
             console.warn(err);
@@ -49,7 +53,11 @@ function createUser(courses, startingYear, plan, callback) {
 }
 function createCourse(title, credits, prerequisites, callback) {
     console.log(`Creating course ${title}`);
-    const courseDocument = new CourseModel_1.default({ title, credits, prerequisites });
+    const courseDocument = new CourseModel_1.default({
+        title,
+        credits,
+        prerequisites,
+    });
     courseDocument.save((err) => {
         if (err)
             console.warn(err);
@@ -78,7 +86,18 @@ function createCourses(callback) {
 }
 function createUsers(courses, callback) {
     console.log('Creating users');
+    const startingYear = 2022;
+    const plan = [
+        [coursesArray[0], coursesArray[1]],
+        [],
+        [],
+        [],
+        [],
+        [coursesArray[3]],
+        [coursesArray[2]],
+        [],
+    ];
     createUser(courses.map((course) => {
         return course._id;
-    }), 2, [], callback);
+    }), startingYear, plan, callback);
 }

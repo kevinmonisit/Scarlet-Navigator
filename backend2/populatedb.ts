@@ -1,6 +1,6 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, HydratedDocument } from 'mongoose';
 import dotenv from 'dotenv';
-import UserModel from './models/UserModel';
+import UserModel, { User } from './models/UserModel';
 import CourseModel, { Course } from './models/CourseModel';
 import async from 'async';
 
@@ -47,7 +47,11 @@ function createUser(
   plan: Array<Array<Schema.Types.ObjectId>>,
   callback: CallableFunction
 ) {
-  const userDocument = new UserModel({ courses, startingYear, plan });
+  const userDocument: HydratedDocument<User> = new UserModel({
+    courses,
+    startingYear,
+    plan,
+  });
   userDocument.save((err: any) => {
     if (err) console.warn(err);
     console.log('User created');
@@ -62,7 +66,11 @@ function createCourse(
   callback: CallableFunction
 ) {
   console.log(`Creating course ${title}`);
-  const courseDocument = new CourseModel({ title, credits, prerequisites });
+  const courseDocument: HydratedDocument<Course> = new CourseModel({
+    title,
+    credits,
+    prerequisites,
+  });
   courseDocument.save((err: any) => {
     if (err) console.warn(err);
     coursesArray.push(courseDocument._id);
@@ -95,12 +103,25 @@ function createCourses(callback: CallableFunction) {
 
 function createUsers(courses: Array<Course>, callback: CallableFunction) {
   console.log('Creating users');
+
+  const startingYear = 2022;
+  const plan: Array<Array<Schema.Types.ObjectId>> = [
+    [coursesArray[0]!, coursesArray[1]!],
+    [],
+    [],
+    [],
+    [],
+    [coursesArray[3]!],
+    [coursesArray[2]!],
+    [],
+  ];
+
   createUser(
     courses.map((course: Course) => {
       return course._id;
     }),
-    2,
-    [],
+    startingYear,
+    plan,
     callback
   );
 }
