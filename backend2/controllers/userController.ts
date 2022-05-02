@@ -3,7 +3,7 @@ import { Schema, HydratedDocument } from 'mongoose';
 import UserModel from '../models/UserModel';
 import CourseModel, { Course } from '../models/CourseModel';
 
-require('../models/CourseModel.ts');
+require('../models/CourseModel');
 
 /**
  * Implements user db-level functions

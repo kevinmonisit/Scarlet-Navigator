@@ -1,5 +1,4 @@
-import mongoose from 'mongoose';
-import { Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 interface User {
   courses: Array<Schema.Types.ObjectId>;

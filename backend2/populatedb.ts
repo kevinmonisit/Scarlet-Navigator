@@ -1,45 +1,12 @@
 import mongoose, { Schema, HydratedDocument } from 'mongoose';
+import async from 'async';
 import dotenv from 'dotenv';
 import UserModel, { User } from './models/UserModel';
 import CourseModel, { Course } from './models/CourseModel';
-import async from 'async';
 
 const coursesArray: Array<Schema.Types.ObjectId> = [];
 
 dotenv.config();
-
-mongoose
-  .connect('mongodb://localhost:27017/scarlet-navigator-test')
-  .catch((err) => {
-    console.warn(err);
-  })
-  .then(() => {
-    mongoose.connection.db.dropDatabase();
-    console.log('Connected to MongoDB database and database dropped.');
-
-    async.waterfall(
-      [
-        (callback: CallableFunction) => {
-          createCourses(callback);
-        },
-        (courses: Array<Course>, callback: CallableFunction) => {
-          createUsers(courses, callback);
-        },
-      ],
-      (err) => {
-        if (err) {
-          console.warn(err);
-        } else {
-          console.log('Successful population of database');
-        }
-        process.exit();
-      }
-    );
-  });
-
-mongoose.connection.on('error', (err) => {
-  console.warn(`Error: ${err}`);
-});
 
 function createUser(
   courses: Array<Schema.Types.ObjectId>,
@@ -117,7 +84,7 @@ function createUsers(courses: Array<Course>, callback: CallableFunction) {
   ];
 
   createUser(
-    courses.map((course: Course) => {
+    courses.map((course: HydratedDocument<Course>) => {
       return course._id;
     }),
     startingYear,
@@ -125,3 +92,36 @@ function createUsers(courses: Array<Course>, callback: CallableFunction) {
     callback
   );
 }
+
+mongoose
+  .connect('mongodb://localhost:27017/scarlet-navigator-test')
+  .catch((err) => {
+    console.warn(err);
+  })
+  .then(() => {
+    mongoose.connection.db.dropDatabase();
+    console.log('Connected to MongoDB database and database dropped.');
+
+    async.waterfall(
+      [
+        (callback: CallableFunction) => {
+          createCourses(callback);
+        },
+        (courses: Array<Course>, callback: CallableFunction) => {
+          createUsers(courses, callback);
+        },
+      ],
+      (err) => {
+        if (err) {
+          console.warn(err);
+        } else {
+          console.log('Successful population of database');
+        }
+        process.exit();
+      }
+    );
+  });
+
+mongoose.connection.on('error', (err) => {
+  console.warn(`Error: ${err}`);
+});

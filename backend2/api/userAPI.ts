@@ -2,7 +2,7 @@ import { Schema } from 'mongoose';
 import express, { Request, Response } from 'express';
 import UserController from '../controllers/userController';
 
-require('../models/CourseModel.ts');
+require('../models/CourseModel');
 
 const router = express.Router();
 

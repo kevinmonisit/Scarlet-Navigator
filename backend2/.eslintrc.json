@@ -14,7 +14,13 @@
     "dot-notation": "off",
     "comma-dangle": "off",
     "no-console": "off",
-    "import/extensions": [2, "never"],
-    "no-unused-vars": "off"
+    "import/extensions": [2, { "caseSensitive": false }],
+    "no-unused-vars": "off",
+    "object-curly-newline": "off"
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
   }
 }

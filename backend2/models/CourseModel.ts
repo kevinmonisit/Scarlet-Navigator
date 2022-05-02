@@ -1,11 +1,9 @@
-import mongoose from 'mongoose';
-import { Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 interface Course {
   title: String;
   credits: number;
   prerequisites: Array<Schema.Types.ObjectId>;
-  _id: Schema.Types.ObjectId;
 }
 
 const CourseSchema = new Schema<Course>({
