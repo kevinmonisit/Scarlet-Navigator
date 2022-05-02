@@ -1,7 +1,8 @@
-require('../models/CourseModel');
-import mongoose, { Schema } from 'mongoose';
+import { Schema } from 'mongoose';
 import express, { Request, Response } from 'express';
 import UserController from '../controllers/userController';
+
+require('../models/CourseModel.ts');
 
 const router = express.Router();
 
@@ -48,4 +49,4 @@ router.get('/:id/plan', async (req: Request<requestById>, res: Response) => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -57,7 +57,9 @@ function getPlanOfUser(user_id) {
     });
 }
 function updatePlanOfUser(user_id, newPlan) {
-    return __awaiter(this, void 0, void 0, function* () { });
+    return __awaiter(this, void 0, void 0, function* () {
+        // send back an array of arrays of objectids from the frontend
+    });
 }
 function getUser(user_id) {
     return __awaiter(this, void 0, void 0, function* () {

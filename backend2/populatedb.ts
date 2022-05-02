@@ -78,7 +78,7 @@ function createCourse(
   });
 }
 
-function createCourses(callback: CallableFunction) {
+function createCourses(callbackOuter: CallableFunction) {
   console.log('Creating courses');
   async.parallel(
     [
@@ -96,7 +96,7 @@ function createCourses(callback: CallableFunction) {
       },
     ],
     (err, result) => {
-      callback(err, result);
+      callbackOuter(err, result);
     }
   );
 }

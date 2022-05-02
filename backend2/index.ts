@@ -1,7 +1,9 @@
+/* eslint-disable no-console */
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
+import userRouter from './api/userAPI';
 
 dotenv.config();
 
@@ -21,8 +23,6 @@ mongoose.connection
 
 const app: Express = express();
 const port = process.env['PORT'];
-
-const userRouter = require('./api/userAPI');
 
 app.use(morgan('tiny'));
 app.set('json spaces', 2);
