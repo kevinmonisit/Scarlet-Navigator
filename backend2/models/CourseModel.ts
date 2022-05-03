@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 
 interface Course {
+  _id: any;
   title: String;
   credits: number;
   prerequisites: Array<Schema.Types.ObjectId>;

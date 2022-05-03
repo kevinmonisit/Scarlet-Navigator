@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import mongoose, { Schema, HydratedDocument } from 'mongoose';
 import async from 'async';
 import dotenv from 'dotenv';
@@ -84,9 +85,7 @@ function createUsers(courses: Array<Course>, callback: CallableFunction) {
   ];
 
   createUser(
-    courses.map((course: HydratedDocument<Course>) => {
-      return course._id;
-    }),
+    courses.map((course) => course._id),
     startingYear,
     plan,
     callback
