@@ -1,31 +1,32 @@
 /* eslint-disable no-shadow */
 import React, { useState } from 'react';
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext } from 'react-beautiful-dnd';
 import { v4 as uuid } from 'uuid';
+import SemesterColumn from './components/SemesterColumn';
 
 const itemsFromBackend = [
-  { id: uuid(), content: 'First task' },
-  { id: uuid(), content: 'Second task' },
-  { id: uuid(), content: 'Third task' },
-  { id: uuid(), content: 'Fourth task' },
-  { id: uuid(), content: 'Fifth task' },
+  { id: uuid(), content: 'CS205' },
+  { id: uuid(), content: 'CS111' },
+  { id: uuid(), content: 'CS112' },
+  { id: uuid(), content: 'MAT205' },
+  { id: uuid(), content: 'EXPOS' },
 ];
 
 const columnsFromBackend = {
   [uuid()]: {
-    name: 'Requested',
+    name: 'Fall 2022',
     items: itemsFromBackend,
   },
   [uuid()]: {
-    name: 'To do',
+    name: 'Spring 2022',
     items: [],
   },
   [uuid()]: {
-    name: 'In Progress',
+    name: 'Fall 2023',
     items: [],
   },
   [uuid()]: {
-    name: 'Done',
+    name: 'Spring 2024',
     items: [],
   },
 };
@@ -75,67 +76,7 @@ function App() {
         onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
       >
         {Object.entries(columns).map(([columnId, column]) => (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-            key={columnId}
-          >
-            <h2>{column.name}</h2>
-            <div style={{ margin: 8 }}>
-              <Droppable droppableId={columnId} key={columnId}>
-                {(provided, snapshot) => (
-                  <div
-                    // eslint-disable-next-line react/jsx-props-no-spreading
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    style={{
-                      background: snapshot.isDraggingOver
-                        ? 'lightblue'
-                        : 'lightgrey',
-                      padding: 4,
-                      width: 250,
-                      minHeight: 500,
-                    }}
-                  >
-                    {column.items.map((item, index) => (
-                      <Draggable
-                        key={item.id}
-                        draggableId={item.id}
-                        index={index}
-                      >
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            // eslint-disable-next-line react/jsx-props-no-spreading
-                            {...provided.draggableProps}
-                            // eslint-disable-next-line react/jsx-props-no-spreading
-                            {...provided.dragHandleProps}
-                            style={{
-                              userSelect: 'none',
-                              padding: 16,
-                              margin: '0 0 8px 0',
-                              minHeight: '50px',
-                              backgroundColor: snapshot.isDragging
-                                ? '#263B4A'
-                                : '#456C86',
-                              color: 'white',
-                              ...provided.draggableProps.style,
-                            }}
-                          >
-                            {item.content}
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </div>
-          </div>
+          <SemesterColumn columnId={columnId} column={column} />
         ))}
       </DragDropContext>
     </div>

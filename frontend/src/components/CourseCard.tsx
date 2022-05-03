@@ -4,13 +4,13 @@
 import React from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 
-interface Item {
+interface CourseCardInfo {
   id: string;
   content: string;
 }
 
 interface CourseCardProps {
-  item: Item;
+  item: CourseCardInfo;
   index: number;
 }
 
@@ -49,3 +49,4 @@ function CourseCard(props: CourseCardProps) {
 }
 
 export default CourseCard;
+export type { CourseCardInfo };
