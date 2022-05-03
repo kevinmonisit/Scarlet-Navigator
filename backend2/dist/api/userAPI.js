@@ -12,9 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require('../models/CourseModel');
 const express_1 = __importDefault(require("express"));
 const userController_1 = __importDefault(require("../controllers/userController"));
+require('../models/CourseModel');
 const router = express_1.default.Router();
 router.get('/', (req, res) => {
     res.send('accessing users');
@@ -46,4 +46,4 @@ router.get('/:id/plan', (req, res) => __awaiter(void 0, void 0, void 0, function
         res.send('Invalid id!');
     }
 }));
-module.exports = router;
+exports.default = router;
