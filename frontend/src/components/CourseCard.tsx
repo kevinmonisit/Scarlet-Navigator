@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-closing-tag-location */
@@ -5,8 +6,8 @@ import React from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 
 interface CourseCardInfo {
-  id: string;
-  content: string;
+  _id: string;
+  title: string;
 }
 
 interface CourseCardProps {
@@ -18,8 +19,8 @@ function CourseCard(props: CourseCardProps) {
   const { item, index } = props;
 
   return (<Draggable
-    key={item.id}
-    draggableId={item.id}
+    key={item._id}
+    draggableId={item._id}
     index={index}
   >
     {(provided, snapshot) => (
@@ -35,13 +36,13 @@ function CourseCard(props: CourseCardProps) {
           margin: '0 0 8px 0',
           minHeight: '20px',
           backgroundColor: snapshot.isDragging
-            ? '#263B4A'
-            : '#456C86',
+            ? '#c0392b'
+            : '#e74c3c',
           color: 'white',
           ...provided.draggableProps.style,
         }}
       >
-        {item.content}
+        {item.title}
       </div>
     )}
   </Draggable>);

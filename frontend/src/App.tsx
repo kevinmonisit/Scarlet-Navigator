@@ -4,7 +4,21 @@ import Dashboard from './components/Dashboard';
 
 function App() {
   return (
-    <Dashboard />
+    <div style={{
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'right'
+    }}
+    >
+      <Dashboard />
+      <div style={{
+        width: '20%',
+        height: '100%'
+      }}
+      >
+        Test
+      </div>
+    </div>
   );
 }
 

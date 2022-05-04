@@ -46,4 +46,13 @@ router.get('/:id/plan', (req, res) => __awaiter(void 0, void 0, void 0, function
         res.send('Invalid id!');
     }
 }));
+router.patch('/:id/plan', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const updatePlanQuery = yield userController_1.default.updatePlanOfUser(req.params['id'], req.body['plan']);
+    if (updatePlanQuery) {
+        res.status(200).send({});
+    }
+    else {
+        res.status(400);
+    }
+}));
 exports.default = router;

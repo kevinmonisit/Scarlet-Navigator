@@ -10,6 +10,10 @@ interface requestById {
   id: Schema.Types.ObjectId;
 }
 
+interface sendingPlanData {
+  plan: Array<Array<Schema.Types.ObjectId>>;
+}
+
 router.get('/', (req: Request, res: Response) => {
   res.send('accessing users');
 });
@@ -48,5 +52,21 @@ router.get('/:id/plan', async (req: Request<requestById>, res: Response) => {
     res.send('Invalid id!');
   }
 });
+
+router.patch(
+  '/:id/plan',
+  async (req: Request<requestById, {}, sendingPlanData>, res: Response) => {
+    const updatePlanQuery = await UserController.updatePlanOfUser(
+      req.params['id'],
+      req.body['plan']
+    );
+
+    if (updatePlanQuery) {
+      res.status(200).send({});
+    } else {
+      res.status(400);
+    }
+  }
+);
 
 export default router;

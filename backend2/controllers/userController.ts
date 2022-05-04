@@ -48,6 +48,7 @@ async function getPlanOfUser(userID: Schema.Types.ObjectId) {
       course += 1
     ) {
       const courseId = classesOfSemester[course];
+      // possible way to make it more optimized
       // eslint-disable-next-line no-await-in-loop
       const courseDocument = await CourseModel.findById(courseId)
         .exec()
@@ -71,7 +72,13 @@ async function updatePlanOfUser(
   userID: Schema.Types.ObjectId,
   newPlan: Array<Array<Schema.Types.ObjectId>>
 ) {
-  // send back an array of arrays of objectids from the frontend
+  const userDocument = await getUser(userID);
+  if (userDocument == null) {
+    return null;
+  }
+
+  userDocument.plan = newPlan;
+  return userDocument.save();
 }
 
 const UserController = {

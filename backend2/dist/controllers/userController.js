@@ -51,6 +51,7 @@ function getPlanOfUser(userID) {
             planWithCourseDocs.push([]);
             for (let course = 0; classesOfSemester && course < classesOfSemester.length; course += 1) {
                 const courseId = classesOfSemester[course];
+                // possible way to make it more optimized
                 // eslint-disable-next-line no-await-in-loop
                 const courseDocument = yield CourseModel_1.default.findById(courseId)
                     .exec()
@@ -68,7 +69,12 @@ function getPlanOfUser(userID) {
 }
 function updatePlanOfUser(userID, newPlan) {
     return __awaiter(this, void 0, void 0, function* () {
-        // send back an array of arrays of objectids from the frontend
+        const userDocument = yield getUser(userID);
+        if (userDocument == null) {
+            return null;
+        }
+        userDocument.plan = newPlan;
+        return userDocument.save();
     });
 }
 const UserController = {

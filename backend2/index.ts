@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import cors from 'cors';
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
@@ -25,7 +24,6 @@ mongoose.connection
 const app: Express = express();
 const port = process.env['PORT'];
 
-app.use(cors());
 app.use(morgan('tiny'));
 app.set('json spaces', 2);
 app.use(express.json());

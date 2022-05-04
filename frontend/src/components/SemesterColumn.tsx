@@ -20,6 +20,7 @@ function SemesterColumn(props: SemesterColumnProps) {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        height: '25%'
       }}
       key={columnId}
     >
@@ -33,18 +34,19 @@ function SemesterColumn(props: SemesterColumnProps) {
               ref={provided.innerRef}
               style={{
                 background: snapshot.isDraggingOver
-                  ? 'lightblue'
-                  : 'lightgrey',
+                  ? '#273340'
+                  : '#34495e',
                 padding: 4,
                 width: 250,
-                minHeight: 500,
+                minHeight: 200,
               }}
             >
               {column.items.map((item, index) => (
                 <CourseCard
                   item={item}
                   index={index}
-                  key={item.id}
+                  // eslint-disable-next-line no-underscore-dangle
+                  key={item._id}
                 />
               ))}
               {provided.placeholder}

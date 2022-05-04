@@ -42,16 +42,31 @@ function createCourses(callbackOuter) {
     console.log('Creating courses');
     async_1.default.parallel([
         (callback) => {
-            createCourse('test #1', 2, [], callback);
+            createCourse('CS112', 2, [], callback);
         },
         (callback) => {
-            createCourse('test #2', 3, [], callback);
+            createCourse('CS111', 3, [], callback);
         },
         (callback) => {
-            createCourse('test #3', 2, [], callback);
+            createCourse('MAT205', 2, [], callback);
         },
         (callback) => {
-            createCourse('test #4', 2, [], callback);
+            createCourse('MAT201', 2, [], callback);
+        },
+        (callback) => {
+            createCourse('CS205', 2, [], callback);
+        },
+        (callback) => {
+            createCourse('EXPOS', 2, [], callback);
+        },
+        (callback) => {
+            createCourse('Underwater Basket Weaving', 2, [], callback);
+        },
+        (callback) => {
+            createCourse('Dance Dance Revolution', 2, [], callback);
+        },
+        (callback) => {
+            createCourse('Navigating TempleOS', 2, [], callback);
         },
     ], (err, result) => {
         callbackOuter(err, result);
@@ -63,11 +78,11 @@ function createUsers(courses, callback) {
     const plan = [
         [coursesArray[0], coursesArray[1]],
         [],
+        [coursesArray[2], coursesArray[3]],
+        [coursesArray[4], coursesArray[5], coursesArray[6]],
         [],
-        [],
-        [],
-        [coursesArray[3]],
-        [coursesArray[2]],
+        [coursesArray[7]],
+        [coursesArray[8]],
         [],
     ];
     createUser(courses.map((course) => course._id), startingYear, plan, callback);
