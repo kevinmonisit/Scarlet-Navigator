@@ -2,14 +2,14 @@ import React from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import CourseCard, { CourseCardInfo } from './CourseCard';
 
-interface Column {
-  name: string,
+interface SemesterColumnInfo {
+  title: string,
   items: Array<CourseCardInfo>;
 }
 
 interface SemesterColumnProps {
   columnId: string;
-  column: Column;
+  column: SemesterColumnInfo;
 }
 
 function SemesterColumn(props: SemesterColumnProps) {
@@ -23,7 +23,7 @@ function SemesterColumn(props: SemesterColumnProps) {
       }}
       key={columnId}
     >
-      <h2>{column.name}</h2>
+      <h2>{column.title}</h2>
       <div style={{ margin: 8 }}>
         <Droppable droppableId={columnId} key={columnId}>
           {(provided, snapshot) => (
@@ -44,6 +44,7 @@ function SemesterColumn(props: SemesterColumnProps) {
                 <CourseCard
                   item={item}
                   index={index}
+                  key={item.id}
                 />
               ))}
               {provided.placeholder}
@@ -56,3 +57,4 @@ function SemesterColumn(props: SemesterColumnProps) {
 }
 
 export default SemesterColumn;
+export type { SemesterColumnInfo };

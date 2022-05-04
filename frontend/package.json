@@ -1,8 +1,10 @@
 {
+  "proxy": "http://localhost:6000/",
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.27.2",
     "react": "17.0.0",
     "react-beautiful-dnd": "^13.1.0",
     "react-dom": "17.0.0",
