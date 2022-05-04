@@ -67,40 +67,41 @@ function createSemesterColumns(plainJSON) {
 }
 
 function updateStudentPlan(columns: ColumnContainer | null) {
+  if (!columns) {
+    return;
+  }
 
+  const arrayOfCourseObjectIds: Array<Array<String>> = [];
+  Object.keys(columns).forEach((columnId) => {
+    // eslint-disable-next-line no-underscore-dangle
+    arrayOfCourseObjectIds.push(columns[columnId].items.map((item) => item._id));
+  });
+
+  axios.patch('/api/v1/user/6271db95cde76c1f74b093b8/plan', {
+    plan: arrayOfCourseObjectIds
+  })
+    .then((response) => {
+      console.log(response);
+    });
 }
 
 function Dashboard() {
   const [columns, setColumns] = useState<ColumnContainer | null>(null);
 
   useEffect(() => {
-    axios.get('/api/v1/user/6271db95cde76c1f74b093b8/plan').then((res) => {
-      setColumns(createSemesterColumns(res.data));
-    }).catch((err) => {
-      setColumns(null);
-      console.warn('Columns could not be fetched: ');
-      console.warn(err);
-    });
+    axios.get('/api/v1/user/6271db95cde76c1f74b093b8/plan')
+      .then((res) => {
+        setColumns(createSemesterColumns(res.data));
+      })
+      .catch((err) => {
+        setColumns(null);
+        console.warn('Columns could not be fetched: ');
+        console.warn(err);
+      });
   }, []);
 
   useEffect(() => {
-    if (!columns) {
-      return;
-    }
-
-    const arrayOfCourseObjectIds: Array<Array<String>> = [];
-    Object.keys(columns).forEach((columnId) => {
-      // eslint-disable-next-line no-underscore-dangle
-      arrayOfCourseObjectIds.push(columns[columnId].items.map((item) => item._id));
-    });
-
-    console.log(columns);
-
-    axios.patch('/api/v1/user/6271db95cde76c1f74b093b8/plan', {
-      plan: arrayOfCourseObjectIds
-    }).then((response) => {
-      console.log(response);
-    });
+    updateStudentPlan(columns);
   }, [columns]);
 
   return (
