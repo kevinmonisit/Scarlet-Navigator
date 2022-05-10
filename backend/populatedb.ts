@@ -108,7 +108,7 @@ function createUsers(courses: Array<Course>, callback: CallableFunction) {
 }
 
 mongoose
-  .connect('mongodb://localhost:27017/scarlet-navigator-test')
+  .connect('mongodb://localhost:27017/s-n-t')
   .catch((err) => {
     console.warn(err);
   })
@@ -131,6 +131,7 @@ mongoose
         } else {
           console.log('Successful population of database');
         }
+
         process.exit();
       }
     );

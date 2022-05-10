@@ -4,14 +4,13 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
 import userRouter from './api/userAPI';
+import courseRouter from './api/courses';
 
 dotenv.config();
 
-mongoose
-  .connect('mongodb://localhost:27017/scarlet-navigator-test')
-  .catch((err) => {
-    console.warn(err);
-  });
+mongoose.connect('mongodb://localhost:27017/s-n-t').catch((err) => {
+  console.warn(err);
+});
 
 mongoose.connection
   .once('open', () => {
@@ -30,6 +29,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/api/v1/user', userRouter);
+app.use('/api/v1/courses', courseRouter);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Express + TypeScript Server');
