@@ -1,5 +1,6 @@
 /* eslint-disable no-shadow */
 import React from 'react';
+import 'normalize.css';
 import Dashboard from './components/Dashboard';
 
 function App() {
@@ -11,13 +12,6 @@ function App() {
     }}
     >
       <Dashboard />
-      <div style={{
-        width: '20%',
-        height: '100%'
-      }}
-      >
-        Test
-      </div>
     </div>
   );
 }

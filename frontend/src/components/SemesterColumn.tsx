@@ -20,12 +20,17 @@ function SemesterColumn(props: SemesterColumnProps) {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        height: '25%'
+        height: '100%',
+        width: '100%',
       }}
       key={columnId}
     >
       <h2>{column.title}</h2>
-      <div style={{ margin: 8 }}>
+      <div style={{
+        width: '100%',
+        height: '100%'
+      }}
+      >
         <Droppable droppableId={columnId} key={columnId}>
           {(provided, snapshot) => (
             <div
@@ -37,7 +42,8 @@ function SemesterColumn(props: SemesterColumnProps) {
                   ? '#273340'
                   : '#34495e',
                 padding: 4,
-                width: 250,
+                width: '100%',
+                height: '100%',
                 minHeight: 200,
               }}
             >

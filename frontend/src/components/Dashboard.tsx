@@ -4,7 +4,6 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import SemesterColumn, { SemesterColumnInfo } from './SemesterColumn';
-// import { CourseCardInfo } from './CourseCard';
 
 // eslint-disable-next-line no-unused-vars
 interface ColumnContainer {
@@ -77,7 +76,7 @@ function updateStudentPlan(columns: ColumnContainer | null) {
     arrayOfCourseObjectIds.push(columns[columnId].items.map((item) => item._id));
   });
 
-  axios.patch('/api/v1/user/6271db95cde76c1f74b093b8/plan', {
+  axios.patch('/api/v1/user/627ae069ea20954554097920/plan', {
     plan: arrayOfCourseObjectIds
   })
     .then((response) => {
@@ -89,7 +88,7 @@ function Dashboard() {
   const [columns, setColumns] = useState<ColumnContainer | null>(null);
 
   useEffect(() => {
-    axios.get('/api/v1/user/6271db95cde76c1f74b093b8/plan')
+    axios.get('/api/v1/user/627ae069ea20954554097920/plan')
       .then((res) => {
         setColumns(createSemesterColumns(res.data));
       })
@@ -105,20 +104,28 @@ function Dashboard() {
   }, [columns]);
 
   return (
-    <div style={{ display: 'grid', height: '100%', gridTemplateColumns: 'auto auto auto auto', columnGap: '1fr 1fr 1fr' }}>
-      {columns == null ? <>Loading course data...</> : (
-        <DragDropContext
-          onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
-        >
-          {
-            Object.entries(columns).map(([columnId, column]) => (
-              <SemesterColumn key={columnId} columnId={columnId} column={column} />
-            ))
-          }
-        </DragDropContext>
-      )}
 
-    </div>
+    <DragDropContext
+      onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
+    >
+      <div
+        className="flex flex-row flex-nowrap
+        justify-center items-stretch w-screen h-screen"
+      >
+        <div className="w-1/4 h-max bg-amber-500">H</div>
+        {columns == null ? <>Loading course data...</> : (
+          <div className="grid h-100 grid-cols-4 gap-x-4 grow justify-center">
+            {
+              Object.entries(columns).map(([columnId, column]) => (
+                <SemesterColumn key={columnId} columnId={columnId} column={column} />
+              ))
+            }
+          </div>
+
+        )}
+        <div className="w-1/4 h-max bg-amber-200">D</div>
+      </div>
+    </DragDropContext>
   );
 }
 

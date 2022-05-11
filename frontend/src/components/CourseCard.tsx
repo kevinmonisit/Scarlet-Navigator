@@ -32,9 +32,10 @@ function CourseCard(props: CourseCardProps) {
         {...provided.dragHandleProps}
         style={{
           userSelect: 'none',
-          padding: 16,
+          padding: 5,
           margin: '0 0 8px 0',
           minHeight: '20px',
+          width: '100%',
           backgroundColor: snapshot.isDragging
             ? '#c0392b'
             : '#e74c3c',
@@ -42,7 +43,8 @@ function CourseCard(props: CourseCardProps) {
           ...provided.draggableProps.style,
         }}
       >
-        {item.title}
+        {/* {item.title} */}
+        Test
       </div>
     )}
   </Draggable>);
