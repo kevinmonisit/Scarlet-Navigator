@@ -1,0 +1,13 @@
+import React from 'react';
+
+function NavBar() {
+  return (
+    <div className="w-screen h-14 bg-rose-700 flex">
+      <div className="w-1/4 h-full flex justify-center items-center">
+        <div className="text-gray-50">Scarlet Navigator</div>
+      </div>
+    </div>
+  );
+}
+
+export default NavBar;

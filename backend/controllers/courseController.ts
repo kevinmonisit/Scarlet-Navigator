@@ -9,7 +9,6 @@ async function getCourses(name: string) {
   const coursesQuery = await CourseModel.find({
     title: { $regex: regexSearch, $options: 'i' },
   }).exec();
-  console.log(regexSearch);
   return coursesQuery;
 }
 

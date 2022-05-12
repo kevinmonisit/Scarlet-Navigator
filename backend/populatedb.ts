@@ -69,13 +69,13 @@ function createCourses(callbackOuter: CallableFunction) {
         createCourse('EXPOS', 2, [], callback);
       },
       (callback) => {
-        createCourse('Underwater Basket Weaving', 2, [], callback);
+        createCourse('PHL101', 2, [], callback);
       },
       (callback) => {
-        createCourse('Dance Dance Revolution', 2, [], callback);
+        createCourse('PHY103', 2, [], callback);
       },
       (callback) => {
-        createCourse('Navigating TempleOS', 2, [], callback);
+        createCourse('CS206', 2, [], callback);
       },
     ],
     (err, result) => {

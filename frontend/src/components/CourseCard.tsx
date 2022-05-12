@@ -43,8 +43,7 @@ function CourseCard(props: CourseCardProps) {
           ...provided.draggableProps.style,
         }}
       >
-        {/* {item.title} */}
-        Test
+        {item.title}
       </div>
     )}
   </Draggable>);

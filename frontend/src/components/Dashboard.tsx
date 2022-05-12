@@ -4,6 +4,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import SemesterColumn, { SemesterColumnInfo } from './SemesterColumn';
+import SearchColumn from './SearchColumn';
 
 // eslint-disable-next-line no-unused-vars
 interface ColumnContainer {
@@ -76,7 +77,7 @@ function updateStudentPlan(columns: ColumnContainer | null) {
     arrayOfCourseObjectIds.push(columns[columnId].items.map((item) => item._id));
   });
 
-  axios.patch('/api/v1/user/627ae069ea20954554097920/plan', {
+  axios.patch('/api/v1/user/627c718e319cae16ef4c12bf/plan', {
     plan: arrayOfCourseObjectIds
   })
     .then((response) => {
@@ -88,7 +89,7 @@ function Dashboard() {
   const [columns, setColumns] = useState<ColumnContainer | null>(null);
 
   useEffect(() => {
-    axios.get('/api/v1/user/627ae069ea20954554097920/plan')
+    axios.get('/api/v1/user/627c718e319cae16ef4c12bf/plan')
       .then((res) => {
         setColumns(createSemesterColumns(res.data));
       })
@@ -110,9 +111,9 @@ function Dashboard() {
     >
       <div
         className="flex flex-row flex-nowrap
-        justify-center items-stretch w-screen h-screen"
+        justify-center items-stretch w-full h-full"
       >
-        <div className="w-1/4 h-max bg-amber-500">H</div>
+        <SearchColumn />
         {columns == null ? <>Loading course data...</> : (
           <div className="grid h-100 grid-cols-4 gap-x-4 grow justify-center">
             {
@@ -123,7 +124,7 @@ function Dashboard() {
           </div>
 
         )}
-        <div className="w-1/4 h-max bg-amber-200">D</div>
+        <div className="w-1/4 h-max bg-amber-200">Course Info Column</div>
       </div>
     </DragDropContext>
   );

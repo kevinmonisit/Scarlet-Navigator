@@ -2,17 +2,15 @@
 import React from 'react';
 import 'normalize.css';
 import Dashboard from './components/Dashboard';
+import NavBar from './components/Navbar';
 
 function App() {
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'right'
-    }}
-    >
+    <div className="h-screen w-screen">
+      <NavBar />
       <Dashboard />
     </div>
+
   );
 }
 
