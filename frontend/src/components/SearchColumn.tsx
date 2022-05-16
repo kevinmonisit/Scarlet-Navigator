@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// import CourseSearchCard from './CourseSearchCard';
+import CourseSearchCard from './CourseSearchCard';
 
 interface CourseCardInSearch {
   shortTitle: string;
@@ -7,7 +7,7 @@ interface CourseCardInSearch {
 }
 
 const createRandomCards = () => {
-  const numberOfRandomCards = 15;
+  const numberOfRandomCards = 50;
   const cardQueryArray: CourseCardInSearch[] = [];
 
   for (let cardIndex = 0; cardIndex < numberOfRandomCards; cardIndex += 1) {
@@ -30,8 +30,9 @@ function SearchColumn() {
   return (
     <div className="w-1/5 h-100 bg-amber-500 flex flex-col">
       <input />
-      <div className="grow bg-green-300">
-        A
+      <div className="grow bg-green-300 overflow-hidden overflow-y-scroll">
+        {queriedCards == null ? <>Loading search...</>
+          : queriedCards.map(() => <CourseSearchCard />)}
       </div>
     </div>
   );

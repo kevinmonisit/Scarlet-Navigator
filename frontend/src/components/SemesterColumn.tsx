@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 import React from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import CourseCard, { CourseCardInfo } from './CourseCard';
@@ -47,14 +48,18 @@ function SemesterColumn(props: SemesterColumnProps) {
                 minHeight: 200,
               }}
             >
-              {column.items.map((item, index) => (
-                <CourseCard
-                  item={item}
-                  index={index}
-                  // eslint-disable-next-line no-underscore-dangle
-                  key={item._id}
-                />
-              ))}
+              {column.items.map((item, index) => {
+                // console.log(columnId);
+
+                return (
+                  <CourseCard
+                    item={item}
+                    index={index}
+                    // eslint-disable-next-line no-underscore-dangle
+                    key={item._id}
+                  />
+                );
+              })}
               {provided.placeholder}
             </div>
           )}

@@ -17,36 +17,58 @@ interface CourseCardProps {
 
 function CourseCard(props: CourseCardProps) {
   const { item, index } = props;
+  // ref={provided.innerRef}
+  // // eslint-disable-next-line react/jsx-props-no-spreading
+  // {...provided.draggableProps
+  // }
+  // // eslint-disable-next-line react/jsx-props-no-spreading
+  // {...provided.dragHandleProps}
+  // style={{
+  //   userSelect: 'none',
+  //   padding: 5,
+  //   margin: '0 0 8px 0',
+  //   minHeight: '20px',
+  //   width: '100%',
+  //   backgroundColor: snapshot.isDragging
+  //     ? '#c0392b'
+  //     : '#e74c3c',
+  //   color: 'white',
+  //   ...provided.draggableProps.style,
+  // }}
 
-  return (<Draggable
-    key={item._id}
-    draggableId={item._id}
-    index={index}
-  >
-    {(provided, snapshot) => (
-      <div
-        ref={provided.innerRef}
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        {...provided.draggableProps}
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        {...provided.dragHandleProps}
-        style={{
-          userSelect: 'none',
-          padding: 5,
-          margin: '0 0 8px 0',
-          minHeight: '20px',
-          width: '100%',
-          backgroundColor: snapshot.isDragging
-            ? '#c0392b'
-            : '#e74c3c',
-          color: 'white',
-          ...provided.draggableProps.style,
-        }}
-      >
-        {item.title}
-      </div>
-    )}
-  </Draggable>);
+  // useEffect(() => {
+  //   console.log(index);
+  // }, []);
+
+  console.log('card index: ');
+  console.log(index);
+
+  return (
+    <Draggable
+      key={item._id}
+      draggableId={item._id}
+      index={index}
+    >
+      {(provided, snapshot) => {
+        // eslint-disable-next-line no-unused-vars
+        const backgroundColor = snapshot.isDragging ? 'bg-red-700' : 'bg-red-500';
+
+        return (
+          <div
+            ref={provided.innerRef}
+            {...provided.dragHandleProps}
+            {...provided.draggableProps}
+            style={{
+              ...provided.draggableProps.style,
+            }}
+            className={`${backgroundColor} w-full h-6 text-white pl-2 pt-0.5 my-2`}
+          >
+            {item.title}
+          </div>
+        );
+      }}
+    </Draggable>
+  );
 }
 
 export default CourseCard;
