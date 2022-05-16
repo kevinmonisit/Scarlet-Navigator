@@ -61,7 +61,7 @@ function CourseSearchCard(props) {
                       ? <></>
                       : (
                         <div className="bg-red-500 w-full h-6 text-white pl-2 pt-0.5 my-2">
-                          CS205
+                          {shortTitle}
                         </div>
                       )}
                     <div
