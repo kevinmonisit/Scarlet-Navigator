@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { v4 as uuid } from 'uuid';
 import CourseSearchCard from './CourseSearchCard';
 
 interface CourseCardInSearch {
   shortTitle: string;
   fullTitle: string;
+  id: string;
 }
 
 const createRandomCards = () => {
@@ -12,8 +14,9 @@ const createRandomCards = () => {
 
   for (let cardIndex = 0; cardIndex < numberOfRandomCards; cardIndex += 1) {
     cardQueryArray.push({
-      shortTitle: `CS10${cardIndex}`,
-      fullTitle: 'Full Title of Course'
+      shortTitle: 'CS205',
+      fullTitle: 'Full Title of Course',
+      id: uuid(),
     });
   }
 
@@ -32,7 +35,12 @@ function SearchColumn() {
       <input />
       <div className="grow bg-green-300 overflow-hidden overflow-y-scroll">
         {queriedCards == null ? <>Loading search...</>
-          : queriedCards.map(() => <CourseSearchCard />)}
+          : queriedCards.map((courseCardSearch) => (
+            <CourseSearchCard
+              shortTitle={courseCardSearch.shortTitle}
+              key={courseCardSearch.id}
+            />
+          ))}
       </div>
     </div>
   );

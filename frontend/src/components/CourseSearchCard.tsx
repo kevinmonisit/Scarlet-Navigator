@@ -35,43 +35,57 @@ function CourseSearchCard(props) {
   const [ID, setID] = useState<string>(uuid());
 
   return (
-
-    <Droppable droppableId={ID} key={ID}>
-      {(providedDroppable, snapshotDroppable) => (
-        <div
-          className="h-12 w-full bg-red-300 border-solid
-          border-black border-2"
-          {...providedDroppable.droppableProps}
-          ref={providedDroppable.innerRef}
-        >
-          <Draggable
-            key={ID}
-            draggableId={ID}
-            index={0}
+    <div className="h-12 w-full bg-red-300 border-solid
+                    border-black border-2"
+    >
+      <Droppable droppableId={ID} key={ID}>
+        {(providedDroppable, snapshotDroppable) => (
+          <div
+            {...providedDroppable.droppableProps}
+            ref={providedDroppable.innerRef}
+            className="h-0"
           >
-            {(provided, snapshot) => {
-              // eslint-disable-next-line no-unused-vars
-              const backgroundColor = snapshot.isDragging ? 'bg-red-700' : 'bg-red-500';
+            <Draggable
+              key={ID}
+              draggableId={ID}
+              index={0}
+            >
+              {(provided, snapshot) => {
+                // eslint-disable-next-line no-unused-vars
+                const backgroundColor = snapshot.isDragging ? 'bg-red-700' : 'bg-red-500';
 
-              return (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.dragHandleProps}
-                  {...provided.draggableProps}
-                  style={{
-                    ...provided.draggableProps.style,
-                  }}
-                  className={`${backgroundColor} w-full h-6 text-white pl-2 pt-0.5 my-2`}
-                >
-                  {shortTitle}
-                </div>
-              );
-            }}
-          </Draggable>
-        </div>
-      )}
-    </Droppable>
+                return (
+                  <>
+                    {!snapshot.isDragging
+                      // eslint-disable-next-line react/jsx-no-useless-fragment
+                      ? <></>
+                      : (
+                        <div className="bg-red-500 w-full h-6 text-white pl-2 pt-0.5 my-2">
+                          CS205
+                        </div>
+                      )}
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.dragHandleProps}
+                      {...provided.draggableProps}
+                      style={{
+                        ...provided.draggableProps.style,
+                      }}
+                      className={`${backgroundColor} w-full h-6 text-white pl-2 pt-0.5 my-2`}
+                    >
+                      {shortTitle}
+                    </div>
+                  </>
 
+                );
+              }}
+            </Draggable>
+
+            {providedDroppable.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </div>
   );
 }
 
