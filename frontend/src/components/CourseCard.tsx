@@ -39,10 +39,6 @@ function CourseCard(props: CourseCardProps) {
   // useEffect(() => {
   //   console.log(index);
   // }, []);
-
-  console.log('card index: ');
-  console.log(index);
-
   return (
     <Draggable
       key={item._id}

@@ -27,18 +27,17 @@ import CourseCard from './CourseCard';
 // </div>
 
 function CourseSearchCard(props) {
-  const { shortTitle, fullTtile } = props;
+  const { shortTitle, fullTtile, courseId } = props;
   // TODO:
   // change this because everytime react re-renders
   // a new id is created.
   // create an id when you query a list, and then use document _id
-  const [ID, setID] = useState<string>(uuid());
 
   return (
     <div className="h-12 w-full bg-red-300 border-solid
                     border-black border-2"
     >
-      <Droppable droppableId={ID} key={ID}>
+      <Droppable droppableId={shortTitle} key={shortTitle}>
         {(providedDroppable, snapshotDroppable) => (
           <div
             {...providedDroppable.droppableProps}
@@ -46,8 +45,8 @@ function CourseSearchCard(props) {
             className="h-0"
           >
             <Draggable
-              key={ID}
-              draggableId={ID}
+              key={courseId}
+              draggableId={courseId}
               index={0}
             >
               {(provided, snapshot) => {

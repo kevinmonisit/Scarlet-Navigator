@@ -14,6 +14,9 @@ interface ColumnContainer {
 const onDragEnd = (result: any, columns: any, setColumns: any) => {
   if (!result.destination) return;
   const { source, destination } = result;
+  console.log(source);
+  console.log(destination);
+  console.log(result);
 
   if (source.droppableId !== destination.droppableId) {
     const sourceColumn = columns[source.droppableId];

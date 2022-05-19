@@ -52,6 +52,7 @@ function SearchColumn() {
             <CourseSearchCard
               shortTitle={courseCardSearch.title}
               key={courseCardSearch._id}
+              courseId={courseCardSearch._id}
             />
           ))}
       </div>
