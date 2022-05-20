@@ -34,7 +34,12 @@ interface CourseSearchCardProps {
 
 function CourseSearchCard(props: CourseSearchCardProps) {
   const { shortTitle, courseId, checkIfCourseAlreadyInPlan } = props;
-  const [draggable, setDraggable] = useState(true);
+  const [draggable, setDraggable] = useState<boolean | undefined>(true);
+
+  useEffect(() => {
+    setDraggable(checkIfCourseAlreadyInPlan(courseId));
+  }, []);
+
   // TODO:
   // change this because everytime react re-renders
   // a new id is created.
@@ -44,18 +49,18 @@ function CourseSearchCard(props: CourseSearchCardProps) {
     <div className="h-12 w-full bg-red-300 border-solid
                     border-black border-2"
     >
-      <Droppable droppableId={shortTitle} key={shortTitle}>
+      <Droppable droppableId={shortTitle} key={shortTitle} isDropDisabled>
         {(providedDroppable) => (
           <div
             {...providedDroppable.droppableProps}
             ref={providedDroppable.innerRef}
-            className="h-0"
+          // className="h-0"
           >
             <Draggable
               key={courseId}
-              draggableId={courseId}
+              draggableId={`search-card.${courseId}`}
               index={0}
-              isDragDisabled={checkIfCourseAlreadyInPlan(courseId)}
+              isDragDisabled={draggable}
             >
               {(provided, snapshot) => {
                 // eslint-disable-next-line no-unused-vars

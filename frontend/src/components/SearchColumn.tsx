@@ -26,10 +26,12 @@ interface CourseCardInSearch {
 interface SearchColumnProps {
   // eslint-disable-next-line no-unused-vars
   checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
+  // eslint-disable-next-line no-unused-vars
+  upstreamQuery(queryList: any);
 }
 
 function SearchColumn(props: SearchColumnProps) {
-  const { checkIfCourseAlreadyInPlan } = props;
+  const { checkIfCourseAlreadyInPlan, upstreamQuery } = props;
   const [queriedCards, setQueriedCards] = useState<CourseCardInSearch[] | null>(null);
   const [value, setValue] = useState('');
 
@@ -44,7 +46,9 @@ function SearchColumn(props: SearchColumnProps) {
   useEffect(() => {
     axios.get('/api/v1/courses', { params: { search: value } })
       .then((res) => {
+        console.log(res);
         setQueriedCards(res.data.coursesQuery);
+        upstreamQuery(queriedCards);
       });
   }, [value]);
 
@@ -67,3 +71,6 @@ function SearchColumn(props: SearchColumnProps) {
 }
 
 export default SearchColumn;
+export type {
+  CourseCardInSearch
+};

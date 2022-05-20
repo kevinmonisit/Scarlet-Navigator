@@ -4,19 +4,36 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import SemesterColumn, { SemesterColumnInfo } from './SemesterColumn';
-import SearchColumn from './SearchColumn';
+import SearchColumn, { CourseCardInSearch } from './SearchColumn';
 
 // eslint-disable-next-line no-unused-vars
 interface ColumnContainer {
   [key: string]: SemesterColumnInfo;
 }
 
-const onDragEnd = (result: any, columns: any, setColumns: any) => {
+function onDragEnd(
+  result: any,
+  columns: any,
+  setColumns: any,
+  checkIfCourseAlreadyInPlan: (id: string) => boolean | undefined
+) {
   if (!result.destination) return;
   const { source, destination } = result;
-  console.log(source);
-  console.log(destination);
-  console.log(result);
+  // console.log(source);
+  // console.log(destination);
+  // console.log(result);
+
+  const droppableIdSource = source.droppableId;
+  const droppableIdDestination = destination.droppableId;
+
+  if (droppableIdSource.includes('searchCard')) {
+    const newCourseCardId = droppableIdSource.split('-')[1];
+    if (checkIfCourseAlreadyInPlan(newCourseCardId)) {
+      return;
+    }
+
+    const destColumn = columns[destination.droppableId]
+  }
 
   if (source.droppableId !== destination.droppableId) {
     const sourceColumn = columns[source.droppableId];
@@ -49,7 +66,7 @@ const onDragEnd = (result: any, columns: any, setColumns: any) => {
       },
     });
   }
-};
+}
 
 async function processSemesterColumnQuery(plainJSON: { plan: Array<Array<any>>; }) {
   const columns = {};
@@ -93,15 +110,19 @@ function updateStudentPlan(columns: ColumnContainer | null) {
 
 function Dashboard() {
   const [columns, setColumns] = useState<ColumnContainer | null>(null);
+  const [searchQueryList, setSearchQueryList] = useState<CourseCardInSearch | null>(null);
   const setOfCurrentCourseIDs = useRef<Set<string> | null>(null);
 
   const checkIfCourseAlreadyInPlan = (courseId: string) => {
     if (setOfCurrentCourseIDs != null && setOfCurrentCourseIDs.current != null) {
-      console.log(setOfCurrentCourseIDs.current.has(courseId));
       return setOfCurrentCourseIDs.current.has(courseId);
     }
 
     return undefined;
+  };
+
+  const upstreamQuery = (courseListQuery: any) => {
+    setSearchQueryList(courseListQuery);
   };
 
   useEffect(() => {
@@ -126,13 +147,16 @@ function Dashboard() {
   return (
 
     <DragDropContext
-      onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
+      onDragEnd={(result) => onDragEnd(result, columns, setColumns, checkIfCourseAlreadyInPlan)}
     >
       <div
         className="flex flex-row flex-nowrap
         justify-center items-stretch w-full h-full"
       >
-        <SearchColumn checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan} />
+        <SearchColumn
+          checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan}
+          upstreamQuery={upstreamQuery}
+        />
         {columns == null ? <>Loading course data...</> : (
           <div className="grid h-100 grid-cols-4 gap-x-4 grow justify-center">
             {
