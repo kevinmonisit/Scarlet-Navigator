@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-// import { v4 as uuid } from 'uuid';
 import CourseSearchCard from './CourseSearchCard';
 
 interface CourseCardInSearch {
@@ -24,7 +23,13 @@ interface CourseCardInSearch {
 //   return cardQueryArray;
 // };
 
-function SearchColumn() {
+interface SearchColumnProps {
+  // eslint-disable-next-line no-unused-vars
+  checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
+}
+
+function SearchColumn(props: SearchColumnProps) {
+  const { checkIfCourseAlreadyInPlan } = props;
   const [queriedCards, setQueriedCards] = useState<CourseCardInSearch[] | null>(null);
   const [value, setValue] = useState('');
 
@@ -53,6 +58,7 @@ function SearchColumn() {
               shortTitle={courseCardSearch.title}
               key={courseCardSearch._id}
               courseId={courseCardSearch._id}
+              checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan}
             />
           ))}
       </div>

@@ -1,6 +1,5 @@
-/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
@@ -26,8 +25,16 @@ import CourseCard from './CourseCard';
 //   />
 // </div>
 
-function CourseSearchCard(props) {
-  const { shortTitle, fullTtile, courseId } = props;
+interface CourseSearchCardProps {
+  shortTitle: string;
+  courseId: string;
+  // eslint-disable-next-line no-unused-vars
+  checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
+}
+
+function CourseSearchCard(props: CourseSearchCardProps) {
+  const { shortTitle, courseId, checkIfCourseAlreadyInPlan } = props;
+  const [draggable, setDraggable] = useState(true);
   // TODO:
   // change this because everytime react re-renders
   // a new id is created.
@@ -38,7 +45,7 @@ function CourseSearchCard(props) {
                     border-black border-2"
     >
       <Droppable droppableId={shortTitle} key={shortTitle}>
-        {(providedDroppable, snapshotDroppable) => (
+        {(providedDroppable) => (
           <div
             {...providedDroppable.droppableProps}
             ref={providedDroppable.innerRef}
@@ -48,6 +55,7 @@ function CourseSearchCard(props) {
               key={courseId}
               draggableId={courseId}
               index={0}
+              isDragDisabled={checkIfCourseAlreadyInPlan(courseId)}
             >
               {(provided, snapshot) => {
                 // eslint-disable-next-line no-unused-vars
@@ -75,7 +83,6 @@ function CourseSearchCard(props) {
                       {shortTitle}
                     </div>
                   </>
-
                 );
               }}
             </Draggable>

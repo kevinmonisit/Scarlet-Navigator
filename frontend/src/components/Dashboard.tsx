@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
@@ -51,8 +51,9 @@ const onDragEnd = (result: any, columns: any, setColumns: any) => {
   }
 };
 
-function createSemesterColumns(plainJSON) {
+async function processSemesterColumnQuery(plainJSON: { plan: Array<Array<any>>; }) {
   const columns = {};
+  const setOfCourseIDs: Set<string> = new Set();
   const { plan } = plainJSON;
 
   for (let semesterIndex = 0; semesterIndex < plan.length; semesterIndex += 1) {
@@ -63,10 +64,12 @@ function createSemesterColumns(plainJSON) {
 
     for (let courseIndex = 0; courseIndex < plan[semesterIndex].length; courseIndex += 1) {
       columns[courseSemesterID].items.push(plan[semesterIndex][courseIndex]);
+      // eslint-disable-next-line no-underscore-dangle
+      setOfCourseIDs.add(plan[semesterIndex][courseIndex]._id);
     }
   }
 
-  return columns;
+  return { columns, setOfCourseIDs };
 }
 
 function updateStudentPlan(columns: ColumnContainer | null) {
@@ -90,11 +93,24 @@ function updateStudentPlan(columns: ColumnContainer | null) {
 
 function Dashboard() {
   const [columns, setColumns] = useState<ColumnContainer | null>(null);
+  const setOfCurrentCourseIDs = useRef<Set<string> | null>(null);
+
+  const checkIfCourseAlreadyInPlan = (courseId: string) => {
+    if (setOfCurrentCourseIDs != null && setOfCurrentCourseIDs.current != null) {
+      console.log(setOfCurrentCourseIDs.current.has(courseId));
+      return setOfCurrentCourseIDs.current.has(courseId);
+    }
+
+    return undefined;
+  };
 
   useEffect(() => {
     axios.get('/api/v1/user/627c718e319cae16ef4c12bf/plan')
       .then((res) => {
-        setColumns(createSemesterColumns(res.data));
+        processSemesterColumnQuery(res.data).then((processedColumns) => {
+          setColumns(processedColumns.columns);
+          setOfCurrentCourseIDs.current = processedColumns.setOfCourseIDs;
+        });
       })
       .catch((err) => {
         setColumns(null);
@@ -116,7 +132,7 @@ function Dashboard() {
         className="flex flex-row flex-nowrap
         justify-center items-stretch w-full h-full"
       >
-        <SearchColumn />
+        <SearchColumn checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan} />
         {columns == null ? <>Loading course data...</> : (
           <div className="grid h-100 grid-cols-4 gap-x-4 grow justify-center">
             {
