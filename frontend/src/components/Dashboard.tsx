@@ -149,6 +149,21 @@ function Dashboard() {
     return null;
   };
 
+  const handleDeleteCourseCard = (index: number, columnId: string) => {
+    if (columns) {
+      const modifiedColumn = columns[columnId];
+      const modifiedColumnItems = [...modifiedColumn.items];
+      modifiedColumnItems.splice(index, 1);
+      setColumns({
+        ...columns,
+        [columnId]: {
+          ...modifiedColumn,
+          items: modifiedColumnItems,
+        }
+      });
+    }
+  };
+
   useEffect(() => {
     axios.get('/api/v1/user/627c718e319cae16ef4c12bf/plan')
       .then((res) => {
@@ -191,7 +206,12 @@ function Dashboard() {
           <div className="grid h-100 grid-cols-4 gap-x-4 grow justify-center">
             {
               Object.entries(columns).map(([columnId, column]) => (
-                <SemesterColumn key={columnId} columnId={columnId} column={column} />
+                <SemesterColumn
+                  key={columnId}
+                  columnId={columnId}
+                  column={column}
+                  handleDeleteCourseCard={handleDeleteCourseCard}
+                />
               ))
             }
           </div>

@@ -11,10 +11,12 @@ interface SemesterColumnInfo {
 interface SemesterColumnProps {
   columnId: string;
   column: SemesterColumnInfo;
+  // eslint-disable-next-line no-unused-vars
+  handleDeleteCourseCard(index: number, columnId: string);
 }
 
 function SemesterColumn(props: SemesterColumnProps) {
-  const { columnId, column } = props;
+  const { columnId, column, handleDeleteCourseCard } = props;
   return (
     <div
       style={{
@@ -57,6 +59,8 @@ function SemesterColumn(props: SemesterColumnProps) {
                     index={index}
                     // eslint-disable-next-line no-underscore-dangle
                     key={item._id}
+                    handleDeleteCourseCard={handleDeleteCourseCard}
+                    columnId={columnId}
                   />
                 );
               })}

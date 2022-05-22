@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-wrap-multilines */
@@ -13,10 +14,13 @@ interface CourseCardInfo {
 interface CourseCardProps {
   item: CourseCardInfo;
   index: number;
+  columnId: string;
+  // eslint-disable-next-line no-unused-vars
+  handleDeleteCourseCard(index: number, columnId: string);
 }
 
 function CourseCard(props: CourseCardProps) {
-  const { item, index } = props;
+  const { item, index, handleDeleteCourseCard, columnId } = props;
   // ref={provided.innerRef}
   // // eslint-disable-next-line react/jsx-props-no-spreading
   // {...provided.draggableProps
@@ -66,7 +70,16 @@ function CourseCard(props: CourseCardProps) {
               <div
                 className="w-2/12 h-full text-right pr-2"
               >
-                <span className="hover:underline hover:text-gray-400">X</span>
+                <span
+                  className="hover:underline hover:text-gray-400"
+                  // eslint-disable-next-line max-len
+                  onClick={() => { handleDeleteCourseCard(index, columnId); }}
+                  onKeyDown={() => { handleDeleteCourseCard(index, columnId); }}
+                  role="button"
+                  tabIndex={0}
+                >
+                  X
+                </span>
               </div>
             </div>
           </div>
