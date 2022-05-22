@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useRef, useState } from 'react';
-import { DragDropContext } from 'react-beautiful-dnd';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import SemesterColumn, { SemesterColumnInfo } from './SemesterColumn';
@@ -12,27 +12,35 @@ interface ColumnContainer {
 }
 
 function onDragEnd(
-  result: any,
+  result: DropResult,
   columns: any,
   setColumns: any,
+  // TODO: substitute any[] with the actual interface schema of a course represented in MongoDB
+  findCourseInSearchQuery: (id: string) => boolean,
   checkIfCourseAlreadyInPlan: (id: string) => boolean | undefined
 ) {
   if (!result.destination) return;
   const { source, destination } = result;
   // console.log(source);
   // console.log(destination);
-  // console.log(result);
-
-  const droppableIdSource = source.droppableId;
-  const droppableIdDestination = destination.droppableId;
-
-  if (droppableIdSource.includes('searchCard')) {
-    const newCourseCardId = droppableIdSource.split('-')[1];
+  // console.log(result.draggableId.includes('searchCard'));
+  if (result.draggableId.includes('searchCard')) {
+    const newCourseCardId = result.draggableId.split('-')[1];
+    // console.log(newCourseCardId);
     if (checkIfCourseAlreadyInPlan(newCourseCardId)) {
+      console.log('already in plan');
       return;
     }
 
-    const destColumn = columns[destination.droppableId]
+    const destColumn = columns[destination.droppableId];
+    const destItems = [...destColumn.items];
+    const newCourseToAdd = findCourseInSearchQuery(newCourseCardId);
+    console.log(newCourseToAdd);
+    if (!newCourseToAdd) return;
+    console.log('entered');
+    console.log(columns);
+    return;
+    // destItems.splice(destination.index, 0, new)
   }
 
   if (source.droppableId !== destination.droppableId) {
@@ -85,7 +93,7 @@ async function processSemesterColumnQuery(plainJSON: { plan: Array<Array<any>>; 
       setOfCourseIDs.add(plan[semesterIndex][courseIndex]._id);
     }
   }
-
+  console.log(columns);
   return { columns, setOfCourseIDs };
 }
 
@@ -110,7 +118,7 @@ function updateStudentPlan(columns: ColumnContainer | null) {
 
 function Dashboard() {
   const [columns, setColumns] = useState<ColumnContainer | null>(null);
-  const [searchQueryList, setSearchQueryList] = useState<CourseCardInSearch | null>(null);
+  const [searchQueryList, setSearchQueryList] = useState<any[] | null>(null);
   const setOfCurrentCourseIDs = useRef<Set<string> | null>(null);
 
   const checkIfCourseAlreadyInPlan = (courseId: string) => {
@@ -123,6 +131,22 @@ function Dashboard() {
 
   const upstreamQuery = (courseListQuery: any) => {
     setSearchQueryList(courseListQuery);
+  };
+
+  // O(n), could be better by indexing courses by their _id in the backend
+  // but until it's a problem, I offload this work to the user
+  const findCourseInSearchQueryList = (id: string): any => {
+    if (!searchQueryList) return null;
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const queriedCourse of searchQueryList) {
+      // eslint-disable-next-line no-underscore-dangle
+      if (queriedCourse._id === id) {
+        return queriedCourse;
+      }
+    }
+
+    return null;
   };
 
   useEffect(() => {
@@ -147,7 +171,13 @@ function Dashboard() {
   return (
 
     <DragDropContext
-      onDragEnd={(result) => onDragEnd(result, columns, setColumns, checkIfCourseAlreadyInPlan)}
+      // eslint-disable-next-line function-paren-newline
+      onDragEnd={(result) => onDragEnd(result,
+        columns,
+        setColumns,
+        findCourseInSearchQueryList,
+        checkIfCourseAlreadyInPlan
+      )}
     >
       <div
         className="flex flex-row flex-nowrap

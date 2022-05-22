@@ -58,7 +58,7 @@ function CourseSearchCard(props: CourseSearchCardProps) {
           >
             <Draggable
               key={courseId}
-              draggableId={`search-card.${courseId}`}
+              draggableId={`searchCard-${courseId}`}
               index={0}
               isDragDisabled={draggable}
             >

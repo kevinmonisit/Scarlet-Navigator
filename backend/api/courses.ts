@@ -12,7 +12,6 @@ router.get(
   '/',
   async (req: Request<{}, {}, {}, ReqQuery, {}>, res: Response) => {
     const coursesQuery = await CourseController.getCourses(req.query['search']);
-    console.log(req.query['search']);
     res.status(200).send({ coursesQuery });
   }
 );
