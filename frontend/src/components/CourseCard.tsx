@@ -59,7 +59,16 @@ function CourseCard(props: CourseCardProps) {
             }}
             className={`${backgroundColor} w-full h-6 text-white pl-2 pt-0.5 my-2`}
           >
-            {item.title}
+            <div className="flex flex-row">
+              <div className="w-10/12 h-full">
+                {item.title}
+              </div>
+              <div
+                className="w-2/12 h-full text-right pr-2"
+              >
+                <span className="hover:underline hover:text-gray-400">X</span>
+              </div>
+            </div>
           </div>
         );
       }}
