@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import SemesterColumn, { SemesterColumnInfo } from './SemesterColumn';
 import SearchColumn, { CourseCardInSearch } from './SearchColumn';
+import CourseInfoColumn from './CourseInfoColumn';
 
 // eslint-disable-next-line no-unused-vars
 interface ColumnContainer {
@@ -127,6 +128,7 @@ function updateStudentPlan(columns: ColumnContainer | null) {
 function Dashboard() {
   const [columns, setColumns] = useState<ColumnContainer | null>(null);
   const [searchQueryList, setSearchQueryList] = useState<any[] | null>(null);
+  const [currentCourseInfoDisplayed, setCurrentCourseInfoDisplayed] = useState<any | null>(null);
   const setOfCurrentCourseIDs = useRef<Set<string> | null>(null);
 
   const checkIfCourseAlreadyInPlan = (courseId: string) => {
@@ -170,6 +172,11 @@ function Dashboard() {
         }
       });
     }
+  };
+
+  // TODO: change any type to model schema
+  const handleCourseInfoChange = (courseObject: any) => {
+    setCurrentCourseInfoDisplayed(courseObject);
   };
 
   useEffect(() => {
@@ -219,13 +226,16 @@ function Dashboard() {
                   columnId={columnId}
                   column={column}
                   handleDeleteCourseCard={handleDeleteCourseCard}
+                  handleCourseInfoChange={handleCourseInfoChange}
                 />
               ))
             }
           </div>
 
         )}
-        <div className="w-1/4 h-max bg-amber-200">Course Info Column</div>
+        <CourseInfoColumn
+          currentCourse={currentCourseInfoDisplayed}
+        />
       </div>
     </DragDropContext>
   );

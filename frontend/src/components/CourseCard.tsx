@@ -17,10 +17,13 @@ interface CourseCardProps {
   columnId: string;
   // eslint-disable-next-line no-unused-vars
   handleDeleteCourseCard(index: number, columnId: string);
+  // eslint-disable-next-line no-unused-vars
+  handleCourseInfoChange(courseObject: any);
 }
 
 function CourseCard(props: CourseCardProps) {
-  const { item, index, handleDeleteCourseCard, columnId } = props;
+  // eslint-disable-next-line no-unused-vars
+  const { item, index, handleDeleteCourseCard, handleCourseInfoChange, columnId } = props;
   // ref={provided.innerRef}
   // // eslint-disable-next-line react/jsx-props-no-spreading
   // {...provided.draggableProps
@@ -54,6 +57,7 @@ function CourseCard(props: CourseCardProps) {
         const backgroundColor = snapshot.isDragging ? 'bg-red-700' : 'bg-red-500';
 
         return (
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
           <div
             ref={provided.innerRef}
             {...provided.dragHandleProps}
@@ -62,6 +66,13 @@ function CourseCard(props: CourseCardProps) {
               ...provided.draggableProps.style,
             }}
             className={`${backgroundColor} w-full h-6 text-white pl-2 pt-0.5 my-2`}
+            onClick={() => {
+              console.log('course has been clicked');
+            }}
+            onKeyDown={() => {
+              console.log('course has been clicked');
+            }}
+            role="listitem"
           >
             <div className="flex flex-row">
               <div className="w-10/12 h-full">
@@ -73,7 +84,7 @@ function CourseCard(props: CourseCardProps) {
                 <span
                   className="hover:underline hover:text-gray-400"
                   // eslint-disable-next-line max-len
-                  onClick={() => { handleDeleteCourseCard(index, columnId); }}
+                  onClick={(e) => { e.stopPropagation(); handleDeleteCourseCard(index, columnId); }}
                   onKeyDown={() => { handleDeleteCourseCard(index, columnId); }}
                   role="button"
                   tabIndex={0}

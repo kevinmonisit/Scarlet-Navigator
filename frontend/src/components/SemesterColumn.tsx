@@ -14,10 +14,12 @@ interface SemesterColumnProps {
   column: SemesterColumnInfo;
   // eslint-disable-next-line no-unused-vars
   handleDeleteCourseCard(index: number, columnId: string);
+  // eslint-disable-next-line no-unused-vars
+  handleCourseInfoChange(courseObject: any);
 }
 
 function SemesterColumn(props: SemesterColumnProps) {
-  const { columnId, column, handleDeleteCourseCard } = props;
+  const { columnId, column, handleDeleteCourseCard, handleCourseInfoChange } = props;
   return (
     <div
       style={{
@@ -61,6 +63,7 @@ function SemesterColumn(props: SemesterColumnProps) {
                     // eslint-disable-next-line no-underscore-dangle
                     key={item._id}
                     handleDeleteCourseCard={handleDeleteCourseCard}
+                    handleCourseInfoChange={handleCourseInfoChange}
                     columnId={columnId}
                   />
                 );
