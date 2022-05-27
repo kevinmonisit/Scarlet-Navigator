@@ -32,7 +32,7 @@ interface SearchColumnProps {
 
 function SearchColumn(props: SearchColumnProps) {
   const { checkIfCourseAlreadyInPlan, upstreamQuery } = props;
-  const [queriedCards, setQueriedCards] = useState<CourseCardInSearch[] | null>(null);
+  const [queriedCards, setQueriedCards] = useState<CourseCardInSearch[] | null>([]);
   const [value, setValue] = useState('');
 
   const onChange = (event) => {
@@ -40,10 +40,8 @@ function SearchColumn(props: SearchColumnProps) {
   };
 
   useEffect(() => {
-    setQueriedCards([]);
-  }, []);
+    if (value.length === 0) return;
 
-  useEffect(() => {
     axios.get('/api/v1/courses', { params: { search: value } })
       .then((res) => {
         console.log(res);

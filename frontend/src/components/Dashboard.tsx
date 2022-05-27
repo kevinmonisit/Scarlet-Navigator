@@ -39,8 +39,16 @@ function onDragEnd(
     if (!newCourseToAdd) return;
     console.log('entered');
     console.log(columns);
+    destItems.splice(destination.index, 0, newCourseToAdd);
+    setColumns({
+      ...columns,
+      [destination.droppableId]: {
+        ...destColumn,
+        items: destItems,
+      }
+
+    });
     return;
-    // destItems.splice(destination.index, 0, new)
   }
 
   if (source.droppableId !== destination.droppableId) {

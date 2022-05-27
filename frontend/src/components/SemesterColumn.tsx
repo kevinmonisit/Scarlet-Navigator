@@ -4,6 +4,7 @@ import { Droppable } from 'react-beautiful-dnd';
 import CourseCard, { CourseCardInfo } from './CourseCard';
 
 interface SemesterColumnInfo {
+  [x: string]: any;
   title: string,
   items: Array<CourseCardInfo>;
 }
