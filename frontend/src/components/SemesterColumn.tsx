@@ -20,42 +20,35 @@ interface SemesterColumnProps {
 
 function SemesterColumn(props: SemesterColumnProps) {
   const { columnId, column, handleDeleteCourseCard, handleCourseInfoChange } = props;
+  const defaultBackgroundColor = '#34495e';
   return (
     <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        height: '100%',
-        width: '100%',
-      }}
+      className="flex flex-col items-center w-full h-full"
       key={columnId}
     >
-      <h2>{column.title}</h2>
-      <div style={{
-        width: '100%',
-        height: '100%'
-      }}
+      <div
+        className="w-full text-center py-2 my-2 rounded-sm text-white"
+        style={{
+          background: defaultBackgroundColor
+        }}
       >
-        <Droppable droppableId={columnId} key={columnId}>
-          {(provided, snapshot) => (
+        <h2>{column.title}</h2>
+      </div>
+
+      <Droppable droppableId={columnId} key={columnId}>
+        {(provided, snapshot) => {
+          const backgroundColor = snapshot.isDraggingOver ? '#273340' : defaultBackgroundColor;
+          return (
             <div
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...provided.droppableProps}
               ref={provided.innerRef}
+              className="w-full h-full p-2 rounded"
               style={{
-                background: snapshot.isDraggingOver
-                  ? '#273340'
-                  : '#34495e',
-                padding: 4,
-                width: '100%',
-                height: '100%',
-                minHeight: 200,
+                background: backgroundColor,
               }}
             >
               {column.items.map((item, index) => {
-                // console.log(columnId);
-
                 return (
                   <CourseCard
                     item={item}
@@ -70,9 +63,9 @@ function SemesterColumn(props: SemesterColumnProps) {
               })}
               {provided.placeholder}
             </div>
-          )}
-        </Droppable>
-      </div>
+          );
+        }}
+      </Droppable>
     </div>
   );
 }

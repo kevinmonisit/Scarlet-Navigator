@@ -24,6 +24,17 @@ interface CourseCardProps {
 function CourseCard(props: CourseCardProps) {
   // eslint-disable-next-line no-unused-vars
   const { item, index, handleDeleteCourseCard, handleCourseInfoChange, columnId } = props;
+
+  const handleDeleteClick = (event) => {
+    event.stopPropagation();
+    handleDeleteCourseCard(index, columnId);
+  };
+
+  const handleCourseClick = (event) => {
+    event.stopPropagation();
+    handleCourseInfoChange(item);
+  };
+
   // ref={provided.innerRef}
   // // eslint-disable-next-line react/jsx-props-no-spreading
   // {...provided.draggableProps
@@ -54,7 +65,7 @@ function CourseCard(props: CourseCardProps) {
     >
       {(provided, snapshot) => {
         // eslint-disable-next-line no-unused-vars
-        const backgroundColor = snapshot.isDragging ? 'bg-red-700' : 'bg-red-500';
+        const backgroundColor = snapshot.isDragging ? 'bg-gray-300' : 'bg-gray-100';
 
         return (
           // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
@@ -65,27 +76,23 @@ function CourseCard(props: CourseCardProps) {
             style={{
               ...provided.draggableProps.style,
             }}
-            className={`${backgroundColor} w-full h-6 text-white pl-2 pt-0.5 my-2`}
-            onClick={() => {
-              console.log('course has been clicked');
-            }}
-            onKeyDown={() => {
-              console.log('course has been clicked');
-            }}
+            className={`${backgroundColor} w-full text-black font-semibold mt-2 rounded-sm`}
+            onClick={(e) => { handleCourseClick(e); }}
+            onKeyDown={(e) => { handleCourseClick(e); }}
             role="listitem"
           >
-            <div className="flex flex-row">
-              <div className="w-10/12 h-full">
+            <div className="flex flex-row h-full">
+              <div className="w-10/12 h-full pl-2 py-1 text-lg">
                 {item.title}
               </div>
               <div
-                className="w-2/12 h-full text-right pr-2"
+                className="w-2/12 h-full text-right pr-2 py-1"
               >
                 <span
                   className="hover:underline hover:text-gray-400"
                   // eslint-disable-next-line max-len
-                  onClick={(e) => { e.stopPropagation(); handleDeleteCourseCard(index, columnId); }}
-                  onKeyDown={() => { handleDeleteCourseCard(index, columnId); }}
+                  onClick={(e) => { handleDeleteClick(e); }}
+                  onKeyDown={(e) => { handleDeleteClick(e); }}
                   role="button"
                   tabIndex={0}
                 >

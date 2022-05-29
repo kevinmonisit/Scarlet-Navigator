@@ -93,7 +93,7 @@ async function processSemesterColumnQuery(plainJSON: { plan: Array<Array<any>>; 
   for (let semesterIndex = 0; semesterIndex < plan.length; semesterIndex += 1) {
     const courseSemesterID = uuid();
     columns[courseSemesterID] = {};
-    columns[courseSemesterID].title = 'Season 20XX';
+    columns[courseSemesterID].title = 'Fall 2022';
     columns[courseSemesterID].items = [];
 
     for (let courseIndex = 0; courseIndex < plan[semesterIndex].length; courseIndex += 1) {
@@ -211,14 +211,14 @@ function Dashboard() {
     >
       <div
         className="flex flex-row flex-nowrap
-        justify-center items-stretch w-full h-full"
+        justify-center items-stretch w-full grow"
       >
         <SearchColumn
           checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan}
           upstreamQuery={upstreamQuery}
         />
         {columns == null ? <>Loading course data...</> : (
-          <div className="grid h-100 grid-cols-4 gap-x-4 grow justify-center">
+          <div className="grid grid-cols-4 gap-x-4 grow justify-center">
             {
               Object.entries(columns).map(([columnId, column]) => (
                 <SemesterColumn

@@ -11,7 +11,15 @@ interface CourseInfoColumnProps {
 
 function CourseInfoColumn(props: CourseInfoColumnProps) {
   const { currentCourse } = props;
-  return <div className="w-1/4 h-max bg-amber-200">Course Info Column</div>;
+  return (
+    <div className="w-1/4 h-max bg-amber-200">
+      {
+        !currentCourse
+          ? <>Loading</>
+          : currentCourse.title
+      }
+    </div>
+  );
 }
 
 export default CourseInfoColumn;
