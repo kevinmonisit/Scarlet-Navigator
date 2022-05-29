@@ -18,12 +18,14 @@ interface SemesterColumnProps {
   handleCourseInfoChange(courseObject: any);
 }
 
+// change colors as you get more credits? like the planner in my google spreadsheet
+
 function SemesterColumn(props: SemesterColumnProps) {
   const { columnId, column, handleDeleteCourseCard, handleCourseInfoChange } = props;
   const defaultBackgroundColor = '#34495e';
   return (
     <div
-      className="flex flex-col items-center w-full h-full"
+      className="flex flex-col items-center w-full h-full select-none"
       key={columnId}
     >
       <div
@@ -32,7 +34,10 @@ function SemesterColumn(props: SemesterColumnProps) {
           background: defaultBackgroundColor
         }}
       >
-        <h2>{column.title}</h2>
+        <h2 className="font-semibold">{column.title}</h2>
+        <span className="relative">
+          Test
+        </span>
       </div>
 
       <Droppable droppableId={columnId} key={columnId}>
