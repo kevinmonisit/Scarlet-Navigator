@@ -5,7 +5,8 @@ import CourseModel, { Course } from '../models/CourseModel';
  */
 
 async function getCourses(name: string) {
-  const regexSearch = new RegExp(`${name}`);
+  const query = name.length === 0 ? '.*' : name;
+  const regexSearch = new RegExp(`${query}`);
   const coursesQuery = await CourseModel.find({
     title: { $regex: regexSearch, $options: 'i' },
   }).exec();

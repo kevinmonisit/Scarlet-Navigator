@@ -19,3 +19,21 @@ this may not be correct. check again with topological sort and how it works.
 
 instead of specific course, plan-wide. this type of singular checking
 will lead to some type of conflicts
+
+
+
+
+Running credit count
+
+
+0, 2, 3, 3
+
+sem 1: 0
+sem 2: 2
+sem 3: 1
+sem 4: 0
+
+arr = [0,0,0,0]
+def addRunning(index, value):
+  for i in range(index, len(arr)):
+    arr[i] += value

@@ -1,5 +1,5 @@
 /* eslint-disable arrow-body-style */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import CourseCard, { CourseCardInfo } from './CourseCard';
 
@@ -12,6 +12,9 @@ interface SemesterColumnInfo {
 interface SemesterColumnProps {
   columnId: string;
   column: SemesterColumnInfo;
+  index: number;
+  runningCreditCount: number;
+  semesterCreditCount: number;
   // eslint-disable-next-line no-unused-vars
   handleDeleteCourseCard(index: number, columnId: string);
   // eslint-disable-next-line no-unused-vars
@@ -21,25 +24,43 @@ interface SemesterColumnProps {
 // change colors as you get more credits? like the planner in my google spreadsheet
 
 function SemesterColumn(props: SemesterColumnProps) {
-  const { columnId, column, handleDeleteCourseCard, handleCourseInfoChange } = props;
+  const {
+    columnId,
+    column,
+    semesterCreditCount,
+    runningCreditCount,
+    handleDeleteCourseCard,
+    handleCourseInfoChange,
+  } = props;
+
   const defaultBackgroundColor = '#34495e';
+
+  useEffect(() => {
+  }, []);
+
+  useEffect(() => {
+    // setTotalSemesterCreditCount(getCreditSemesterCount(column));
+  }, [column]);
+
   return (
     <div
       className="flex flex-col items-center w-full h-full select-none"
       key={columnId}
     >
       <div
-        className="w-full text-center py-2 my-2 rounded-sm text-white"
+        className="w-full text-center py-2 my-2 rounded-sm text-white relative"
         style={{
           background: defaultBackgroundColor
         }}
       >
         <h2 className="font-semibold">{column.title}</h2>
-        <span className="relative">
-          Test
+        <span className="absolute right-1 top-0 text-sm">
+          {semesterCreditCount}
+        </span>
+        <span className="absolute right-1 bottom-0 text-sm">
+          {runningCreditCount}
         </span>
       </div>
-
       <Droppable droppableId={columnId} key={columnId}>
         {(provided, snapshot) => {
           const backgroundColor = snapshot.isDraggingOver ? '#273340' : defaultBackgroundColor;
@@ -53,11 +74,11 @@ function SemesterColumn(props: SemesterColumnProps) {
                 background: backgroundColor,
               }}
             >
-              {column.items.map((item, index) => {
+              {column.items.map((item, cardIndex) => {
                 return (
                   <CourseCard
                     item={item}
-                    index={index}
+                    index={cardIndex}
                     // eslint-disable-next-line no-underscore-dangle
                     key={item._id}
                     handleDeleteCourseCard={handleDeleteCourseCard}

@@ -40,8 +40,6 @@ function SearchColumn(props: SearchColumnProps) {
   };
 
   useEffect(() => {
-    if (value.length === 0) return;
-
     axios.get('/api/v1/courses', { params: { search: value } })
       .then((res) => {
         console.log(res);

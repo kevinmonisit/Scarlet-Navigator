@@ -121,14 +121,21 @@ function updateStudentPlan(columns: ColumnContainer | null) {
     plan: arrayOfCourseObjectIds
   })
     .then((response) => {
-      console.log(response);
     });
+}
+
+function getCreditSemesterCount(column: SemesterColumnInfo) {
+  return column.items.reduce((previous, current) => (previous + current.credits), 0);
 }
 
 function Dashboard() {
   const [columns, setColumns] = useState<ColumnContainer | null>(null);
   const [searchQueryList, setSearchQueryList] = useState<any[] | null>(null);
   const [currentCourseInfoDisplayed, setCurrentCourseInfoDisplayed] = useState<any | null>(null);
+
+  const [runningCreditCountArray, setRunningCreditCountArray] = useState<Array<number>>([]);
+  const [semesterCreditArray, setSemesterCreditArray] = useState<Array<number>>([]);
+
   const setOfCurrentCourseIDs = useRef<Set<string> | null>(null);
 
   const checkIfCourseAlreadyInPlan = (courseId: string) => {
@@ -179,12 +186,46 @@ function Dashboard() {
     setCurrentCourseInfoDisplayed(courseObject);
   };
 
+  const createArrayOfSemesterCredits = () => {
+    if (!columns) return;
+    const arrayOfCredits: Array<number> = [];
+
+    Object.keys(columns).forEach((key) => {
+      arrayOfCredits.push(getCreditSemesterCount(columns[key]));
+    });
+
+    setSemesterCreditArray(arrayOfCredits);
+  };
+
+  const updateRunningCreditCountArray = () => {
+    console.log('update');
+    // console.log(runningCreditCountArray);
+    console.log(semesterCreditArray);
+    if (!columns) return;
+    const newArray = new Array(Object.keys(columns).length).fill(0);
+
+    for (let i = 0; i < semesterCreditArray.length; i += 1) {
+      if (i === 0) {
+        newArray[i] = semesterCreditArray[i];
+      } else {
+        newArray[i] = newArray[i - 1] + semesterCreditArray[i];
+      }
+    }
+
+    setRunningCreditCountArray(newArray);
+  };
+
   useEffect(() => {
     axios.get('/api/v1/user/627c718e319cae16ef4c12bf/plan')
       .then((res) => {
         processSemesterColumnQuery(res.data).then((processedColumns) => {
           setColumns(processedColumns.columns);
           setOfCurrentCourseIDs.current = processedColumns.setOfCourseIDs;
+
+          const numberOfColumns = Object.keys(processedColumns.columns).length;
+          const defaultArray = new Array(numberOfColumns).fill(0);
+          setRunningCreditCountArray(defaultArray);
+          console.log(runningCreditCountArray);
         });
       })
       .catch((err) => {
@@ -196,7 +237,10 @@ function Dashboard() {
 
   useEffect(() => {
     updateStudentPlan(columns);
+    createArrayOfSemesterCredits();
   }, [columns]);
+
+  useEffect(updateRunningCreditCountArray, [semesterCreditArray]);
 
   return (
 
@@ -220,11 +264,14 @@ function Dashboard() {
         {columns == null ? <>Loading course data...</> : (
           <div className="grid grid-cols-4 gap-x-4 grow justify-center">
             {
-              Object.entries(columns).map(([columnId, column]) => (
+              Object.entries(columns).map(([columnId, column], index) => (
                 <SemesterColumn
                   key={columnId}
                   columnId={columnId}
                   column={column}
+                  index={index}
+                  runningCreditCount={runningCreditCountArray[index]}
+                  semesterCreditCount={semesterCreditArray[index]}
                   handleDeleteCourseCard={handleDeleteCourseCard}
                   handleCourseInfoChange={handleCourseInfoChange}
                 />

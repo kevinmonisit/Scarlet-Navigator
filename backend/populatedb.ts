@@ -60,22 +60,28 @@ function createCourses(callbackOuter: CallableFunction) {
         createCourse('MAT205', 2, [], callback);
       },
       (callback) => {
-        createCourse('MAT201', 2, [], callback);
+        createCourse('MAT201', 1, [], callback);
       },
       (callback) => {
-        createCourse('CS205', 2, [], callback);
+        createCourse('CS205', 4, [], callback);
       },
       (callback) => {
-        createCourse('EXPOS', 2, [], callback);
+        createCourse('EXPOS', 3, [], callback);
       },
       (callback) => {
-        createCourse('PHL101', 2, [], callback);
+        createCourse('PHL101', 4, [], callback);
       },
       (callback) => {
-        createCourse('PHY103', 2, [], callback);
+        createCourse('PHY103', 3, [], callback);
       },
       (callback) => {
         createCourse('CS206', 2, [], callback);
+      },
+      (callback) => {
+        createCourse('CS211', 2, [], callback);
+      },
+      (callback) => {
+        createCourse('CS312', 2, [], callback);
       },
     ],
     (err, result) => {

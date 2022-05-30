@@ -9,6 +9,7 @@ import { Draggable } from 'react-beautiful-dnd';
 interface CourseCardInfo {
   _id: string;
   title: string;
+  credits: number;
 }
 
 interface CourseCardProps {
@@ -83,7 +84,8 @@ function CourseCard(props: CourseCardProps) {
           >
             <div className="flex flex-row h-full">
               <div className="w-10/12 h-full pl-2 py-1 text-lg">
-                {item.title}
+                {/* {item.title} */}
+                {item.credits}
               </div>
               <div
                 className="w-2/12 h-full text-right pr-2 py-1"
