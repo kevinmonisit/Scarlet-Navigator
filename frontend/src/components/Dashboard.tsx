@@ -22,12 +22,8 @@ function onDragEnd(
 ) {
   if (!result.destination) return;
   const { source, destination } = result;
-  // console.log(source);
-  // console.log(destination);
-  // console.log(result.draggableId.includes('searchCard'));
   if (result.draggableId.includes('searchCard')) {
     const newCourseCardId = result.draggableId.split('-')[1];
-    // console.log(newCourseCardId);
     if (checkIfCourseAlreadyInPlan(newCourseCardId)) {
       console.log('already in plan');
       return;
@@ -36,10 +32,7 @@ function onDragEnd(
     const destColumn = columns[destination.droppableId];
     const destItems = [...destColumn.items];
     const newCourseToAdd = findCourseInSearchQuery(newCourseCardId);
-    console.log(newCourseToAdd);
     if (!newCourseToAdd) return;
-    console.log('entered');
-    console.log(columns);
     destItems.splice(destination.index, 0, newCourseToAdd);
     setColumns({
       ...columns,
@@ -106,7 +99,7 @@ async function processSemesterColumnQuery(plainJSON: { plan: Array<Array<any>>; 
   return { columns, setOfCourseIDs };
 }
 
-function updateStudentPlan(columns: ColumnContainer | null) {
+function uploadNewStudentPlan(columns: ColumnContainer | null) {
   if (!columns) {
     return;
   }
@@ -198,9 +191,6 @@ function Dashboard() {
   };
 
   const updateRunningCreditCountArray = () => {
-    console.log('update');
-    // console.log(runningCreditCountArray);
-    console.log(semesterCreditArray);
     if (!columns) return;
     const newArray = new Array(Object.keys(columns).length).fill(0);
 
@@ -236,7 +226,7 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    updateStudentPlan(columns);
+    uploadNewStudentPlan(columns);
     createArrayOfSemesterCredits();
   }, [columns]);
 

@@ -8,21 +8,6 @@ interface CourseCardInSearch {
   _id: string;
 }
 
-// const createRandomCards = () => {
-//   const numberOfRandomCards = 50;
-//   const cardQueryArray: CourseCardInSearch[] = [];
-
-//   for (let cardIndex = 0; cardIndex < numberOfRandomCards; cardIndex += 1) {
-//     cardQueryArray.push({
-//       shortTitle: 'CS205',
-//       fullTitle: 'Full Title of Course',
-//       id: uuid(),
-//     });
-//   }
-
-//   return cardQueryArray;
-// };
-
 interface SearchColumnProps {
   // eslint-disable-next-line no-unused-vars
   checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
@@ -42,7 +27,6 @@ function SearchColumn(props: SearchColumnProps) {
   useEffect(() => {
     axios.get('/api/v1/courses', { params: { search: value } })
       .then((res) => {
-        console.log(res);
         setQueriedCards(res.data.coursesQuery);
         upstreamQuery(queriedCards);
       });

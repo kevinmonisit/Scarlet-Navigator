@@ -1,35 +1,30 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect } from 'react';
-import { v4 as uuid } from 'uuid';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
-import CourseCard from './CourseCard';
-
-//  {(_provided, _snapshot) => {
-// <div
-//   {...provided.droppableProps}
-//   ref={provided.innerRef}
-//   style={{
-//     background: snapshot.isDraggingOver
-//       ? '#273340'
-//       : '#34495e',
-//     width: '100%',
-//   }}
-// >
-//   <CourseCard
-//     item={{
-//       _id: '627c718d319cae16ef4c12ad',
-//       title: 'CS112',
-//     }}
-//     index={2}
-//   />
-// </div>
 
 interface CourseSearchCardProps {
   shortTitle: string;
   courseId: string;
   // eslint-disable-next-line no-unused-vars
   checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
+}
+
+interface PseudoCourseCardProps {
+  shortTitle: string;
+  backgroundColor: string;
+}
+
+function PseudoCourseCard(props: PseudoCourseCardProps) {
+  const { shortTitle, backgroundColor } = props;
+  return (
+    <div className={`${backgroundColor}
+     bg-gray-100 w-full text-black pl-2 py-1 text-lg
+     font-semibold rounded-sm`}
+    >
+      {shortTitle}
+    </div>
+  );
 }
 
 function CourseSearchCard(props: CourseSearchCardProps) {
@@ -46,15 +41,14 @@ function CourseSearchCard(props: CourseSearchCardProps) {
   // create an id when you query a list, and then use document _id
 
   return (
-    <div className="h-12 w-full bg-red-300 border-solid
-                    border-black border-2"
+    <div className="w-full h-fit bg-red-300 border-solid
+                    border-black"
     >
       <Droppable droppableId={shortTitle} key={shortTitle} isDropDisabled>
         {(providedDroppable) => (
           <div
             {...providedDroppable.droppableProps}
             ref={providedDroppable.innerRef}
-          // className="h-0"
           >
             <Draggable
               key={courseId}
@@ -64,17 +58,20 @@ function CourseSearchCard(props: CourseSearchCardProps) {
             >
               {(provided, snapshot) => {
                 // eslint-disable-next-line no-unused-vars
-                const backgroundColor = snapshot.isDragging ? 'bg-red-700' : 'bg-red-500';
+                const backgroundColor = snapshot.isDragging ? 'bg-gray-300' : 'bg-gray-100';
 
                 return (
                   <>
                     {!snapshot.isDragging
+                      // this is basically the placeholder course item when course card is out of
+                      // its original place
                       // eslint-disable-next-line react/jsx-no-useless-fragment
                       ? <></>
                       : (
-                        <div className="bg-red-500 w-full h-6 text-white pl-2 pt-0.5 my-2">
-                          {shortTitle}
-                        </div>
+                        <PseudoCourseCard
+                          shortTitle={shortTitle}
+                          backgroundColor={backgroundColor}
+                        />
                       )}
                     <div
                       ref={provided.innerRef}
@@ -83,10 +80,18 @@ function CourseSearchCard(props: CourseSearchCardProps) {
                       style={{
                         ...provided.draggableProps.style,
                       }}
-                      className={`${backgroundColor} w-full h-6 text-white pl-2 pt-0.5 my-2`}
+                      className="w-full"
                     >
-                      {shortTitle}
+                      <PseudoCourseCard
+                        shortTitle={shortTitle}
+                        backgroundColor={backgroundColor}
+                      />
                     </div>
+                    <span
+                      className="pl-2 pr-3 max-w-xs"
+                    >
+                      Introduction to Discrete Structures II
+                    </span>
                   </>
                 );
               }}
