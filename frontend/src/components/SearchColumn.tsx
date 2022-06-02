@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-underscore-dangle */
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
@@ -33,7 +34,7 @@ function SearchColumn(props: SearchColumnProps) {
   }, [value]);
 
   return (
-    <div className="w-2/10 h-100 bg-amber-500 flex flex-col">
+    <div className="w-2/12 h-100 bg-amber-500 flex flex-col">
       <input value={value} onChange={onChange} />
       <div className="grow bg-green-300 overflow-hidden overflow-y-scroll">
         {queriedCards == null ? <>Loading search...</>

@@ -35,13 +35,8 @@ function CourseSearchCard(props: CourseSearchCardProps) {
     setDraggable(checkIfCourseAlreadyInPlan(courseId));
   }, []);
 
-  // TODO:
-  // change this because everytime react re-renders
-  // a new id is created.
-  // create an id when you query a list, and then use document _id
-
   return (
-    <div className="w-full h-fit bg-red-300 border-solid
+    <div className="h-fit bg-red-300 border-solid
                     border-black"
     >
       <Droppable droppableId={shortTitle} key={shortTitle} isDropDisabled>
@@ -88,7 +83,7 @@ function CourseSearchCard(props: CourseSearchCardProps) {
                       />
                     </div>
                     <span
-                      className="pl-2 pr-3 max-w-xs"
+                      className="pl-2 pr-3"
                     >
                       Introduction to Discrete Structures II
                     </span>

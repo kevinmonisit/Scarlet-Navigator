@@ -12,7 +12,7 @@ interface CourseInfoColumnProps {
 function CourseInfoColumn(props: CourseInfoColumnProps) {
   const { currentCourse } = props;
   return (
-    <div className="w-1/4 h-max bg-amber-200">
+    <div className="w-1/4 h-full bg-amber-200">
       {
         !currentCourse
           ? <>Loading</>
