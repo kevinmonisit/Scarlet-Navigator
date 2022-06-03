@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 
 interface CourseSearchCardProps {
@@ -13,19 +13,26 @@ interface CourseSearchCardProps {
 interface PseudoCourseCardProps {
   shortTitle: string;
   backgroundColor: string;
+  isAbsolute?: boolean;
 }
 
 function PseudoCourseCard(props: PseudoCourseCardProps) {
-  const { shortTitle, backgroundColor } = props;
+  const { shortTitle, backgroundColor, isAbsolute } = props;
+  // const absolutePosition = useState(isAbsolute ? 'absolute' : '');
+
   return (
     <div className={`${backgroundColor}
      bg-gray-100 w-full text-black pl-2 py-1 text-lg
-     font-semibold rounded-sm`}
+     font-semibold rounded-sm ${isAbsolute ? 'absolute' : ''}`}
     >
       {shortTitle}
     </div>
   );
 }
+
+PseudoCourseCard.defaultProps = {
+  isAbsolute: false
+};
 
 function CourseSearchCard(props: CourseSearchCardProps) {
   const { shortTitle, courseId, checkIfCourseAlreadyInPlan } = props;
@@ -36,14 +43,13 @@ function CourseSearchCard(props: CourseSearchCardProps) {
   }, []);
 
   return (
-    <div className="h-fit bg-red-300 border-solid
-                    border-black"
-    >
+    <div className="h-fit bg-gray-300 max-w-fit">
       <Droppable droppableId={shortTitle} key={shortTitle} isDropDisabled>
         {(providedDroppable) => (
           <div
             {...providedDroppable.droppableProps}
             ref={providedDroppable.innerRef}
+            className="relative h-full"
           >
             <Draggable
               key={courseId}
@@ -54,7 +60,6 @@ function CourseSearchCard(props: CourseSearchCardProps) {
               {(provided, snapshot) => {
                 // eslint-disable-next-line no-unused-vars
                 const backgroundColor = snapshot.isDragging ? 'bg-gray-300' : 'bg-gray-100';
-
                 return (
                   <>
                     {!snapshot.isDragging
@@ -66,6 +71,7 @@ function CourseSearchCard(props: CourseSearchCardProps) {
                         <PseudoCourseCard
                           shortTitle={shortTitle}
                           backgroundColor={backgroundColor}
+                          isAbsolute
                         />
                       )}
                     <div
@@ -75,18 +81,12 @@ function CourseSearchCard(props: CourseSearchCardProps) {
                       style={{
                         ...provided.draggableProps.style,
                       }}
-                      className="w-full"
                     >
                       <PseudoCourseCard
                         shortTitle={shortTitle}
                         backgroundColor={backgroundColor}
                       />
                     </div>
-                    <span
-                      className="pl-2 pr-3"
-                    >
-                      Introduction to Discrete Structures II
-                    </span>
                   </>
                 );
               }}
@@ -96,6 +96,9 @@ function CourseSearchCard(props: CourseSearchCardProps) {
           </div>
         )}
       </Droppable>
+      <div className="pl-1 py-1 pr-1">
+        Introduction to Discrete Structures II
+      </div>
     </div>
   );
 }

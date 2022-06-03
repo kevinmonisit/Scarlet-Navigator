@@ -252,7 +252,7 @@ function Dashboard() {
           upstreamQuery={upstreamQuery}
         />
         {columns == null ? <>Loading course data...</> : (
-          <div className="grid grid-cols-4 gap-x-3 grow justify-center">
+          <div className="grid grid-cols-4 gap-x-3 grow justify-center min-w-fit">
             {
               Object.entries(columns).map(([columnId, column], index) => (
                 <SemesterColumn

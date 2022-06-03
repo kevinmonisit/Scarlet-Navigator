@@ -34,9 +34,9 @@ function SearchColumn(props: SearchColumnProps) {
   }, [value]);
 
   return (
-    <div className="w-2/12 h-100 bg-amber-500 flex flex-col">
+    <div className="w-2/12 h-full bg-amber-500 flex flex-col max-w-fit">
       <input value={value} onChange={onChange} />
-      <div className="grow bg-green-300 overflow-hidden overflow-y-scroll">
+      <div className="w-full h-10 grow bg-green-300 overflow-hidden overflow-y-scroll">
         {queriedCards == null ? <>Loading search...</>
           : queriedCards.map((courseCardSearch) => (
             <CourseSearchCard
