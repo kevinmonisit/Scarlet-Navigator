@@ -1,6 +1,10 @@
 /* eslint-disable no-shadow */
 import React from 'react';
 import 'normalize.css';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 import Dashboard from './components/Dashboard';
 import NavBar from './components/Navbar';
 

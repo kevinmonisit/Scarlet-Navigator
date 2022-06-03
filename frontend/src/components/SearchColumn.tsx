@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-underscore-dangle */
+import Input from '@mui/material/Input';
+import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import CourseSearchCard from './CourseSearchCard';
@@ -34,8 +36,17 @@ function SearchColumn(props: SearchColumnProps) {
   }, [value]);
 
   return (
-    <div className="w-2/12 h-full bg-amber-500 flex flex-col max-w-fit">
-      <input value={value} onChange={onChange} />
+    <div className="w-2/12 h-full flex flex-col max-w-fit">
+      {/* <input value={value} onChange={onChange} /> */}
+      <Input
+        placeholder="Search Course"
+        onChange={onChange}
+        sx={{
+          '& .MuiInput-input': {
+            paddingLeft: '3px',
+          }
+        }}
+      />
       <div className="w-full h-10 grow bg-green-300 overflow-hidden overflow-y-scroll">
         {queriedCards == null ? <>Loading search...</>
           : queriedCards.map((courseCardSearch) => (
