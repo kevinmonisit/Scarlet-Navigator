@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import SemesterColumn, { SemesterColumnInfo } from './SemesterColumn';
 import SearchColumn, { CourseCardInSearch } from './SearchColumn';
-import CourseInfoColumn from './CourseInfoColumn';
+import InfoColumn from './InfoColumn';
 
 // eslint-disable-next-line no-unused-vars
 interface ColumnContainer {
@@ -292,7 +292,7 @@ function Dashboard() {
           </div>
 
         )}
-        <CourseInfoColumn
+        <InfoColumn
           currentCourse={currentCourseInfoDisplayed}
         />
       </div>

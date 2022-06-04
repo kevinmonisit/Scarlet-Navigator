@@ -6,12 +6,14 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import Settings from '../subpages/Settings';
+import CourseInfo from '../subpages/CourseInfo';
 
-interface CourseInfoColumnProps {
+interface InfoColumnProps {
   currentCourse: any;
 }
 
-// TODO: replace type any with the course model shchema
+// TODO: replace type any with the course model schema
 
 interface StyledTabsProps {
   children?: React.ReactNode;
@@ -60,35 +62,34 @@ const StyledTab = styled((props: StyledTabProps) => (
   },
 }));
 
-function CourseInfoColumn(props: CourseInfoColumnProps) {
+function InfoColumn(props: InfoColumnProps) {
   const { currentCourse } = props;
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(1);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
   return (
-    <div className="w-1/4 h-full flex justify-center">
-      <Box>
-        <StyledTabs
-          value={value}
-          onChange={handleChange}
-          aria-label="course planning tabs"
-        >
-          {/* <StyledTab label="Planner" /> */}
-          <StyledTab label="Course" />
-          <StyledTab label="Settings" />
-        </StyledTabs>
-        <Box sx={{ p: 3 }} />
-      </Box>
-      {/* {
-        !currentCourse
-          ? <>Loading</>
-          : currentCourse.title
-      } */}
+    <div className="w-1/4 h-full flex flex-col">
+      <div className="w-full flex justify-center">
+        <Box>
+          <StyledTabs
+            value={value}
+            onChange={handleChange}
+            aria-label="course planning tabs"
+          >
+            {/* <StyledTab label="Planner" /> */}
+            <StyledTab label="Course" />
+            <StyledTab label="Settings" />
+          </StyledTabs>
+          <Box sx={{ p: 1 }} />
+        </Box>
+      </div>
+      {value === 1 ? <Settings /> : <CourseInfo />}
     </div>
+
   );
 }
 
-export default CourseInfoColumn;
+export default InfoColumn;

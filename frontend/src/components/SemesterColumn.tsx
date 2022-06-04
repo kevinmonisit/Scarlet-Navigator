@@ -1,5 +1,5 @@
 /* eslint-disable arrow-body-style */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Droppable } from 'react-beautiful-dnd';
 import CourseCard, { CourseCardInfo } from './CourseCard';
 
@@ -34,13 +34,6 @@ function SemesterColumn(props: SemesterColumnProps) {
   } = props;
 
   const defaultBackgroundColor = '#34495e';
-
-  useEffect(() => {
-  }, []);
-
-  useEffect(() => {
-    // setTotalSemesterCreditCount(getCreditSemesterCount(column));
-  }, [column]);
 
   return (
     <div
