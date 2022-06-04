@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useRef, useState } from 'react';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
@@ -80,7 +81,6 @@ function onDragEnd(
 
 async function processSemesterColumnQuery(plainJSON: { plan: Array<Array<any>>; }) {
   const columns = {};
-  const setOfCourseIDs: Set<string> = new Set();
   const { plan } = plainJSON;
 
   for (let semesterIndex = 0; semesterIndex < plan.length; semesterIndex += 1) {
@@ -92,11 +92,10 @@ async function processSemesterColumnQuery(plainJSON: { plan: Array<Array<any>>; 
     for (let courseIndex = 0; courseIndex < plan[semesterIndex].length; courseIndex += 1) {
       columns[courseSemesterID].items.push(plan[semesterIndex][courseIndex]);
       // eslint-disable-next-line no-underscore-dangle
-      setOfCourseIDs.add(plan[semesterIndex][courseIndex]._id);
     }
   }
   console.log(columns);
-  return { columns, setOfCourseIDs };
+  return { columns };
 }
 
 function uploadNewStudentPlan(columns: ColumnContainer | null) {
@@ -130,6 +129,7 @@ function Dashboard() {
   const [semesterCreditArray, setSemesterCreditArray] = useState<Array<number>>([]);
 
   const setOfCurrentCourseIDs = useRef<Set<string> | null>(null);
+  const [numberOfCourses, setNumberOfCourses] = useState(0);
 
   const checkIfCourseAlreadyInPlan = (courseId: string) => {
     if (setOfCurrentCourseIDs != null && setOfCurrentCourseIDs.current != null) {
@@ -205,12 +205,28 @@ function Dashboard() {
     setRunningCreditCountArray(newArray);
   };
 
+  const updateSetOfCurrentCourseIDs = () => {
+    if (!columns) return;
+
+    const columnKeys = Object.keys(columns);
+    const newSet: Set<string> = new Set();
+
+    for (let semesterIndex = 0; semesterIndex < columnKeys.length; semesterIndex += 1) {
+      const key = columnKeys[semesterIndex];
+      const courses = columns[key].items;
+      for (let courseIndex = 0; courseIndex < courses.length; courseIndex += 1) {
+        newSet.add(courses[courseIndex]._id);
+      }
+    }
+
+    setOfCurrentCourseIDs.current = newSet;
+  };
+
   useEffect(() => {
     axios.get('/api/v1/user/627c718e319cae16ef4c12bf/plan')
       .then((res) => {
         processSemesterColumnQuery(res.data).then((processedColumns) => {
           setColumns(processedColumns.columns);
-          setOfCurrentCourseIDs.current = processedColumns.setOfCourseIDs;
 
           const numberOfColumns = Object.keys(processedColumns.columns).length;
           const defaultArray = new Array(numberOfColumns).fill(0);
@@ -227,7 +243,14 @@ function Dashboard() {
 
   useEffect(() => {
     uploadNewStudentPlan(columns);
+    updateSetOfCurrentCourseIDs();
     createArrayOfSemesterCredits();
+
+    if (setOfCurrentCourseIDs.current) {
+      setNumberOfCourses(setOfCurrentCourseIDs.current.size);
+    }
+
+    console.log(numberOfCourses);
   }, [columns]);
 
   useEffect(updateRunningCreditCountArray, [semesterCreditArray]);
@@ -250,6 +273,7 @@ function Dashboard() {
         <SearchColumn
           checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan}
           upstreamQuery={upstreamQuery}
+          numberOfCourses={numberOfCourses}
         />
         {columns == null ? <>Loading course data...</> : (
           <div className="grid grid-cols-4 gap-x-3 grow justify-center min-w-fit">
@@ -279,3 +303,4 @@ function Dashboard() {
 }
 
 export default Dashboard;
+export type { ColumnContainer };

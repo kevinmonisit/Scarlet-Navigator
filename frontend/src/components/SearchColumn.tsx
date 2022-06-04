@@ -12,6 +12,7 @@ interface CourseCardInSearch {
 }
 
 interface SearchColumnProps {
+  numberOfCourses: number;
   // eslint-disable-next-line no-unused-vars
   checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
   // eslint-disable-next-line no-unused-vars
@@ -19,7 +20,7 @@ interface SearchColumnProps {
 }
 
 function SearchColumn(props: SearchColumnProps) {
-  const { checkIfCourseAlreadyInPlan, upstreamQuery } = props;
+  const { checkIfCourseAlreadyInPlan, upstreamQuery, numberOfCourses } = props;
   const [queriedCards, setQueriedCards] = useState<CourseCardInSearch[] | null>([]);
   const [value, setValue] = useState('');
 
@@ -47,7 +48,7 @@ function SearchColumn(props: SearchColumnProps) {
           }
         }}
       />
-      <div className="w-full h-10 grow bg-green-300 overflow-hidden overflow-y-scroll">
+      <div className="w-full h-10 grow overflow-hidden overflow-y-scroll pr-2">
         {queriedCards == null ? <>Loading search...</>
           : queriedCards.map((courseCardSearch) => (
             <CourseSearchCard
@@ -55,6 +56,7 @@ function SearchColumn(props: SearchColumnProps) {
               key={courseCardSearch._id}
               courseId={courseCardSearch._id}
               checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan}
+              numberOfCourses={numberOfCourses}
             />
           ))}
       </div>

@@ -6,23 +6,23 @@ import { Draggable, Droppable } from 'react-beautiful-dnd';
 interface CourseSearchCardProps {
   shortTitle: string;
   courseId: string;
+  numberOfCourses: number;
   // eslint-disable-next-line no-unused-vars
   checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
 }
 
 interface PseudoCourseCardProps {
   shortTitle: string;
-  backgroundColor: string;
+  backgroundColor?: string;
   isAbsolute?: boolean;
 }
 
 function PseudoCourseCard(props: PseudoCourseCardProps) {
   const { shortTitle, backgroundColor, isAbsolute } = props;
-  // const absolutePosition = useState(isAbsolute ? 'absolute' : '');
 
   return (
     <div className={`${backgroundColor}
-     bg-gray-100 w-full text-black pl-2 py-1 text-lg
+     bg-gray-100 w-full text-black pl-2 text-lg
      font-semibold rounded-sm ${isAbsolute ? 'absolute' : ''}`}
     >
       {shortTitle}
@@ -31,25 +31,30 @@ function PseudoCourseCard(props: PseudoCourseCardProps) {
 }
 
 PseudoCourseCard.defaultProps = {
-  isAbsolute: false
+  isAbsolute: false,
+  backgroundColor: 'bg-gray-100'
 };
 
 function CourseSearchCard(props: CourseSearchCardProps) {
-  const { shortTitle, courseId, checkIfCourseAlreadyInPlan } = props;
+  const {
+    shortTitle,
+    courseId,
+    checkIfCourseAlreadyInPlan,
+    numberOfCourses } = props;
   const [draggable, setDraggable] = useState<boolean | undefined>(true);
 
   useEffect(() => {
     setDraggable(checkIfCourseAlreadyInPlan(courseId));
-  }, []);
+  }, [numberOfCourses]);
 
   return (
-    <div className="h-fit bg-gray-300 max-w-fit">
+    <div className="bg-gray-300 max-w-fit rounded-sm m-1">
       <Droppable droppableId={shortTitle} key={shortTitle} isDropDisabled>
         {(providedDroppable) => (
           <div
             {...providedDroppable.droppableProps}
             ref={providedDroppable.innerRef}
-            className="relative h-full"
+            className="relative h-10"
           >
             <Draggable
               key={courseId}
@@ -59,7 +64,7 @@ function CourseSearchCard(props: CourseSearchCardProps) {
             >
               {(provided, snapshot) => {
                 // eslint-disable-next-line no-unused-vars
-                const backgroundColor = snapshot.isDragging ? 'bg-gray-300' : 'bg-gray-100';
+                const backgroundColor = snapshot.isDragging ? 'bg-gray-400' : 'bg-gray-100';
                 return (
                   <>
                     {!snapshot.isDragging
@@ -70,7 +75,6 @@ function CourseSearchCard(props: CourseSearchCardProps) {
                       : (
                         <PseudoCourseCard
                           shortTitle={shortTitle}
-                          backgroundColor={backgroundColor}
                           isAbsolute
                         />
                       )}
