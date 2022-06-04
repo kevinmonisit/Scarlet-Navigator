@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-props-no-spreading */
+import { Tooltip } from '@mui/material';
 import React, { useState, useEffect, useRef } from 'react';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 
@@ -15,24 +16,52 @@ interface PseudoCourseCardProps {
   shortTitle: string;
   backgroundColor?: string;
   isAbsolute?: boolean;
+  disabled?: boolean;
 }
 
 function PseudoCourseCard(props: PseudoCourseCardProps) {
-  const { shortTitle, backgroundColor, isAbsolute } = props;
+  const { shortTitle, backgroundColor, isAbsolute, disabled } = props;
+
+  const regularTheme = {
+    backgroundColor,
+    textColor: 'text-black'
+  };
+
+  const disabledTheme = {
+    backgroundColor: 'bg-gray-700',
+    textColor: 'text-white'
+  };
+
+  const currTheme = disabled ? disabledTheme : regularTheme;
 
   return (
-    <div className={`${backgroundColor}
-     bg-gray-100 w-full text-black pl-2 text-lg
-     font-semibold rounded-sm ${isAbsolute ? 'absolute' : ''}`}
+    <Tooltip
+      disableHoverListener={disabled}
+      disableFocusListener={disabled}
+      disableTouchListener={disabled}
+      title="Course already in plan"
+      placement="right"
+      arrow
+      enterDelay={500}
+      enterNextDelay={500}
     >
-      {shortTitle}
-    </div>
+      <div className={`
+      ${currTheme.backgroundColor}
+      ${currTheme.textColor}
+      bg-gray-100 w-full pl-2 text-lg
+      font-semibold rounded-sm ${isAbsolute ? 'absolute' : ''}`}
+      >
+        {shortTitle}
+      </div>
+    </Tooltip>
+
   );
 }
 
 PseudoCourseCard.defaultProps = {
   isAbsolute: false,
-  backgroundColor: 'bg-gray-100'
+  backgroundColor: 'bg-gray-100',
+  disabled: false
 };
 
 function CourseSearchCard(props: CourseSearchCardProps) {
@@ -89,6 +118,7 @@ function CourseSearchCard(props: CourseSearchCardProps) {
                       <PseudoCourseCard
                         shortTitle={shortTitle}
                         backgroundColor={backgroundColor}
+                        disabled={draggable}
                       />
                     </div>
                   </>

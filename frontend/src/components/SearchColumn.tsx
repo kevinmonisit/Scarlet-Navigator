@@ -32,8 +32,6 @@ function SearchColumn(props: SearchColumnProps) {
     axios.get('/api/v1/courses', { params: { search: value } })
       .then((res) => {
         setQueriedCards(res.data.coursesQuery);
-        console.log('BOOM');
-        console.log(queriedCards);
       });
   };
 
@@ -50,10 +48,12 @@ function SearchColumn(props: SearchColumnProps) {
         sx={{
           '& .MuiInput-input': {
             paddingLeft: '3px',
-          }
+          },
+          marginRight: '1rem',
+          marginLeft: '0.25rem'
         }}
       />
-      <div className="w-full h-10 grow overflow-hidden overflow-y-scroll pr-2">
+      <div className="mt-1 w-full h-10 grow overflow-hidden overflow-y-scroll pr-2">
         {queriedCards == null ? <>Loading search...</>
           : queriedCards.map((courseCardSearch) => (
             <CourseSearchCard
