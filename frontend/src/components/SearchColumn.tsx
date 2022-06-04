@@ -28,13 +28,18 @@ function SearchColumn(props: SearchColumnProps) {
     setValue(event.target.value);
   };
 
-  useEffect(() => {
+  const queryCourses = () => {
     axios.get('/api/v1/courses', { params: { search: value } })
       .then((res) => {
         setQueriedCards(res.data.coursesQuery);
-        upstreamQuery(queriedCards);
+        console.log('BOOM');
+        console.log(queriedCards);
       });
-  }, [value]);
+  };
+
+  useEffect(queryCourses, []);
+  useEffect(() => { upstreamQuery(queriedCards); }, [queriedCards]);
+  useEffect(queryCourses, [value]);
 
   return (
     <div className="w-2/12 h-full flex flex-col max-w-fit">

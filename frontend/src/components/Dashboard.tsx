@@ -21,6 +21,9 @@ function onDragEnd(
   findCourseInSearchQuery: (id: string) => boolean,
   checkIfCourseAlreadyInPlan: (id: string) => boolean | undefined
 ) {
+  console.log(result);
+  console.log(columns);
+
   if (!result.destination) return;
   const { source, destination } = result;
   if (result.draggableId.includes('searchCard')) {
@@ -33,7 +36,9 @@ function onDragEnd(
     const destColumn = columns[destination.droppableId];
     const destItems = [...destColumn.items];
     const newCourseToAdd = findCourseInSearchQuery(newCourseCardId);
+    console.log('1');
     if (!newCourseToAdd) return;
+    console.log('2');
     destItems.splice(destination.index, 0, newCourseToAdd);
     setColumns({
       ...columns,
@@ -140,6 +145,7 @@ function Dashboard() {
   };
 
   const upstreamQuery = (courseListQuery: any) => {
+    console.log(courseListQuery);
     setSearchQueryList(courseListQuery);
   };
 
