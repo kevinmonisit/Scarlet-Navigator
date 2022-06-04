@@ -41,7 +41,6 @@ function SearchColumn(props: SearchColumnProps) {
 
   return (
     <div className="w-2/12 h-full flex flex-col max-w-fit">
-      {/* <input value={value} onChange={onChange} /> */}
       <Input
         placeholder="Search Course"
         onChange={onChange}
@@ -53,7 +52,7 @@ function SearchColumn(props: SearchColumnProps) {
           marginLeft: '0.25rem'
         }}
       />
-      <div className="mt-1 w-full h-10 grow overflow-hidden overflow-y-scroll pr-2">
+      <div className="w-full h-10 grow overflow-hidden overflow-y-scroll">
         {queriedCards == null ? <>Loading search...</>
           : queriedCards.map((courseCardSearch) => (
             <CourseSearchCard

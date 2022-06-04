@@ -32,7 +32,7 @@ function PseudoCourseCard(props: PseudoCourseCardProps) {
     textColor: 'text-white'
   };
 
-  const currTheme = disabled ? disabledTheme : regularTheme;
+  const currTheme = !disabled ? disabledTheme : regularTheme;
 
   return (
     <Tooltip
@@ -48,8 +48,10 @@ function PseudoCourseCard(props: PseudoCourseCardProps) {
       <div className={`
       ${currTheme.backgroundColor}
       ${currTheme.textColor}
+      ${isAbsolute ? 'absolute' : ''}
+      ${!isAbsolute ? 'mt-2' : ''}
       bg-gray-100 w-full pl-2 text-lg
-      font-semibold rounded-sm ${isAbsolute ? 'absolute' : ''}`}
+      font-semibold rounded-sm `}
       >
         {shortTitle}
       </div>
@@ -77,13 +79,13 @@ function CourseSearchCard(props: CourseSearchCardProps) {
   }, [numberOfCourses]);
 
   return (
-    <div className="bg-gray-300 max-w-fit rounded-sm m-1">
+    <div className="bg-gray-300 max-w-fit rounded-sm m-2">
       <Droppable droppableId={shortTitle} key={shortTitle} isDropDisabled>
         {(providedDroppable) => (
           <div
             {...providedDroppable.droppableProps}
             ref={providedDroppable.innerRef}
-            className="relative h-10"
+            className="relative h-8"
           >
             <Draggable
               key={courseId}
@@ -105,6 +107,7 @@ function CourseSearchCard(props: CourseSearchCardProps) {
                         <PseudoCourseCard
                           shortTitle={shortTitle}
                           isAbsolute
+                          disabled={!draggable}
                         />
                       )}
                     <div
@@ -118,7 +121,7 @@ function CourseSearchCard(props: CourseSearchCardProps) {
                       <PseudoCourseCard
                         shortTitle={shortTitle}
                         backgroundColor={backgroundColor}
-                        disabled={draggable}
+                        disabled={!draggable}
                       />
                     </div>
                   </>
@@ -130,7 +133,7 @@ function CourseSearchCard(props: CourseSearchCardProps) {
           </div>
         )}
       </Droppable>
-      <div className="pl-1 py-1 pr-1">
+      <div className="pl-1 pb-1 pr-1">
         Introduction to Discrete Structures II
       </div>
     </div>

@@ -36,9 +36,7 @@ function onDragEnd(
     const destColumn = columns[destination.droppableId];
     const destItems = [...destColumn.items];
     const newCourseToAdd = findCourseInSearchQuery(newCourseCardId);
-    console.log('1');
     if (!newCourseToAdd) return;
-    console.log('2');
     destItems.splice(destination.index, 0, newCourseToAdd);
     setColumns({
       ...columns,
@@ -116,9 +114,7 @@ function uploadNewStudentPlan(columns: ColumnContainer | null) {
 
   axios.patch('/api/v1/user/627c718e319cae16ef4c12bf/plan', {
     plan: arrayOfCourseObjectIds
-  })
-    .then((response) => {
-    });
+  });
 }
 
 function getCreditSemesterCount(column: SemesterColumnInfo) {
@@ -233,11 +229,9 @@ function Dashboard() {
       .then((res) => {
         processSemesterColumnQuery(res.data).then((processedColumns) => {
           setColumns(processedColumns.columns);
-
           const numberOfColumns = Object.keys(processedColumns.columns).length;
           const defaultArray = new Array(numberOfColumns).fill(0);
           setRunningCreditCountArray(defaultArray);
-          console.log(runningCreditCountArray);
         });
       })
       .catch((err) => {
@@ -255,8 +249,6 @@ function Dashboard() {
     if (setOfCurrentCourseIDs.current) {
       setNumberOfCourses(setOfCurrentCourseIDs.current.size);
     }
-
-    console.log(numberOfCourses);
   }, [columns]);
 
   useEffect(updateRunningCreditCountArray, [semesterCreditArray]);
@@ -264,8 +256,8 @@ function Dashboard() {
   return (
 
     <DragDropContext
-      // eslint-disable-next-line function-paren-newline
-      onDragEnd={(result) => onDragEnd(result,
+      onDragEnd={(result) => onDragEnd(
+        result,
         columns,
         setColumns,
         findCourseInSearchQueryList,

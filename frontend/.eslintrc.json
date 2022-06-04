@@ -15,6 +15,7 @@
   "plugins": ["react", "@typescript-eslint"],
   "rules": {
     "react/jsx-filename-extension": "off",
+    "react/jsx-props-no-spreading": "off",
     "import/no-unresolved": "error",
     "no-console": "off",
     "import/extensions": [2, "never"],
