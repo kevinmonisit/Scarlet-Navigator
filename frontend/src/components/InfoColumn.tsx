@@ -64,10 +64,10 @@ const StyledTab = styled((props: StyledTabProps) => (
 
 function InfoColumn(props: InfoColumnProps) {
   const { currentCourse } = props;
-  const [value, setValue] = useState(1);
+  const [value, setValue] = useState(0);
 
   useEffect(() => {
-    setValue(1); // automatically set to course tab
+    setValue(0); // automatically set to course tab
   }, [currentCourse]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
