@@ -66,6 +66,10 @@ function InfoColumn(props: InfoColumnProps) {
   const { currentCourse } = props;
   const [value, setValue] = useState(1);
 
+  useEffect(() => {
+    setValue(1); // automatically set to course tab
+  }, [currentCourse]);
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
@@ -83,10 +87,10 @@ function InfoColumn(props: InfoColumnProps) {
             <StyledTab label="Course" />
             <StyledTab label="Settings" />
           </StyledTabs>
-          <Box sx={{ p: 1 }} />
+          <Box sx={{ p: 0.5 }} />
         </Box>
       </div>
-      {value === 1 ? <Settings /> : <CourseInfo />}
+      {value === 1 ? <Settings /> : <CourseInfo course={currentCourse} />}
     </div>
 
   );

@@ -1,9 +1,18 @@
 import React from 'react';
 
-function CourseInfo() {
+interface Course {
+  title: string;
+}
+
+interface CourseInfoProps {
+  course: Course;
+}
+
+function CourseInfo(props: CourseInfoProps) {
+  const { course } = props;
   return (
     <div className="bg-green-300 grow">
-      Course Info
+      {!course ? <>T</> : course.title}
     </div>
   );
 }

@@ -94,10 +94,8 @@ async function processSemesterColumnQuery(plainJSON: { plan: Array<Array<any>>; 
 
     for (let courseIndex = 0; courseIndex < plan[semesterIndex].length; courseIndex += 1) {
       columns[courseSemesterID].items.push(plan[semesterIndex][courseIndex]);
-      // eslint-disable-next-line no-underscore-dangle
     }
   }
-  console.log(columns);
   return { columns };
 }
 
@@ -178,7 +176,8 @@ function Dashboard() {
 
   // TODO: change any type to model schema
   const handleCourseInfoChange = (courseObject: any) => {
-    setCurrentCourseInfoDisplayed(courseObject);
+    // setCurrentCourseInfoDisplayed(null);
+    setCurrentCourseInfoDisplayed({ ...courseObject });
   };
 
   const createArrayOfSemesterCredits = () => {

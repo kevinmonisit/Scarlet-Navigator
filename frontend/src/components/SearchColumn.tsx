@@ -49,10 +49,10 @@ function SearchColumn(props: SearchColumnProps) {
             paddingLeft: '3px',
           },
           marginRight: '1rem',
-          marginLeft: '0.25rem'
+          marginLeft: '0.5rem'
         }}
       />
-      <div className="w-full h-10 grow overflow-hidden overflow-y-scroll">
+      <div className="w-full h-10 grow overflow-hidden overflow-y-scroll mt-1">
         {queriedCards == null ? <>Loading search...</>
           : queriedCards.map((courseCardSearch) => (
             <CourseSearchCard
