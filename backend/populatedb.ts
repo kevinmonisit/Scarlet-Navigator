@@ -4,6 +4,7 @@ import async from 'async';
 import dotenv from 'dotenv';
 import UserModel, { User } from './models/UserModel';
 import CourseModel, { Course } from './models/CourseModel';
+import { v4 as uuidv4 } from 'uuid';
 
 const coursesArray: Array<Schema.Types.ObjectId> = [];
 
@@ -46,44 +47,58 @@ function createCourse(
   });
 }
 
+function getRandomInt(_min: number, _max: number) {
+  const min = Math.ceil(_min);
+  const max = Math.floor(_max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function createCourses(callbackOuter: CallableFunction) {
   console.log('Creating courses');
+  const bogusCourses = [];
+
+  for (let i = 0; i < 300; i += 1) {
+    bogusCourses.push((callback: CallableFunction) => {
+      createCourse(uuidv4().slice(0, 5), getRandomInt(1, 4), [], callback);
+    });
+  }
+
   async.parallel(
     [
-      (callback) => {
+      (callback: CallableFunction) => {
         createCourse('CS112', 2, [], callback);
       },
-      (callback) => {
+      (callback: CallableFunction) => {
         createCourse('CS111', 3, [], callback);
       },
-      (callback) => {
+      (callback: CallableFunction) => {
         createCourse('MAT205', 2, [], callback);
       },
-      (callback) => {
+      (callback: CallableFunction) => {
         createCourse('MAT201', 1, [], callback);
       },
-      (callback) => {
+      (callback: CallableFunction) => {
         createCourse('CS205', 4, [], callback);
       },
-      (callback) => {
+      (callback: CallableFunction) => {
         createCourse('EXPOS', 3, [], callback);
       },
-      (callback) => {
+      (callback: CallableFunction) => {
         createCourse('PHL101', 4, [], callback);
       },
-      (callback) => {
+      (callback: CallableFunction) => {
         createCourse('PHY103', 3, [], callback);
       },
-      (callback) => {
+      (callback: CallableFunction) => {
         createCourse('CS206', 2, [], callback);
       },
-      (callback) => {
+      (callback: CallableFunction) => {
         createCourse('CS211', 2, [], callback);
       },
-      (callback) => {
+      (callback: CallableFunction) => {
         createCourse('CS312', 2, [], callback);
       },
-    ],
+    ].concat(bogusCourses),
     (err, result) => {
       callbackOuter(err, result);
     }

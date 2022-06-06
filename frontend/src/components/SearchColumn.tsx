@@ -1,17 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-underscore-dangle */
 import Input from '@mui/material/Input';
-import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import CourseSearchCard from './CourseSearchCard';
-
-function Test() {
-  console.log('test');
-  return <div>G</div>;
-}
-
-const Memoized = React.memo(Test);
 
 interface CourseCardInSearch {
   title: string;
@@ -36,6 +28,11 @@ function SearchColumn(props: SearchColumnProps) {
   };
 
   const queryCourses = () => {
+    if (value.length === 0) {
+      setQueriedCards([]);
+      return;
+    }
+
     axios.get('/api/v1/courses', { params: { search: value } })
       .then((res) => {
         setQueriedCards(res.data.coursesQuery);
