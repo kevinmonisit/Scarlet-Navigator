@@ -6,13 +6,20 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import CourseSearchCard from './CourseSearchCard';
 
+function Test() {
+  console.log('test');
+  return <div>G</div>;
+}
+
+const Memoized = React.memo(Test);
+
 interface CourseCardInSearch {
   title: string;
   _id: string;
 }
 
 interface SearchColumnProps {
-  numberOfCourses: number;
+  // numberOfCourses: number;
   // eslint-disable-next-line no-unused-vars
   checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
   // eslint-disable-next-line no-unused-vars
@@ -20,7 +27,7 @@ interface SearchColumnProps {
 }
 
 function SearchColumn(props: SearchColumnProps) {
-  const { checkIfCourseAlreadyInPlan, upstreamQuery, numberOfCourses } = props;
+  const { checkIfCourseAlreadyInPlan, upstreamQuery } = props;
   const [queriedCards, setQueriedCards] = useState<CourseCardInSearch[] | null>([]);
   const [value, setValue] = useState('');
 
@@ -38,6 +45,8 @@ function SearchColumn(props: SearchColumnProps) {
   useEffect(queryCourses, []);
   useEffect(() => { upstreamQuery(queriedCards); }, [queriedCards]);
   useEffect(queryCourses, [value]);
+
+  console.log('re render search column');
 
   return (
     <div className="w-2/12 h-full flex flex-col max-w-fit">
@@ -62,7 +71,6 @@ function SearchColumn(props: SearchColumnProps) {
                   key={courseCardSearch._id}
                   courseId={courseCardSearch._id}
                   checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan}
-                  numberOfCourses={numberOfCourses}
                 />
               ))}
           </div>

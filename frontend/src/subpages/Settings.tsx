@@ -196,6 +196,8 @@ function Settings() {
         </div>
       </div>
 
+      {/* TODO: Rewrite code to look better  */}
+
       <Grid container direction="column" spacing={0.2}>
         <Grid item>
           <FormControlLabel
@@ -244,8 +246,9 @@ function Settings() {
           />
 
         </Grid>
+
         <Grid item width="100%">
-          <Box sx={{ flexDirection: 'row', justifyContent: 'center', width: '100%' }}>
+          <div className="w-full flex flex-col items-center space-y-3 my-5">
             <Grid item>
               <CustomWidthTooltip
                 title="Reset settings to default values."
@@ -260,7 +263,8 @@ function Settings() {
                 <Button variant="contained">Reset Everything</Button>
               </CustomWidthTooltip>
             </Grid>
-          </Box>
+          </div>
+
         </Grid>
       </Grid>
     </div>

@@ -7,7 +7,7 @@ import { Draggable, Droppable } from 'react-beautiful-dnd';
 interface CourseSearchCardProps {
   shortTitle: string;
   courseId: string;
-  numberOfCourses: number;
+  // numberOfCourses: number;
   // eslint-disable-next-line no-unused-vars
   checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
 }
@@ -71,12 +71,14 @@ function CourseSearchCard(props: CourseSearchCardProps) {
     shortTitle,
     courseId,
     checkIfCourseAlreadyInPlan,
-    numberOfCourses } = props;
-  const [draggable, setDraggable] = useState<boolean | undefined>(true);
+  } = props;
+  const [draggable, setDraggable] = useState<boolean | undefined>(false);
 
-  useEffect(() => {
-    setDraggable(checkIfCourseAlreadyInPlan(courseId));
-  }, [numberOfCourses]);
+  // useEffect(() => {
+  //   setDraggable(checkIfCourseAlreadyInPlan(courseId));
+  // }, [numberOfCourses]);
+
+  console.log('search card re render');
 
   return (
     <div className="bg-gray-300 max-w-fit rounded-sm m-2">

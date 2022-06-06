@@ -110,7 +110,7 @@ function uploadNewStudentPlan(columns: ColumnContainer | null) {
     arrayOfCourseObjectIds.push(columns[columnId].items.map((item) => item._id));
   });
 
-  axios.patch('/api/v1/user/627c718e319cae16ef4c12bf/plan', {
+  axios.patch('/api/v1/user/629d640981dec8208eaedd27/plan', {
     plan: arrayOfCourseObjectIds
   });
 }
@@ -120,15 +120,16 @@ function getCreditSemesterCount(column: SemesterColumnInfo) {
 }
 
 function Dashboard() {
+  // TODO TOMORROW: Monday june 6th, change columns to a ref
   const [columns, setColumns] = useState<ColumnContainer | null>(null);
   const [searchQueryList, setSearchQueryList] = useState<any[] | null>(null);
   const [currentCourseInfoDisplayed, setCurrentCourseInfoDisplayed] = useState<any | null>(null);
 
-  const [runningCreditCountArray, setRunningCreditCountArray] = useState<Array<number>>([]);
-  const [semesterCreditArray, setSemesterCreditArray] = useState<Array<number>>([]);
+  const runningCreditCountArray = useRef<Array<number>>([]);
+  const semesterCreditArray = useRef<Array<number>>([]);
 
   const setOfCurrentCourseIDs = useRef<Set<string> | null>(null);
-  const [numberOfCourses, setNumberOfCourses] = useState(0);
+  const numberOfCourses = useRef(0);
 
   const checkIfCourseAlreadyInPlan = (courseId: string) => {
     if (setOfCurrentCourseIDs != null && setOfCurrentCourseIDs.current != null) {
@@ -139,7 +140,7 @@ function Dashboard() {
   };
 
   const upstreamQuery = (courseListQuery: any) => {
-    console.log(courseListQuery);
+    console.log('query again');
     setSearchQueryList(courseListQuery);
   };
 
@@ -147,7 +148,7 @@ function Dashboard() {
   // but until it's a problem, I offload this work to the user
   const findCourseInSearchQueryList = (id: string): any => {
     if (!searchQueryList) return null;
-
+    console.log('find query');
     // eslint-disable-next-line no-restricted-syntax
     for (const queriedCourse of searchQueryList) {
       // eslint-disable-next-line no-underscore-dangle
@@ -188,22 +189,22 @@ function Dashboard() {
       arrayOfCredits.push(getCreditSemesterCount(columns[key]));
     });
 
-    setSemesterCreditArray(arrayOfCredits);
+    semesterCreditArray.current = arrayOfCredits;
   };
 
   const updateRunningCreditCountArray = () => {
     if (!columns) return;
     const newArray = new Array(Object.keys(columns).length).fill(0);
 
-    for (let i = 0; i < semesterCreditArray.length; i += 1) {
+    for (let i = 0; i < semesterCreditArray.current.length; i += 1) {
       if (i === 0) {
-        newArray[i] = semesterCreditArray[i];
+        newArray[i] = semesterCreditArray.current[i];
       } else {
-        newArray[i] = newArray[i - 1] + semesterCreditArray[i];
+        newArray[i] = newArray[i - 1] + semesterCreditArray.current[i];
       }
     }
 
-    setRunningCreditCountArray(newArray);
+    runningCreditCountArray.current = newArray;
   };
 
   const updateSetOfCurrentCourseIDs = () => {
@@ -224,13 +225,13 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    axios.get('/api/v1/user/627c718e319cae16ef4c12bf/plan')
+    axios.get('/api/v1/user/629d640981dec8208eaedd27/plan')
       .then((res) => {
         processSemesterColumnQuery(res.data).then((processedColumns) => {
           setColumns(processedColumns.columns);
           const numberOfColumns = Object.keys(processedColumns.columns).length;
           const defaultArray = new Array(numberOfColumns).fill(0);
-          setRunningCreditCountArray(defaultArray);
+          runningCreditCountArray.current = defaultArray;
         });
       })
       .catch((err) => {
@@ -246,12 +247,12 @@ function Dashboard() {
     createArrayOfSemesterCredits();
 
     if (setOfCurrentCourseIDs.current) {
-      setNumberOfCourses(setOfCurrentCourseIDs.current.size);
+      numberOfCourses.current = setOfCurrentCourseIDs.current.size;
     }
   }, [columns]);
 
-  useEffect(updateRunningCreditCountArray, [semesterCreditArray]);
-
+  useEffect(updateRunningCreditCountArray, [semesterCreditArray.current]);
+  console.log('dashboad');
   return (
 
     <DragDropContext
@@ -270,27 +271,36 @@ function Dashboard() {
         <SearchColumn
           checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan}
           upstreamQuery={upstreamQuery}
-          numberOfCourses={numberOfCourses}
+        // numberOfCourses={numberOfCourses.current}
         />
-        {columns == null ? <>Loading course data...</> : (
-          <div className="grid grid-cols-4 gap-x-3 grow justify-center min-w-fit">
-            {
-              Object.entries(columns).map(([columnId, column], index) => (
-                <SemesterColumn
-                  key={columnId}
-                  columnId={columnId}
-                  column={column}
-                  index={index}
-                  runningCreditCount={runningCreditCountArray[index]}
-                  semesterCreditCount={semesterCreditArray[index]}
-                  handleDeleteCourseCard={handleDeleteCourseCard}
-                  handleCourseInfoChange={handleCourseInfoChange}
-                />
-              ))
-            }
-          </div>
+        <div className="grow relative h-full">
+          {columns == null ? <>Loading course data...</> : (
 
-        )}
+            <div className="absolute h-full w-full">
+              <div
+                className="grid grid-cols-4 gap-x-3 h-full
+                justify-center min-w-fit overflow-auto
+                pr-3
+                "
+              >
+                {
+                  Object.entries(columns).map(([columnId, column], index) => (
+                    <SemesterColumn
+                      key={columnId}
+                      columnId={columnId}
+                      column={column}
+                      index={index}
+                      runningCreditCount={runningCreditCountArray.current[index]}
+                      semesterCreditCount={semesterCreditArray.current[index]}
+                      handleDeleteCourseCard={handleDeleteCourseCard}
+                      handleCourseInfoChange={handleCourseInfoChange}
+                    />
+                  ))
+                }
+              </div>
+            </div>
+          )}
+        </div>
         <InfoColumn
           currentCourse={currentCourseInfoDisplayed}
         />
