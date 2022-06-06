@@ -64,10 +64,10 @@ const StyledTab = styled((props: StyledTabProps) => (
 
 function InfoColumn(props: InfoColumnProps) {
   const { currentCourse } = props;
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(1);
 
   useEffect(() => {
-    setValue(0); // automatically set to course tab
+    if (currentCourse) { setValue(0); } // automatically set to course tab
   }, [currentCourse]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -75,7 +75,7 @@ function InfoColumn(props: InfoColumnProps) {
   };
 
   return (
-    <div className="w-1/4 h-full flex flex-col">
+    <div className="w-1/4 h-full flex flex-col relative">
       <div className="w-full flex justify-center">
         <Box>
           <StyledTabs
@@ -90,7 +90,14 @@ function InfoColumn(props: InfoColumnProps) {
           <Box sx={{ p: 0.5 }} />
         </Box>
       </div>
-      {value === 1 ? <Settings /> : <CourseInfo course={currentCourse} />}
+      <div className="w-full h-full relative">
+        <div className="absolute h-full w-full">
+          <div className="overflow-hidden overflow-y-scroll h-full">
+            {value === 1 ? <Settings /> : <CourseInfo course={currentCourse} />}
+          </div>
+        </div>
+      </div>
+
     </div>
 
   );

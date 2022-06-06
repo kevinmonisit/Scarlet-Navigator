@@ -52,18 +52,23 @@ function SearchColumn(props: SearchColumnProps) {
           marginLeft: '0.5rem'
         }}
       />
-      <div className="w-full h-10 grow overflow-hidden overflow-y-scroll mt-1">
-        {queriedCards == null ? <>Loading search...</>
-          : queriedCards.map((courseCardSearch) => (
-            <CourseSearchCard
-              shortTitle={courseCardSearch.title}
-              key={courseCardSearch._id}
-              courseId={courseCardSearch._id}
-              checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan}
-              numberOfCourses={numberOfCourses}
-            />
-          ))}
+      <div className="w-full grow relative mt-2">
+        <div className="absolute h-full w-full">
+          <div className="w-full h-full overflow-hidden overflow-y-scroll">
+            {queriedCards == null ? <>Loading search...</>
+              : queriedCards.map((courseCardSearch) => (
+                <CourseSearchCard
+                  shortTitle={courseCardSearch.title}
+                  key={courseCardSearch._id}
+                  courseId={courseCardSearch._id}
+                  checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan}
+                  numberOfCourses={numberOfCourses}
+                />
+              ))}
+          </div>
+        </div>
       </div>
+
     </div>
   );
 }

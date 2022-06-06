@@ -12,7 +12,14 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import React from 'react';
 
 const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
-  <Tooltip {...props} classes={{ popper: className }} />
+  <Tooltip
+    {...props}
+    arrow
+    placement="right"
+    enterDelay={1000}
+    enterNextDelay={300}
+    classes={{ popper: className }}
+  />
 ))({
   [`& .${tooltipClasses.tooltip}`]: {
     maxWidth: 150,
@@ -27,41 +34,73 @@ function Settings() {
   };
 
   return (
-    <div className="grow p-2">
-      {/* <h1>Settings</h1> */}
-      <Divider textAlign="center">Settings</Divider>
-      {/* <Box sx={{ height: '0.5rem' }} /> */}
-      <Box sx={{ width: 120, marginTop: 2 }}>
-        <FormControl fullWidth size="small">
-          <InputLabel id="demo-simple-select-label">Starting Season</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={startingSeason}
-            label="Starting Season"
-            onChange={handleChange}
-          >
-            <MenuItem value="fall">Fall</MenuItem>
-            <MenuItem value="spring">Spring</MenuItem>
-            <MenuItem value="summer" disabled>Summer</MenuItem>
-          </Select>
-        </FormControl>
-        <Box sx={{ height: 10 }} />
-        <FormControl fullWidth size="small">
-          <InputLabel id="select-year">Start Year</InputLabel>
-          <Select
-            labelId="select-year"
-            id="select-year"
-            value={startingSeason}
-            label="Start Year"
-            onChange={handleChange}
-          >
-            <MenuItem value="fall">2020</MenuItem>
-            <MenuItem value="spring">2021</MenuItem>
-            <MenuItem value="summer">2022</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
+    <div className="grow p-2 w-full">
+      <div className="flex flex-col items-center justify-center w-full">
+        <div className="flex flex-row items-center w-full">
+          <FormControl size="small" fullWidth>
+            <InputLabel id="demo-simple-select-label">Starting Season</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={startingSeason}
+              label="Starting Season"
+              onChange={handleChange}
+            >
+              <MenuItem value="fall">Fall</MenuItem>
+              <MenuItem value="spring">Spring</MenuItem>
+              <MenuItem value="summer" disabled>Summer</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl size="small" fullWidth>
+            <InputLabel id="select-year">Start Year</InputLabel>
+            <Select
+              labelId="select-year"
+              id="select-year"
+              value={startingSeason}
+              label="Start Year"
+              onChange={handleChange}
+            >
+              <MenuItem value="fall">2020</MenuItem>
+              <MenuItem value="spring">2021</MenuItem>
+              <MenuItem value="summer">2022</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+        <Box sx={{
+          height: '1.5rem'
+        }}
+        />
+        <div className="flex flex-row items-center w-full">
+          <TextField
+            id="outlined-number"
+            label="Number of Semesters"
+            type="number"
+            size="small"
+            value={0}
+            sx={{
+              width: '100%',
+            }}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <TextField
+            id="outlined-number"
+            label="Starting Credits"
+            type="number"
+            size="small"
+            value={0}
+            sx={{
+              width: '100%',
+            }}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </div>
+      </div>
+
+      <Box sx={{ height: '1.5rem' }} />
       <FormGroup>
         <Tooltip
           title="The minimum credits per semester is 12. If enabled,
@@ -81,105 +120,13 @@ function Settings() {
           label="Include summer semesters"
         />
       </FormGroup>
+
       <Divider textAlign="center" sx={{ marginY: 2 }}>Advanced Settings</Divider>
 
-      <Grid container direction="row" spacing={2}>
-        <Grid item>
-          <FormControlLabel
-            control={<Checkbox size="small" defaultChecked />}
-            label="Show credits in courses"
-          />
-        </Grid>
-        <Grid item>
-          <CustomWidthTooltip
-            title="Disables errors for minimum or maximum number of credits per semester."
-            arrow
-            placement="right"
-            enterDelay={1000}
-            enterNextDelay={300}
-          >
-            <FormControlLabel
-              control={<Checkbox size="small" />}
-              label="Disable all credit requirements"
-            />
-          </CustomWidthTooltip>
-        </Grid>
-        <Grid item>
-
-          <FormControlLabel
-            control={<Checkbox size="small" />}
-            label="Disable prerequisite validation"
-          />
-
-        </Grid>
-        <Grid item>
-          <TextField
-            id="outlined-number"
-            label="Starting credits"
-            type="number"
-            size="small"
-            value={0}
-            sx={{
-              width: '15ch'
-            }}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-        </Grid>
-        <Grid item>
-          <CustomWidthTooltip
-            title="Maximum number of credits per semester until an error is shown. Default is 21."
-            arrow
-            placement="right"
-            enterDelay={1000}
-            enterNextDelay={300}
-          >
-            <TextField
-              id="outlined-number"
-              label="Max credits"
-              type="number"
-              size="small"
-              value={21}
-              sx={{
-                width: '15ch'
-              }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </CustomWidthTooltip>
-        </Grid>
-        <Grid item>
-          <CustomWidthTooltip
-            title="Minimum number of credits per semester until an error is shown. Default is 12."
-            arrow
-            placement="right"
-            enterDelay={1000}
-            enterNextDelay={300}
-          >
-            <TextField
-              id="outlined-number"
-              label="Min credits"
-              type="number"
-              size="small"
-              value={12}
-              sx={{
-                width: '15ch'
-              }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </CustomWidthTooltip>
-        </Grid>
-        <Grid item>
+      <div className="flex flex-col w-full h-full">
+        <div className="flex flex-row w-full">
           <CustomWidthTooltip
             title="Minimum number of credits to graduate. Default is 120 in SAS."
-            arrow
-            placement="right"
-            enterDelay={1000}
-            enterNextDelay={300}
           >
             <TextField
               id="outlined-number"
@@ -195,26 +142,127 @@ function Settings() {
               }}
             />
           </CustomWidthTooltip>
+          <CustomWidthTooltip
+            title="Maximum number of credits per semester until an error is shown. Default is 21."
+          >
+            <TextField
+              id="outlined-number"
+              label="Max credits"
+              type="number"
+              size="small"
+              value={21}
+              sx={{
+                width: '15ch'
+              }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </CustomWidthTooltip>
+          <CustomWidthTooltip
+            title="Minimum number of credits to graduate. Default is 120 in SAS."
+          >
+            <TextField
+              id="outlined-number"
+              label="Graduation Req."
+              type="number"
+              size="small"
+              value={120}
+              sx={{
+                width: '15ch'
+              }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </CustomWidthTooltip>
+          <CustomWidthTooltip
+            title="Minimum number of credits per semester until an error is shown. Default is 12."
+          >
+            <TextField
+              id="outlined-number"
+              label="Min credits"
+              type="number"
+              size="small"
+              value={12}
+              sx={{
+                width: '15ch'
+              }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </CustomWidthTooltip>
+        </div>
+      </div>
+
+      <Grid container direction="column" spacing={0.2}>
+        <Grid item>
+          <FormControlLabel
+            control={<Checkbox size="small" defaultChecked />}
+            label="Show credits in courses"
+          />
+        </Grid>
+        <Grid item>
+          <FormControlLabel
+            control={<Checkbox size="small" defaultChecked />}
+            label="Disable progressive semester coloring"
+          />
+        </Grid>
+        <Grid item>
+          <h2>Experimental</h2>
+        </Grid>
+        <Grid item>
+          <FormControlLabel
+            control={<Checkbox size="small" />}
+            label="Turn on experimental course titles"
+            disabled
+          />
+        </Grid>
+        <Grid item>
+          <FormControlLabel
+            control={<Checkbox size="small" />}
+            label="Turn on experimental course colors"
+            disabled
+          />
+        </Grid>
+        <Grid item>
+          <CustomWidthTooltip
+            title="Disables errors for minimum or maximum number of credits per semester."
+          >
+            <FormControlLabel
+              control={<Checkbox size="small" />}
+              label="Disable all credit requirements"
+            />
+          </CustomWidthTooltip>
+        </Grid>
+        <Grid item>
+
+          <FormControlLabel
+            control={<Checkbox size="small" />}
+            label="Disable prerequisite validation"
+          />
+
         </Grid>
         <Grid item width="100%">
           <Box sx={{ flexDirection: 'row', justifyContent: 'center', width: '100%' }}>
             <Grid item>
-              <Button>Reset settings</Button>
+              <CustomWidthTooltip
+                title="Reset settings to default values."
+              >
+                <Button variant="outlined">Reset settings</Button>
+              </CustomWidthTooltip>
             </Grid>
             <Grid item>
-              <Button variant="contained">Reset Everything</Button>
+              <CustomWidthTooltip
+                title="Resets settings and removes all courses currently placed."
+              >
+                <Button variant="contained">Reset Everything</Button>
+              </CustomWidthTooltip>
             </Grid>
           </Box>
         </Grid>
       </Grid>
-      reset,
-      reset settings,
-      show credits in cards,
-      disable prerequisite validation,
-      set credits to graduate, set starting number of credits,
-      set major, max number of credits,
-      set minimum number of credits
-
     </div>
   );
 }

@@ -37,7 +37,7 @@ function NavBar() {
           }}
         >
           <ExploreIcon sx={{
-            marginBottom: '2px'
+            marginBottom: '3px'
           }}
           />
           {' '}

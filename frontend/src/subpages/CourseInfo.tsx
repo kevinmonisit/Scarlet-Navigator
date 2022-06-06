@@ -11,7 +11,7 @@ interface CourseInfoProps {
 function CourseInfo(props: CourseInfoProps) {
   const { course } = props;
   return (
-    <div className="bg-green-300 grow">
+    <div className="grow">
       {!course ? <>T</> : course.title}
     </div>
   );
