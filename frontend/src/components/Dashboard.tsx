@@ -129,7 +129,7 @@ function Dashboard() {
   const semesterCreditArray = useRef<Array<number>>([]);
 
   const setOfCurrentCourseIDs = useRef<Set<string> | null>(null);
-  const numberOfCourses = useRef(0);
+  const [numberOfCourses, setNumberOfCourses] = useState(0);
 
   const checkIfCourseAlreadyInPlan = (courseId: string) => {
     if (setOfCurrentCourseIDs != null && setOfCurrentCourseIDs.current != null) {
@@ -247,7 +247,8 @@ function Dashboard() {
     createArrayOfSemesterCredits();
 
     if (setOfCurrentCourseIDs.current) {
-      numberOfCourses.current = setOfCurrentCourseIDs.current.size;
+      setNumberOfCourses(setOfCurrentCourseIDs.current.size);
+      // console.log(numberOfCourses.current);
     }
   }, [columns]);
 
@@ -268,11 +269,15 @@ function Dashboard() {
         className="flex flex-row flex-nowrap
         justify-center items-stretch w-full grow"
       >
-        <SearchColumn
-          checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan}
-          upstreamQuery={upstreamQuery}
-        // numberOfCourses={numberOfCourses.current}
-        />
+        {/* Load search columns after columns is initialized to prevent re-loading */}
+        {columns == null ? <>Loading course data...</> : (
+          <SearchColumn
+            checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan}
+            upstreamQuery={upstreamQuery}
+            numberOfCourses={numberOfCourses}
+          />
+
+        )}
         <div className="grow relative h-full">
           {columns == null ? <>Loading course data...</> : (
 

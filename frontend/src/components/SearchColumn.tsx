@@ -19,7 +19,7 @@ interface CourseCardInSearch {
 }
 
 interface SearchColumnProps {
-  // numberOfCourses: number;
+  numberOfCourses: number;
   // eslint-disable-next-line no-unused-vars
   checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
   // eslint-disable-next-line no-unused-vars
@@ -27,7 +27,7 @@ interface SearchColumnProps {
 }
 
 function SearchColumn(props: SearchColumnProps) {
-  const { checkIfCourseAlreadyInPlan, upstreamQuery } = props;
+  const { checkIfCourseAlreadyInPlan, upstreamQuery, numberOfCourses } = props;
   const [queriedCards, setQueriedCards] = useState<CourseCardInSearch[] | null>([]);
   const [value, setValue] = useState('');
 
@@ -65,14 +65,20 @@ function SearchColumn(props: SearchColumnProps) {
         <div className="absolute h-full w-full">
           <div className="w-full h-full overflow-hidden overflow-y-scroll">
             {queriedCards == null ? <>Loading search...</>
-              : queriedCards.map((courseCardSearch) => (
-                <CourseSearchCard
-                  shortTitle={courseCardSearch.title}
-                  key={courseCardSearch._id}
-                  courseId={courseCardSearch._id}
-                  checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan}
-                />
-              ))}
+              : queriedCards.map((courseCardSearch) => {
+                // React memo only runs when props change.
+                // Thus, run this function outside of the search card component,
+                // instead of inside the search card component.
+                const checkAlreadyExists = checkIfCourseAlreadyInPlan(courseCardSearch._id);
+                return (
+                  <CourseSearchCard
+                    shortTitle={courseCardSearch.title}
+                    key={courseCardSearch._id}
+                    courseId={courseCardSearch._id}
+                    alreadyInPlan={checkAlreadyExists}
+                  />
+                );
+              })}
           </div>
         </div>
       </div>

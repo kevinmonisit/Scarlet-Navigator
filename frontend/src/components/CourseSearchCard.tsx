@@ -9,7 +9,8 @@ interface CourseSearchCardProps {
   courseId: string;
   // numberOfCourses: number;
   // eslint-disable-next-line no-unused-vars
-  checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
+  // checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
+  alreadyInPlan: boolean | undefined;
 }
 
 interface PseudoCourseCardProps {
@@ -70,13 +71,8 @@ function CourseSearchCard(props: CourseSearchCardProps) {
   const {
     shortTitle,
     courseId,
-    checkIfCourseAlreadyInPlan,
+    alreadyInPlan,
   } = props;
-  const [draggable, setDraggable] = useState<boolean | undefined>(false);
-
-  // useEffect(() => {
-  //   setDraggable(checkIfCourseAlreadyInPlan(courseId));
-  // }, [numberOfCourses]);
 
   console.log('search card re render');
 
@@ -93,7 +89,7 @@ function CourseSearchCard(props: CourseSearchCardProps) {
               key={courseId}
               draggableId={`searchCard-${courseId}`}
               index={0}
-              isDragDisabled={draggable}
+              isDragDisabled={alreadyInPlan}
             >
               {(provided, snapshot) => {
                 // eslint-disable-next-line no-unused-vars
@@ -109,7 +105,7 @@ function CourseSearchCard(props: CourseSearchCardProps) {
                         <PseudoCourseCard
                           shortTitle={shortTitle}
                           isAbsolute
-                          disabled={!draggable}
+                          disabled={!alreadyInPlan}
                         />
                       )}
                     <div
@@ -123,7 +119,7 @@ function CourseSearchCard(props: CourseSearchCardProps) {
                       <PseudoCourseCard
                         shortTitle={shortTitle}
                         backgroundColor={backgroundColor}
-                        disabled={!draggable}
+                        disabled={!alreadyInPlan}
                       />
                     </div>
                   </>
@@ -142,4 +138,4 @@ function CourseSearchCard(props: CourseSearchCardProps) {
   );
 }
 
-export default CourseSearchCard;
+export default React.memo(CourseSearchCard);
