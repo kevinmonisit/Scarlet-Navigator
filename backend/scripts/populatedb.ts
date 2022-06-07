@@ -2,9 +2,9 @@
 import mongoose, { Schema, HydratedDocument } from 'mongoose';
 import async from 'async';
 import dotenv from 'dotenv';
-import UserModel, { User } from './models/UserModel';
-import CourseModel, { Course } from './models/CourseModel';
 import { v4 as uuidv4 } from 'uuid';
+import UserModel, { User } from '../models/UserModel';
+import CourseModel, { Course } from '../models/CourseModel';
 
 const coursesArray: Array<Schema.Types.ObjectId> = [];
 
@@ -120,12 +120,7 @@ function createUsers(courses: Array<Course>, callback: CallableFunction) {
     [],
   ];
 
-  createUser(
-    courses.map((course) => course._id),
-    startingYear,
-    plan,
-    callback
-  );
+  createUser([], startingYear, plan, callback);
 }
 
 mongoose

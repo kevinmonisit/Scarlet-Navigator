@@ -246,9 +246,27 @@ function Settings() {
           />
 
         </Grid>
+        <Grid item>
+          <CustomWidthTooltip
+            title="When the search is blank, the first 100 random courses are shown.
+            When checked, all courses will show. Only check if your computer can handle it."
+          >
+            <FormControlLabel
+              control={<Checkbox size="small" />}
+              label="Show all courses when search is blank"
+            />
+          </CustomWidthTooltip>
+        </Grid>
 
         <Grid item width="100%">
           <div className="w-full flex flex-col items-center space-y-3 my-5">
+            <Grid item>
+              <CustomWidthTooltip
+                title="Removes all courses from semesters."
+              >
+                <Button variant="outlined">Reset Plan</Button>
+              </CustomWidthTooltip>
+            </Grid>
             <Grid item>
               <CustomWidthTooltip
                 title="Reset settings to default values."

@@ -140,17 +140,18 @@ function Dashboard() {
   };
 
   const upstreamQuery = (courseListQuery: any) => {
-    console.log('query again');
     setSearchQueryList(courseListQuery);
   };
 
   // O(n), could be better by indexing courses by their _id in the backend
   // but until it's a problem, I offload this work to the user
+  // make this a hashet (aka an object)
   const findCourseInSearchQueryList = (id: string): any => {
     if (!searchQueryList) return null;
-    console.log('find query');
     // eslint-disable-next-line no-restricted-syntax
     for (const queriedCourse of searchQueryList) {
+      console.log('find query');
+
       // eslint-disable-next-line no-underscore-dangle
       if (queriedCourse._id === id) {
         return queriedCourse;

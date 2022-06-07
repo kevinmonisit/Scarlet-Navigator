@@ -28,10 +28,13 @@ function SearchColumn(props: SearchColumnProps) {
   };
 
   const queryCourses = () => {
-    if (value.length === 0) {
-      setQueriedCards([]);
-      return;
-    }
+    // keep this in the back burner
+    // if it's more performant to keep it empty
+    // then do so. only when it's a problem.
+    // if (value.length === 0) {
+    //   setQueriedCards([]);
+    //   return;
+    // }
 
     axios.get('/api/v1/courses', { params: { search: value } })
       .then((res) => {

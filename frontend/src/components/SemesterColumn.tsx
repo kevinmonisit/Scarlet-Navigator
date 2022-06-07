@@ -34,7 +34,8 @@ function SemesterColumn(props: SemesterColumnProps) {
   } = props;
 
   const defaultBackgroundColor = '#34495e';
-
+  // TOOLTIP THAT EXPLAINS THE ERROR
+  // EG MINIMUM CREDIT ERROR
   return (
     <div
       className="flex flex-col items-center w-full h-full select-none"
