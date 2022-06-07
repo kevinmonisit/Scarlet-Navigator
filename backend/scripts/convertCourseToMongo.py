@@ -11,15 +11,26 @@ collection = db.courseTest
 collection.delete_many({})
 requesting = []
 
-# with open(r"raw_course_data.json") as f:
 with open(r"jsonminifier.json") as f:
-    print(f)
     for jsonObj in f:
         myDict = json.loads(jsonObj)
         courses = myDict['courses']
 
+        def get_campus(obj):
+            return obj['description']
+
         for course in courses:
-            requesting.append(InsertOne(course))
+            campus_locations = list(map(get_campus, course['campusLocations']))
+            projection = {
+              'title': course['title'],
+              'credits': course['credits'],
+              'school': course['school']['description'],
+              'subject': course['subjectDescription'],
+              'courseString': course['courseString'],
+              'campusLocations': campus_locations
+            }
+
+            requesting.append(InsertOne(projection))
 
 
 result = collection.bulk_write(requesting)
