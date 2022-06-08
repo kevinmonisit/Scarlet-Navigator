@@ -30,6 +30,10 @@ with open(r"jsonminifier.json") as f:
               'campusLocations': campus_locations
             }
 
+            # idea: so that we can either search by full title or shorten title
+            # query_title = course['expandedTitle'] if course['expandedTitle'] else course['title']
+            # when search query, use query_title
+
             requesting.append(InsertOne(projection))
 
 

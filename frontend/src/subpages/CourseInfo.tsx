@@ -11,7 +11,7 @@ interface CourseInfoProps {
 function CourseInfo(props: CourseInfoProps) {
   const { course } = props;
   return (
-    <div className="grow">
+    <div className="grow flex items-center">
       {!course ? <>T</> : course.title}
     </div>
   );

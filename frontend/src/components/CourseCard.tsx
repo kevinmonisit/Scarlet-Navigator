@@ -55,15 +55,17 @@ function CourseCard(props: CourseCardProps) {
             {...provided.dragHandleProps}
             {...provided.draggableProps}
             style={{
+              boxShadow: '3px 3px 5px rgba(0, 0, 0, 0.10)',
               ...provided.draggableProps.style
             }}
             className={`${backgroundColor} w-full text-black font-semibold mt-2 rounded-sm`}
             onClick={(e) => { handleCourseClick(e); }}
             onKeyDown={(e) => { handleCourseClick(e); }}
             role="listitem"
+
           >
             <div className="flex flex-row h-full w-full">
-              <div className="w-10/12 h-full pl-2 py-1 text-lg">
+              <div className="w-10/12 h-full pl-2 py-1 text-lg overflow-hidden text-ellipsis">
                 {item.title}
               </div>
               <div
@@ -73,7 +75,7 @@ function CourseCard(props: CourseCardProps) {
                   className="hover:underline hover:text-gray-400"
                   // eslint-disable-next-line max-len
                   onClick={(e) => { handleDeleteClick(e); }}
-                  // onKeyDown={(e) => { handleDeleteClick(e); }}
+                  onKeyDown={(e) => { handleDeleteClick(e); }}
                   tabIndex={0}
                   type="button"
                 >

@@ -2,15 +2,23 @@ import mongoose, { Schema } from 'mongoose';
 
 interface Course {
   _id: any;
-  title: String;
+  title: string;
   credits: number;
-  prerequisites: Array<Schema.Types.ObjectId>;
+  school: string;
+  subject: string;
+  courseString: string;
+  campusLocations: Array<string>;
+  // prerequisites: Array<Schema.Types.ObjectId>;
 }
 
 const CourseSchema = new Schema<Course>({
   title: { type: String, required: true },
-  credits: { type: Number, min: 0, max: 4, required: true },
-  prerequisites: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
+  credits: { type: Number },
+  school: { type: String },
+  subject: { type: String },
+  courseString: { type: String },
+  campusLocations: [{ type: String }],
+  // prerequisites: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
 });
 
 export default mongoose.model<Course>('Course', CourseSchema);

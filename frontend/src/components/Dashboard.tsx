@@ -177,9 +177,19 @@ function Dashboard() {
   };
 
   // TODO: change any type to model schema
-  const handleCourseInfoChange = (courseObject: any) => {
-    // setCurrentCourseInfoDisplayed(null);
-    setCurrentCourseInfoDisplayed({ ...courseObject });
+  // TODO: Change this function into an overloaded function
+  // handleCourseInfoChange(courseObject: courseSchema)
+  // handleCourseInfoChange(coureId: string)
+  // for now, handle by type
+  const handleCourseInfoChange = (course: any) => {
+    if (typeof course === 'string') {
+      const course_ = findCourseInSearchQueryList(course);
+      if (!course_) return;
+      setCurrentCourseInfoDisplayed({ ...course_ });
+    } else {
+      // we assume it's an object. however, make this more cleaner in the future.
+      setCurrentCourseInfoDisplayed({ ...course });
+    }
   };
 
   const createArrayOfSemesterCredits = () => {
@@ -249,7 +259,6 @@ function Dashboard() {
 
     if (setOfCurrentCourseIDs.current) {
       setNumberOfCourses(setOfCurrentCourseIDs.current.size);
-      // console.log(numberOfCourses.current);
     }
   }, [columns]);
 
@@ -275,7 +284,7 @@ function Dashboard() {
           <SearchColumn
             checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan}
             upstreamQuery={upstreamQuery}
-            numberOfCourses={numberOfCourses}
+            handleCourseInfoChange={handleCourseInfoChange}
           />
 
         )}
@@ -286,7 +295,7 @@ function Dashboard() {
               <div
                 className="grid grid-cols-4 gap-x-3 h-full
                 justify-center min-w-fit overflow-auto
-                pr-3
+                pr-3 pl-1
                 "
               >
                 {

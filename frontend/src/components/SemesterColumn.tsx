@@ -42,9 +42,10 @@ function SemesterColumn(props: SemesterColumnProps) {
       key={columnId}
     >
       <div
-        className="w-full text-center py-2 my-2 rounded-sm text-white relative"
+        className="w-full text-center py-2 my-2 rounded-sm text-white relative bg-red-700"
         style={{
-          background: defaultBackgroundColor
+          // background: defaultBackgroundColor,
+          boxShadow: '0px 3px 4px rgba(0, 0, 0, 0.2)'
         }}
       >
         <h2 className="font-semibold">{column.title}</h2>
@@ -57,15 +58,16 @@ function SemesterColumn(props: SemesterColumnProps) {
       </div>
       <Droppable droppableId={columnId} key={columnId}>
         {(provided, snapshot) => {
+          // eslint-disable-next-line no-unused-vars
           const backgroundColor = snapshot.isDraggingOver ? '#273340' : defaultBackgroundColor;
           return (
             <div
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...provided.droppableProps}
               ref={provided.innerRef}
-              className="w-full h-full p-2 rounded"
+              className="w-full h-full px-2 pb-2 rounded mb-2"
               style={{
-                background: backgroundColor,
+                boxShadow: '3px 3px 5px rgba(0, 0, 0, 0.10)'
               }}
             >
               {column.items.map((item, cardIndex) => {

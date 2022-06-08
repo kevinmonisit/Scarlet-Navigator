@@ -106,9 +106,10 @@ function Settings() {
           title="The minimum credits per semester is 12. If enabled,
           an error will be shown to indicate a semester does not meet the
            minimum number of credits."
-          enterDelay={1000}
+          enterDelay={500}
           enterNextDelay={300}
           arrow
+          placement="left"
         >
           <FormControlLabel
             control={<Checkbox size="small" defaultChecked />}
@@ -119,6 +120,18 @@ function Settings() {
           control={<Checkbox size="small" />}
           label="Include summer semesters"
         />
+        <Tooltip
+          title="Experimental tab for planning out computer science major requirements"
+          enterDelay={500}
+          enterNextDelay={300}
+          arrow
+          placement="left"
+        >
+          <FormControlLabel
+            control={<Checkbox size="small" />}
+            label="Enable requirement tab (CS)"
+          />
+        </Tooltip>
       </FormGroup>
 
       <Divider textAlign="center" sx={{ marginY: 2 }}>Advanced Settings</Divider>
@@ -247,6 +260,14 @@ function Settings() {
 
         </Grid>
         <Grid item>
+
+          <FormControlLabel
+            control={<Checkbox size="small" />}
+            label="Show course numbers instead of shortened title"
+          />
+
+        </Grid>
+        <Grid item>
           <CustomWidthTooltip
             title="When the search is blank, the first 100 random courses are shown.
             When checked, all courses will show. Only check if your computer can handle it."
@@ -256,6 +277,33 @@ function Settings() {
               label="Show all courses when search is blank"
             />
           </CustomWidthTooltip>
+        </Grid>
+        <Grid item>
+          <CustomWidthTooltip
+            title="When the search is blank, the first 100 random courses are shown.
+            When checked, all courses will show. Only check if your computer can handle it."
+          >
+            <FormControlLabel
+              control={<Checkbox size="small" />}
+              label="Show all courses when search is blank"
+            />
+          </CustomWidthTooltip>
+        </Grid>
+        <Grid item>
+          <FormControl size="small" fullWidth>
+            <InputLabel id="Max search query">Max search query</InputLabel>
+            <Select
+              labelId="select-year"
+              id="select-year"
+              value={startingSeason}
+              label="Max search queryw"
+              onChange={handleChange}
+            >
+              <MenuItem value="fall">2020</MenuItem>
+              <MenuItem value="spring">2021</MenuItem>
+              <MenuItem value="summer">2022</MenuItem>
+            </Select>
+          </FormControl>
         </Grid>
 
         <Grid item width="100%">
