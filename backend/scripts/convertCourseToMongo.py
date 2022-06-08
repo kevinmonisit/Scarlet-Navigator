@@ -7,7 +7,7 @@ from pymongo import MongoClient, InsertOne
 
 client = pymongo.MongoClient("mongodb://localhost:27017/s-n-t")
 db = client["s-n-t"]
-collection = db.courseTest
+collection = db.courses
 collection.delete_many({})
 requesting = []
 
