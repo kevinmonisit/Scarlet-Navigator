@@ -15,6 +15,7 @@ interface SemesterColumnProps {
   index: number;
   runningCreditCount: number;
   semesterCreditCount: number;
+  getCurrentCourseInfoDisplay: () => any;
   // eslint-disable-next-line no-unused-vars
   handleDeleteCourseCard(index: number, columnId: string);
   // eslint-disable-next-line no-unused-vars
@@ -31,6 +32,7 @@ function SemesterColumn(props: SemesterColumnProps) {
     runningCreditCount,
     handleDeleteCourseCard,
     handleCourseInfoChange,
+    getCurrentCourseInfoDisplay,
   } = props;
 
   const defaultBackgroundColor = '#34495e';
@@ -71,6 +73,13 @@ function SemesterColumn(props: SemesterColumnProps) {
               }}
             >
               {column.items.map((item, cardIndex) => {
+                const courseCurrentlyDisplayedInInfoColumn = getCurrentCourseInfoDisplay();
+                let isSelected = false;
+                if (courseCurrentlyDisplayedInInfoColumn) {
+                  const { title } = courseCurrentlyDisplayedInInfoColumn;
+                  isSelected = item.title === title;
+                }
+
                 return (
                   <CourseCard
                     item={item}
@@ -80,6 +89,7 @@ function SemesterColumn(props: SemesterColumnProps) {
                     handleDeleteCourseCard={handleDeleteCourseCard}
                     handleCourseInfoChange={handleCourseInfoChange}
                     columnId={columnId}
+                    isCurrentlySelected={isSelected}
                   />
                 );
               })}

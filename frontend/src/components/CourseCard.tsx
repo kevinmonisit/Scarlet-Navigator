@@ -4,7 +4,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-closing-tag-location */
-import React from 'react';
+import React, { useRef } from 'react';
 import ClearIcon from '@mui/icons-material/Clear';
 import { Draggable } from 'react-beautiful-dnd';
 
@@ -18,6 +18,7 @@ interface CourseCardProps {
   item: CourseCardInfo;
   index: number;
   columnId: string;
+  isCurrentlySelected: boolean
   // eslint-disable-next-line no-unused-vars
   handleDeleteCourseCard(index: number, columnId: string);
   // eslint-disable-next-line no-unused-vars
@@ -26,7 +27,11 @@ interface CourseCardProps {
 
 function CourseCard(props: CourseCardProps) {
   // eslint-disable-next-line no-unused-vars
-  const { item, index, handleDeleteCourseCard, handleCourseInfoChange, columnId } = props;
+  const {
+    item, index, handleDeleteCourseCard,
+    handleCourseInfoChange, columnId, isCurrentlySelected
+  } = props;
+  const selectIndicator = useRef<HTMLDivElement | null>(null);
 
   const handleDeleteClick = (event) => {
     event.stopPropagation();
@@ -36,6 +41,12 @@ function CourseCard(props: CourseCardProps) {
   const handleCourseClick = (event) => {
     event.stopPropagation();
     handleCourseInfoChange(item);
+    selectIndicator.current?.classList.add('h-full');
+    selectIndicator.current?.classList.remove('h-0');
+  };
+
+  const showIndicator = (toggle: boolean) => {
+    console.log('indicator !!');
   };
 
   return (
@@ -58,12 +69,19 @@ function CourseCard(props: CourseCardProps) {
               boxShadow: '3px 3px 5px rgba(0, 0, 0, 0.10)',
               ...provided.draggableProps.style
             }}
-            className={`${backgroundColor} w-full text-black font-semibold mt-2 rounded-sm`}
+            className={`${backgroundColor} w-full
+             text-black font-semibold mt-2 rounded-sm relative
+             hover:-translate-x-0.5 transition ease-out hover:-translate-y-0.5 duration-300
+             `}
             onClick={(e) => { handleCourseClick(e); }}
             onKeyDown={(e) => { handleCourseClick(e); }}
+            // onMouseOver={() => { handleHover(true); }}
             role="listitem"
-
           >
+            <div
+              ref={selectIndicator}
+              className={`${isCurrentlySelected ? 'h-full' : 'h-0'} bottom-0 left-0 w-1 absolute w-full bg-red-700`}
+            />
             <div className="flex flex-row h-full w-full">
               <div className="w-10/12 h-full pl-2 py-1 text-lg overflow-hidden text-ellipsis">
                 {item.title}

@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useRef, useState } from 'react';
@@ -192,6 +194,14 @@ function Dashboard() {
     }
   };
 
+  const getCurrentCourseInfo = () => {
+    if (currentCourseInfoDisplayed) {
+      return currentCourseInfoDisplayed;
+    }
+
+    return null;
+  };
+
   const createArrayOfSemesterCredits = () => {
     if (!columns) return;
     const arrayOfCredits: Array<number> = [];
@@ -278,6 +288,10 @@ function Dashboard() {
       <div
         className="flex flex-row flex-nowrap
         justify-center items-stretch w-full grow"
+        onClick={() => {
+          // allow user to de select a course
+          setCurrentCourseInfoDisplayed(null);
+        }}
       >
         {/* Load search columns after columns is initialized to prevent re-loading */}
         {columns == null ? <>Loading course data...</> : (
@@ -309,6 +323,7 @@ function Dashboard() {
                       semesterCreditCount={semesterCreditArray.current[index]}
                       handleDeleteCourseCard={handleDeleteCourseCard}
                       handleCourseInfoChange={handleCourseInfoChange}
+                      getCurrentCourseInfoDisplay={getCurrentCourseInfo}
                     />
                   ))
                 }
