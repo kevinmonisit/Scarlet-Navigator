@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-underscore-dangle */
-import { Button, Chip, IconButton } from '@mui/material';
+import { Button, Chip, Fade, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import Input from '@mui/material/Input';
 import axios from 'axios';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -24,6 +24,8 @@ interface SearchColumnProps {
 function SearchColumn(props: SearchColumnProps) {
   const { checkIfCourseAlreadyInPlan, upstreamQuery, handleCourseInfoChange } = props;
   const [queriedCards, setQueriedCards] = useState<CourseCardInSearch[] | null>([]);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
   const [value, setValue] = useState('');
 
   const onChange = (event) => {
@@ -32,6 +34,14 @@ function SearchColumn(props: SearchColumnProps) {
 
   const handleCourseClick = (id: string) => {
     handleCourseInfoChange(id);
+  };
+
+  const handleSearchMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleSearchMenuClose = () => {
+    setAnchorEl(null);
   };
 
   const queryCourses = () => {
@@ -64,7 +74,7 @@ function SearchColumn(props: SearchColumnProps) {
         }}
       >
         <Input
-          placeholder="Search Course"
+          placeholder="Search by titles"
           onChange={onChange}
           disableUnderline
           sx={{
@@ -77,10 +87,32 @@ function SearchColumn(props: SearchColumnProps) {
         />
         <IconButton
           aria-label="show search options"
+          onClick={handleSearchMenuClick}
+          disableRipple
         >
           <KeyboardArrowDownIcon />
         </IconButton>
       </div>
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleSearchMenuClose}
+        TransitionComponent={Fade}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        <MenuItem onClick={handleSearchMenuClose}>By course title</MenuItem>
+        <MenuItem onClick={handleSearchMenuClose}>By course numbers</MenuItem>
+        <Tooltip
+          arrow
+          title="Experimental: Some courses do not have an expanded title, only a shortened one."
+          placement="right"
+        >
+          <MenuItem onClick={handleSearchMenuClose}>By expanded title if applicable</MenuItem>
+        </Tooltip>
+      </Menu>
       <div
         className="w-full grow relative"
       >
@@ -105,7 +137,7 @@ function SearchColumn(props: SearchColumnProps) {
               })}
             {queriedCards && queriedCards!.length >= 100 && (
               <div className="w-full flex justify-center mt-1 mb-2">
-                <Chip label="Showing first 100 courses." />
+                <Chip label="Showing first 100 courses" />
               </div>
             )}
 

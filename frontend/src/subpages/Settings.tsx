@@ -148,7 +148,7 @@ function Settings() {
               size="small"
               value={120}
               sx={{
-                width: '15ch'
+                width: '100%'
               }}
               InputLabelProps={{
                 shrink: true,
@@ -165,24 +165,26 @@ function Settings() {
               size="small"
               value={21}
               sx={{
-                width: '15ch'
+                width: '100%'
               }}
               InputLabelProps={{
                 shrink: true,
               }}
             />
           </CustomWidthTooltip>
+        </div>
+        <div className="flex flex-row w-full mt-4">
           <CustomWidthTooltip
             title="Minimum number of credits to graduate. Default is 120 in SAS."
           >
             <TextField
               id="outlined-number"
-              label="Graduation Req."
+              label="Max search query"
               type="number"
               size="small"
               value={120}
               sx={{
-                width: '15ch'
+                width: '100%'
               }}
               InputLabelProps={{
                 shrink: true,
@@ -199,7 +201,7 @@ function Settings() {
               size="small"
               value={12}
               sx={{
-                width: '15ch'
+                width: '100%'
               }}
               InputLabelProps={{
                 shrink: true,
@@ -212,35 +214,6 @@ function Settings() {
       {/* TODO: Rewrite code to look better  */}
 
       <Grid container direction="column" spacing={0.2}>
-        <Grid item>
-          <FormControlLabel
-            control={<Checkbox size="small" defaultChecked />}
-            label="Show credits in courses"
-          />
-        </Grid>
-        <Grid item>
-          <FormControlLabel
-            control={<Checkbox size="small" defaultChecked />}
-            label="Disable progressive semester coloring"
-          />
-        </Grid>
-        <Grid item>
-          <h2>Experimental</h2>
-        </Grid>
-        <Grid item>
-          <FormControlLabel
-            control={<Checkbox size="small" />}
-            label="Turn on experimental course titles"
-            disabled
-          />
-        </Grid>
-        <Grid item>
-          <FormControlLabel
-            control={<Checkbox size="small" />}
-            label="Turn on experimental course colors"
-            disabled
-          />
-        </Grid>
         <Grid item>
           <CustomWidthTooltip
             title="Disables errors for minimum or maximum number of credits per semester."
@@ -279,33 +252,34 @@ function Settings() {
           </CustomWidthTooltip>
         </Grid>
         <Grid item>
-          <CustomWidthTooltip
-            title="When the search is blank, the first 100 random courses are shown.
-            When checked, all courses will show. Only check if your computer can handle it."
-          >
-            <FormControlLabel
-              control={<Checkbox size="small" />}
-              label="Show all courses when search is blank"
-            />
-          </CustomWidthTooltip>
+          <FormControlLabel
+            control={<Checkbox size="small" defaultChecked />}
+            label="Show credits in courses"
+          />
         </Grid>
         <Grid item>
-          <FormControl size="small" fullWidth>
-            <InputLabel id="Max search query">Max search query</InputLabel>
-            <Select
-              labelId="select-year"
-              id="select-year"
-              value={startingSeason}
-              label="Max search queryw"
-              onChange={handleChange}
-            >
-              <MenuItem value="fall">2020</MenuItem>
-              <MenuItem value="spring">2021</MenuItem>
-              <MenuItem value="summer">2022</MenuItem>
-            </Select>
-          </FormControl>
+          <FormControlLabel
+            control={<Checkbox size="small" defaultChecked />}
+            label="Disable progressive semester coloring"
+          />
         </Grid>
-
+        <Grid item>
+          <h2 className="font-semibold text-lg">Experimental</h2>
+        </Grid>
+        <Grid item>
+          <FormControlLabel
+            control={<Checkbox size="small" />}
+            label="Turn on experimental course titles"
+            disabled
+          />
+        </Grid>
+        <Grid item>
+          <FormControlLabel
+            control={<Checkbox size="small" />}
+            label="Turn on experimental course colors"
+            disabled
+          />
+        </Grid>
         <Grid item width="100%">
           <div className="w-full flex flex-col items-center space-y-3 my-5">
             <Grid item>
@@ -332,6 +306,7 @@ function Settings() {
           </div>
 
         </Grid>
+
       </Grid>
     </div>
   );

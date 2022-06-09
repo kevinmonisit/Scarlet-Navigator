@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable arrow-body-style */
 import React from 'react';
 import { Droppable } from 'react-beautiful-dnd';
@@ -15,6 +16,7 @@ interface SemesterColumnProps {
   index: number;
   runningCreditCount: number;
   semesterCreditCount: number;
+  quarterIndexUntilGraduation: number;
   getCurrentCourseInfoDisplay: () => any;
   // eslint-disable-next-line no-unused-vars
   handleDeleteCourseCard(index: number, columnId: string);
@@ -33,9 +35,54 @@ function SemesterColumn(props: SemesterColumnProps) {
     handleDeleteCourseCard,
     handleCourseInfoChange,
     getCurrentCourseInfoDisplay,
+    quarterIndexUntilGraduation,
   } = props;
 
   const defaultBackgroundColor = '#34495e';
+  // const freshmanYearColor = 'bg-red-500';
+  // const sophomoreYearColor = 'bg-orange-400';
+  // const juniorYearColor = 'bg-cyan-500';
+  // const seniorYearColor = 'bg-emerald-500';
+  const beyondColor = 'bg-red-900';
+  const freshmanYearColor = 'bg-red-400';
+  const sophomoreYearColor = 'bg-red-500';
+  const juniorYearColor = 'bg-red-700';
+  const seniorYearColor = 'bg-red-800';
+  /**
+   *
+
+   */
+
+  const getSemesterBackgroundColor = () => {
+    switch (quarterIndexUntilGraduation) {
+      case 0:
+        return freshmanYearColor;
+      case 1:
+        return sophomoreYearColor;
+      case 2:
+        return juniorYearColor;
+      case 3:
+        return seniorYearColor;
+      default:
+        return beyondColor;
+    }
+  };
+
+  const getStudentClass = () => {
+    switch (quarterIndexUntilGraduation) {
+      case 0:
+        return 'Freshman';
+      case 1:
+        return 'Sophomore';
+      case 2:
+        return 'Junior';
+      case 3:
+        return 'Senior';
+      default:
+        return 'Graduate';
+    }
+  };
+
   // TOOLTIP THAT EXPLAINS THE ERROR
   // EG MINIMUM CREDIT ERROR
   return (
@@ -44,13 +91,14 @@ function SemesterColumn(props: SemesterColumnProps) {
       key={columnId}
     >
       <div
-        className="w-full text-center py-2 my-2 rounded-sm text-white relative bg-red-700"
+        className={`w-full text-center py-2 my-2 rounded-sm text-white relative ${getSemesterBackgroundColor()}`}
         style={{
           // background: defaultBackgroundColor,
           boxShadow: '0px 3px 4px rgba(0, 0, 0, 0.2)'
         }}
       >
-        <h2 className="font-semibold">{column.title}</h2>
+        <h2 className="font-semibold">Fall 2022</h2>
+        {getStudentClass()}
         <span className="absolute right-1 top-0 text-sm">
           {semesterCreditCount}
         </span>
@@ -76,8 +124,8 @@ function SemesterColumn(props: SemesterColumnProps) {
                 const courseCurrentlyDisplayedInInfoColumn = getCurrentCourseInfoDisplay();
                 let isSelected = false;
                 if (courseCurrentlyDisplayedInInfoColumn) {
-                  const { title } = courseCurrentlyDisplayedInInfoColumn;
-                  isSelected = item.title === title;
+                  const { _id } = courseCurrentlyDisplayedInInfoColumn;
+                  isSelected = item._id === _id;
                 }
 
                 return (
@@ -90,6 +138,7 @@ function SemesterColumn(props: SemesterColumnProps) {
                     handleCourseInfoChange={handleCourseInfoChange}
                     columnId={columnId}
                     isCurrentlySelected={isSelected}
+                    indicatorColor={getSemesterBackgroundColor()}
                   />
                 );
               })}

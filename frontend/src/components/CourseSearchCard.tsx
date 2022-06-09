@@ -93,7 +93,7 @@ function CourseSearchCard(props: CourseSearchCardProps) {
   };
 
   return (
-    <div className="bg-gray-300 rounded-sm m-2">
+    <div className="bg-gray-300 rounded-sm mr-2">
       <Droppable droppableId={shortTitle} key={shortTitle} isDropDisabled>
         {(providedDroppable) => (
           <div

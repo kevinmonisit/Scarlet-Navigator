@@ -27,7 +27,7 @@ function NavBar() {
   };
 
   return (
-    <div className="w-screen h-14 bg-red-600 flex flex-row flex-none text-white items-center">
+    <div className="w-screen h-14 bg-red-600 flex flex-row flex-none text-white items-center z-50">
       <div className="pl-5 h-full flex items-center">
         <h2
           className="text-gray-50 select-none"

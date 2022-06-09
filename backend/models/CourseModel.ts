@@ -7,12 +7,14 @@ interface Course {
   school: string;
   subject: string;
   courseString: string;
+  queryTitle: string;
   campusLocations: Array<string>;
   // prerequisites: Array<Schema.Types.ObjectId>;
 }
 
 const CourseSchema = new Schema<Course>({
   title: { type: String, required: true },
+  queryTitle: { type: String },
   credits: { type: Number },
   school: { type: String },
   subject: { type: String },

@@ -1,6 +1,7 @@
 import pymongo
 import json
 from pymongo import MongoClient, InsertOne
+import re
 
 # TODO: Set local database url to something in dotenv
 # pip3 install pymongo[srv] put into the README.md
@@ -17,7 +18,7 @@ with open(r"jsonminifier.json") as f:
         courses = myDict['courses']
 
         def get_campus(obj):
-            return obj['description']
+            desc = obj['description']
 
         for course in courses:
             campus_locations = list(map(get_campus, course['campusLocations']))
@@ -30,9 +31,10 @@ with open(r"jsonminifier.json") as f:
               'campusLocations': campus_locations
             }
 
-            # idea: so that we can either search by full title or shorten title
-            # query_title = course['expandedTitle'] if course['expandedTitle'] else course['title']
-            # when search query, use query_title
+            query_title = course['expandedTitle'] if course['expandedTitle'] else course['title']
+            query_title = " ".join(query_title.split())
+            # query_title = query_title.replace("\t", "")
+            projection['queryTitle'] = query_title
 
             requesting.append(InsertOne(projection))
 

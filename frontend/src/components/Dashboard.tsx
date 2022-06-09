@@ -107,12 +107,13 @@ function uploadNewStudentPlan(columns: ColumnContainer | null) {
   }
 
   const arrayOfCourseObjectIds: Array<Array<String>> = [];
+  console.log(columns);
   Object.keys(columns).forEach((columnId) => {
     // eslint-disable-next-line no-underscore-dangle
     arrayOfCourseObjectIds.push(columns[columnId].items.map((item) => item._id));
   });
 
-  axios.patch('/api/v1/user/629d640981dec8208eaedd27/plan', {
+  axios.patch('/api/v1/user/62a15a012df818cfbb85c73d/plan', {
     plan: arrayOfCourseObjectIds
   });
 }
@@ -132,6 +133,11 @@ function Dashboard() {
 
   const setOfCurrentCourseIDs = useRef<Set<string> | null>(null);
   const [numberOfCourses, setNumberOfCourses] = useState(0);
+  const [settings, setSettings] = useState({
+    creditsNeededToGraduate: 120,
+    startingSemester: 'Fall',
+    startingYear: 2021
+  });
 
   const checkIfCourseAlreadyInPlan = (courseId: string) => {
     if (setOfCurrentCourseIDs != null && setOfCurrentCourseIDs.current != null) {
@@ -246,7 +252,7 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    axios.get('/api/v1/user/629d640981dec8208eaedd27/plan')
+    axios.get('/api/v1/user/62a15a012df818cfbb85c73d/plan')
       .then((res) => {
         processSemesterColumnQuery(res.data).then((processedColumns) => {
           setColumns(processedColumns.columns);
@@ -266,13 +272,13 @@ function Dashboard() {
     uploadNewStudentPlan(columns);
     updateSetOfCurrentCourseIDs();
     createArrayOfSemesterCredits();
+    updateRunningCreditCountArray();
 
     if (setOfCurrentCourseIDs.current) {
       setNumberOfCourses(setOfCurrentCourseIDs.current.size);
     }
   }, [columns]);
 
-  useEffect(updateRunningCreditCountArray, [semesterCreditArray.current]);
   console.log('dashboad');
   return (
 
@@ -289,8 +295,12 @@ function Dashboard() {
         className="flex flex-row flex-nowrap
         justify-center items-stretch w-full grow"
         onClick={() => {
-          // allow user to de select a course
-          setCurrentCourseInfoDisplayed(null);
+          // allow user to de-select a course when selecting off of it
+          // however, in the future, with accessibility in mind...
+          // course info should be a toggling idea.
+          // only when clicked does a course change. perhaps, we can have a separate
+          // accessibility mode.
+          // setCurrentCourseInfoDisplayed(null);
         }}
       >
         {/* Load search columns after columns is initialized to prevent re-loading */}
@@ -303,33 +313,41 @@ function Dashboard() {
 
         )}
         <div className="grow relative h-full">
-          {columns == null ? <>Loading course data...</> : (
+          {(columns == null)
+            ? <>Loading course data...</> : (
 
-            <div className="absolute h-full w-full">
-              <div
-                className="grid grid-cols-4 gap-x-3 h-full
+              <div className="absolute h-full w-full">
+                <div
+                  className="grid grid-cols-4 gap-x-3 h-full
                 justify-center min-w-fit overflow-auto
                 pr-3 pl-1
                 "
-              >
-                {
-                  Object.entries(columns).map(([columnId, column], index) => (
-                    <SemesterColumn
-                      key={columnId}
-                      columnId={columnId}
-                      column={column}
-                      index={index}
-                      runningCreditCount={runningCreditCountArray.current[index]}
-                      semesterCreditCount={semesterCreditArray.current[index]}
-                      handleDeleteCourseCard={handleDeleteCourseCard}
-                      handleCourseInfoChange={handleCourseInfoChange}
-                      getCurrentCourseInfoDisplay={getCurrentCourseInfo}
-                    />
-                  ))
-                }
+                >
+                  {
+                    Object.entries(columns).map(([columnId, column], index) => {
+                      // eslint-disable-next-line max-len
+                      const percentageCompleted = runningCreditCountArray.current[index] / settings.creditsNeededToGraduate;
+                      // eslint-disable-next-line max-len
+                      const quartersOfCreditsCompleted = Math.floor((percentageCompleted * 100) / 25);
+                      return (
+                        <SemesterColumn
+                          key={columnId}
+                          columnId={columnId}
+                          column={column}
+                          index={index}
+                          runningCreditCount={runningCreditCountArray.current[index]}
+                          semesterCreditCount={semesterCreditArray.current[index]}
+                          quarterIndexUntilGraduation={quartersOfCreditsCompleted}
+                          handleDeleteCourseCard={handleDeleteCourseCard}
+                          handleCourseInfoChange={handleCourseInfoChange}
+                          getCurrentCourseInfoDisplay={getCurrentCourseInfo}
+                        />
+                      );
+                    })
+                  }
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
         <InfoColumn
           currentCourse={currentCourseInfoDisplayed}
