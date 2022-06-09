@@ -11,6 +11,7 @@ interface CourseSearchCardProps {
   shortTitle: string;
   courseId: string;
   courseString: string;
+  isCurrentlySelected: boolean;
   // numberOfCourses: number;
   // eslint-disable-next-line no-unused-vars
   // checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
@@ -20,6 +21,7 @@ interface CourseSearchCardProps {
 
 interface PseudoCourseCardProps {
   shortTitle: string;
+  isCurrentlySelected: boolean;
   // courseString: string;
   backgroundColor?: string;
   isAbsolute?: boolean;
@@ -27,7 +29,12 @@ interface PseudoCourseCardProps {
 }
 
 function PseudoCourseCard(props: PseudoCourseCardProps) {
-  const { shortTitle, backgroundColor, isAbsolute, disabled } = props;
+  const {
+    shortTitle,
+    backgroundColor,
+    isAbsolute,
+    disabled,
+    isCurrentlySelected } = props;
 
   const regularTheme = {
     backgroundColor,
@@ -40,6 +47,7 @@ function PseudoCourseCard(props: PseudoCourseCardProps) {
   };
 
   const currTheme = !disabled ? disabledTheme : regularTheme;
+  const indicatorTheme = disabled ? disabledTheme : regularTheme;
 
   return (
     <Tooltip
@@ -60,11 +68,23 @@ function PseudoCourseCard(props: PseudoCourseCardProps) {
       ${!isAbsolute ? 'mt-2' : ''}
       bg-gray-100 w-full px-2  text-lg
       font-semibold rounded-sm overflow-hidden text-ellipsis
-      select-none`}
+      select-none relative
+      `}
         style={{
           boxShadow: !disabled ? '0px 3px 5px rgba(0, 0, 0, 0.2)' : ''
         }}
       >
+        <div
+          className={
+            `
+               ${isCurrentlySelected ? 'h-full' : 'h-0'}
+               ${indicatorTheme.backgroundColor}
+               bottom-0 left-0 w-1 absolute w-full
+               transition-height duration-300 ease-out rounded-sm
+               z-50
+               `
+          }
+        />
         {shortTitle}
       </div>
     </Tooltip>
@@ -84,7 +104,8 @@ function CourseSearchCard(props: CourseSearchCardProps) {
     courseId,
     alreadyInPlan,
     courseString,
-    handleCourseInfoChange
+    handleCourseInfoChange,
+    isCurrentlySelected,
   } = props;
 
   const handleCourseClick = (event) => {
@@ -92,8 +113,10 @@ function CourseSearchCard(props: CourseSearchCardProps) {
     handleCourseInfoChange(courseId);
   };
 
+  console.log('search card');
+
   return (
-    <div className="bg-gray-300 rounded-sm mr-2">
+    <div className="bg-gray-300 rounded-sm mr-2 ml-1">
       <Droppable droppableId={shortTitle} key={shortTitle} isDropDisabled>
         {(providedDroppable) => (
           <div
@@ -124,6 +147,7 @@ function CourseSearchCard(props: CourseSearchCardProps) {
                         <PseudoCourseCard
                           shortTitle={shortTitle}
                           disabled={!alreadyInPlan}
+                          isCurrentlySelected={isCurrentlySelected}
                         />
                       )}
 
@@ -141,6 +165,7 @@ function CourseSearchCard(props: CourseSearchCardProps) {
                         shortTitle={shortTitle}
                         backgroundColor={backgroundColor}
                         disabled={!alreadyInPlan}
+                        isCurrentlySelected={isCurrentlySelected}
                       />
                     </div>
                   </>

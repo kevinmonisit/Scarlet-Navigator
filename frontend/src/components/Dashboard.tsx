@@ -23,9 +23,6 @@ function onDragEnd(
   findCourseInSearchQuery: (id: string) => boolean,
   checkIfCourseAlreadyInPlan: (id: string) => boolean | undefined
 ) {
-  console.log(result);
-  console.log(columns);
-
   if (!result.destination) return;
   const { source, destination } = result;
   if (result.draggableId.includes('searchCard')) {
@@ -283,13 +280,17 @@ function Dashboard() {
   return (
 
     <DragDropContext
-      onDragEnd={(result) => onDragEnd(
-        result,
-        columns,
-        setColumns,
-        findCourseInSearchQueryList,
-        checkIfCourseAlreadyInPlan
-      )}
+      onDragEnd={(result) => {
+        createArrayOfSemesterCredits();
+        updateRunningCreditCountArray();
+        onDragEnd(
+          result,
+          columns,
+          setColumns,
+          findCourseInSearchQueryList,
+          checkIfCourseAlreadyInPlan
+        );
+      }}
     >
       <div
         className="flex flex-row flex-nowrap
@@ -309,6 +310,7 @@ function Dashboard() {
             checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan}
             upstreamQuery={upstreamQuery}
             handleCourseInfoChange={handleCourseInfoChange}
+            getCurrentCourseInfoDisplay={getCurrentCourseInfo}
           />
 
         )}

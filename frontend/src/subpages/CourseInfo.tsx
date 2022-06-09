@@ -27,7 +27,7 @@ function CourseInfo(props: CourseInfoProps) {
         )
         : (
           <div className="h-full w-full flex flex-col px-2">
-            <div className="text-2xl font-semibold">
+            <div className="text-2xl font-semibold pr-2">
               {course.queryTitle}
               {' '}
               <br />

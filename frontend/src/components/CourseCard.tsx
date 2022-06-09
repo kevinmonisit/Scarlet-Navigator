@@ -44,10 +44,6 @@ function CourseCard(props: CourseCardProps) {
     handleCourseInfoChange(item);
   };
 
-  const showIndicator = (toggle: boolean) => {
-    console.log('indicator !!');
-  };
-
   console.log('re-render');
 
   return (

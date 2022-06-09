@@ -17,12 +17,17 @@ interface SearchColumnProps {
   // eslint-disable-next-line no-unused-vars
   checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
   handleCourseInfoChange(id: string): void;
+  getCurrentCourseInfoDisplay: () => any;
   // eslint-disable-next-line no-unused-vars
   upstreamQuery(queryList: any);
 }
 
 function SearchColumn(props: SearchColumnProps) {
-  const { checkIfCourseAlreadyInPlan, upstreamQuery, handleCourseInfoChange } = props;
+  const {
+    checkIfCourseAlreadyInPlan,
+    upstreamQuery,
+    handleCourseInfoChange,
+    getCurrentCourseInfoDisplay } = props;
   const [queriedCards, setQueriedCards] = useState<CourseCardInSearch[] | null>([]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -124,6 +129,15 @@ function SearchColumn(props: SearchColumnProps) {
                 // Thus, run this function outside of the search card component,
                 // instead of inside the search card component.
                 const checkAlreadyExists = checkIfCourseAlreadyInPlan(courseCardSearch._id);
+                const courseCurrentlyDisplayedInInfoColumn = getCurrentCourseInfoDisplay();
+                let isSelected = false;
+                if (courseCurrentlyDisplayedInInfoColumn) {
+                  const { _id } = courseCurrentlyDisplayedInInfoColumn;
+                  isSelected = courseCardSearch._id === _id;
+                }
+                // looks like search card being re-rendered needlessly again 6/9/21
+                // probably because of handleCourseInfoChange prop
+
                 return (
                   <CourseSearchCard
                     shortTitle={courseCardSearch.title}
@@ -132,6 +146,7 @@ function SearchColumn(props: SearchColumnProps) {
                     courseId={courseCardSearch._id}
                     alreadyInPlan={checkAlreadyExists}
                     handleCourseInfoChange={handleCourseClick}
+                    isCurrentlySelected={isSelected}
                   />
                 );
               })}

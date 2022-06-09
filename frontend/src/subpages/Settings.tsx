@@ -143,7 +143,7 @@ function Settings() {
           >
             <TextField
               id="outlined-number"
-              label="Graduation Req."
+              label="Min credits"
               type="number"
               size="small"
               value={120}
@@ -196,7 +196,7 @@ function Settings() {
           >
             <TextField
               id="outlined-number"
-              label="Min credits"
+              label="Graduation req."
               type="number"
               size="small"
               value={12}

@@ -94,7 +94,7 @@ function SemesterColumn(props: SemesterColumnProps) {
         className={`w-full text-center py-2 my-2 rounded-sm text-white relative ${getSemesterBackgroundColor()}`}
         style={{
           // background: defaultBackgroundColor,
-          boxShadow: '0px 3px 4px rgba(0, 0, 0, 0.2)'
+          boxShadow: '0px 3px 4px rgba(0, 0, 0, 0.3)'
         }}
       >
         <h2 className="font-semibold">Fall 2022</h2>
