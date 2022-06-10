@@ -116,7 +116,7 @@ function CourseSearchCard(props: CourseSearchCardProps) {
   console.log('search card');
 
   return (
-    <div className="bg-gray-300 rounded-sm mr-2 ml-1">
+    <div className="bg-gray-300 rounded-sm mr-3 ml-2">
       <Droppable droppableId={shortTitle} key={shortTitle} isDropDisabled>
         {(providedDroppable) => (
           <div

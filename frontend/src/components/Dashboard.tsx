@@ -271,6 +271,8 @@ function Dashboard() {
     createArrayOfSemesterCredits();
     updateRunningCreditCountArray();
 
+    console.log('change');
+
     if (setOfCurrentCourseIDs.current) {
       setNumberOfCourses(setOfCurrentCourseIDs.current.size);
     }
