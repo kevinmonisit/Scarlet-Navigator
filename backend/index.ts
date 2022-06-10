@@ -8,9 +8,13 @@ import courseRouter from './api/courses';
 
 dotenv.config();
 
-mongoose.connect('mongodb://localhost:27017/s-n-t').catch((err) => {
-  console.warn(err);
-});
+mongoose
+  .connect(
+    'mongodb://admin:80O6av5en27Y13Vr@scarletnav-db-b29f4a1d.mongo.ondigitalocean.com/s-n-t'
+  )
+  .catch((err) => {
+    console.warn(err);
+  });
 
 mongoose.connection
   .once('open', () => {
