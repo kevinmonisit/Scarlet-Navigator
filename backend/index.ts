@@ -38,11 +38,11 @@ mongoose.connection
 const app: Express = express();
 const port = process.env['PORT'];
 
-app.use(cors(corsOptions));
 app.use(morgan('tiny'));
 app.set('json spaces', 2);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors(corsOptions));
 
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/courses', courseRouter);
