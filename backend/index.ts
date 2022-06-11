@@ -9,7 +9,7 @@ import courseRouter from './api/courses';
 dotenv.config();
 const localUri = 'mongodb://localhost:27017/s-n-t';
 
-mongoose.connect(process.env['MONGODB_URI'] ?? localUri).catch((err) => {
+mongoose.connect(process.env['MONGO_URI'] ?? localUri).catch((err) => {
   console.warn(err);
 });
 
