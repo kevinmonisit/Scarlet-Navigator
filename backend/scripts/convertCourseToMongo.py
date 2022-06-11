@@ -1,3 +1,4 @@
+from gc import collect
 import pymongo
 import json
 from pymongo import MongoClient, InsertOne
@@ -19,6 +20,9 @@ with open(r"jsonminifier.json") as f:
 
         def get_campus(obj):
             desc = obj['description']
+            if desc.lower() == 'o':
+                return 'Online'
+            return desc
 
         for course in courses:
             campus_locations = list(map(get_campus, course['campusLocations']))
@@ -38,6 +42,16 @@ with open(r"jsonminifier.json") as f:
 
             requesting.append(InsertOne(projection))
 
-
 result = collection.bulk_write(requesting)
+
+# Create the user
+collection = db.users
+collection.delete_many({})
+user = {
+    'courses': [],
+    'startingYear': 2021,
+    'plan': [[] for _ in range(8)]
+}
+collection.insert_one(user)
+
 client.close()

@@ -110,13 +110,13 @@ function createUsers(courses: Array<Course>, callback: CallableFunction) {
 
   const startingYear = 2022;
   const plan: Array<Array<Schema.Types.ObjectId>> = [
-    [coursesArray[0]!, coursesArray[1]!],
     [],
-    [coursesArray[2]!, coursesArray[3]!],
-    [coursesArray[4]!, coursesArray[5]!, coursesArray[6]!],
     [],
-    [coursesArray[7]!],
-    [coursesArray[8]!],
+    [],
+    [],
+    [],
+    [],
+    [],
     [],
   ];
 

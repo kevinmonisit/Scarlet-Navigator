@@ -3,13 +3,25 @@ import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
+import cors from 'cors';
 import userRouter from './api/userAPI';
 import courseRouter from './api/courses';
 
 dotenv.config();
-const localUri = 'mongodb://localhost:27017/s-n-t';
 
-mongoose.connect(process.env['MONGO_URI'] ?? localUri).catch((err) => {
+const corsOptions = {
+  origin: 'https://scarletnav.live/',
+  optionsSuccessStatus: 200,
+};
+
+const mongoUri = !process.env['DEVELOPMENT_MODE']
+  ? process.env['MONGO_URI']
+  : process.env['MONGO_TEST_URI'];
+
+console.info(`DEVELOPMENT MODE is ${process.env['DEVELOPMENT_MODE']}`);
+console.info(`Using mongo URI: ${mongoUri}`);
+
+mongoose.connect(mongoUri ?? '').catch((err) => {
   console.warn(err);
 });
 
@@ -24,6 +36,7 @@ mongoose.connection
 const app: Express = express();
 const port = process.env['PORT'];
 
+app.use(cors(corsOptions));
 app.use(morgan('tiny'));
 app.set('json spaces', 2);
 app.use(express.json());
