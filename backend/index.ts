@@ -14,9 +14,11 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-const mongoUri = !process.env['DEVELOPMENT_MODE']
-  ? process.env['MONGO_URI']
-  : process.env['MONGO_TEST_URI'];
+// const mongoUri = !process.env['DEVELOPMENT_MODE']
+//   ? process.env['MONGO_URI']
+//   : process.env['MONGO_TEST_URI'];
+
+const mongoUri = process.env['MONGO_URI'];
 
 console.info(`DEVELOPMENT MODE is ${process.env['DEVELOPMENT_MODE']}`);
 console.info(`Using mongo URI: ${mongoUri}`);
