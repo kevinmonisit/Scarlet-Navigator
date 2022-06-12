@@ -13,6 +13,8 @@ interface CourseCardInSearch {
   _id: string;
 }
 
+const BASE_URL = process.env.REACT_APP_ENV === 'Production' ? process.env.REACT_APP_API_URL : '';
+
 interface SearchColumnProps {
   // eslint-disable-next-line no-unused-vars
   checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
@@ -58,7 +60,7 @@ function SearchColumn(props: SearchColumnProps) {
     //   return;
     // }
 
-    axios.get('/api/v1/courses', { params: { search: value } })
+    axios.get(`${BASE_URL}/api/v1/courses`, { params: { search: value } })
       .then((res) => {
         setQueriedCards(res.data.coursesQuery);
       });

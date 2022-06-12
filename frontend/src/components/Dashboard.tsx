@@ -15,6 +15,8 @@ interface ColumnContainer {
   [key: string]: SemesterColumnInfo;
 }
 
+const BASE_URL = process.env.REACT_APP_ENV === 'Production' ? process.env.REACT_APP_API_URL : '';
+
 function onDragEnd(
   result: DropResult,
   columns: any,
@@ -110,7 +112,7 @@ function uploadNewStudentPlan(columns: ColumnContainer | null) {
     arrayOfCourseObjectIds.push(columns[columnId].items.map((item) => item._id));
   });
 
-  axios.patch('/api/v1/user/62a15a012df818cfbb85c73d/plan', {
+  axios.patch(`${BASE_URL}/api/v1/user/${process.env.REACT_APP_USER_ID}/plan`, {
     plan: arrayOfCourseObjectIds
   });
 }
@@ -249,7 +251,7 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    axios.get('/api/v1/user/62a15a012df818cfbb85c73d/plan')
+    axios.get(`${BASE_URL}/api/v1/user/${process.env.REACT_APP_USER_ID}/plan`)
       .then((res) => {
         processSemesterColumnQuery(res.data).then((processedColumns) => {
           setColumns(processedColumns.columns);

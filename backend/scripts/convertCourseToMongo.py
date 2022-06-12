@@ -7,7 +7,7 @@ import re
 # TODO: Set local database url to something in dotenv
 # pip3 install pymongo[srv] put into the README.md
 
-client = pymongo.MongoClient("mongodb://localhost:27017/s-n-t")
+client = pymongo.MongoClient("mongodb+srv://doadmin:36s8M2o4y095uZdX@scarletnav-db-d5385c42.mongo.ondigitalocean.com/s-n-t?tls=true&authSource=admin&replicaSet=scarletnav-db")
 db = client["s-n-t"]
 collection = db.courses
 collection.delete_many({})
