@@ -4,7 +4,7 @@ import { Button, Chip, Fade, IconButton, Menu, MenuItem, Tooltip } from '@mui/ma
 import Input from '@mui/material/Input';
 import axios from 'axios';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import CourseSearchCard from './CourseSearchCard';
 
 interface CourseCardInSearch {

@@ -12,8 +12,10 @@ interface SemesterColumnInfo {
 
 interface SemesterColumnProps {
   columnId: string;
+  season: string;
   column: SemesterColumnInfo;
   index: number;
+  year: number;
   runningCreditCount: number;
   semesterCreditCount: number;
   quarterIndexUntilGraduation: number;
@@ -30,6 +32,8 @@ function SemesterColumn(props: SemesterColumnProps) {
   const {
     columnId,
     column,
+    season,
+    year,
     semesterCreditCount,
     runningCreditCount,
     handleDeleteCourseCard,
@@ -97,7 +101,11 @@ function SemesterColumn(props: SemesterColumnProps) {
           boxShadow: '0px 3px 4px rgba(0, 0, 0, 0.3)'
         }}
       >
-        <h2 className="font-semibold">Fall 2022</h2>
+        <h2 className="font-semibold">
+          {season}
+          {' '}
+          {year}
+        </h2>
         {getStudentClass()}
         <span className="absolute right-1 top-0 text-sm">
           {semesterCreditCount}

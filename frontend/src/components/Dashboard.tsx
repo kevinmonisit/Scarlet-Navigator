@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
@@ -106,7 +106,6 @@ function uploadNewStudentPlan(columns: ColumnContainer | null) {
   }
 
   const arrayOfCourseObjectIds: Array<Array<String>> = [];
-  console.log(columns);
   Object.keys(columns).forEach((columnId) => {
     // eslint-disable-next-line no-underscore-dangle
     arrayOfCourseObjectIds.push(columns[columnId].items.map((item) => item._id));
@@ -121,22 +120,41 @@ function getCreditSemesterCount(column: SemesterColumnInfo) {
   return column.items.reduce((previous, current) => (previous + current.credits), 0);
 }
 
+// eslint-disable-next-line no-shadow
+enum Month {
+  FALL = 'Fall',
+  SPRING = 'Spring',
+  SUMMER = 'Summer'
+}
+
 function Dashboard() {
   // TODO TOMORROW: Monday june 6th, change columns to a ref
   const [columns, setColumns] = useState<ColumnContainer | null>(null);
   const [searchQueryList, setSearchQueryList] = useState<any[] | null>(null);
   const [currentCourseInfoDisplayed, setCurrentCourseInfoDisplayed] = useState<any | null>(null);
 
-  const runningCreditCountArray = useRef<Array<number>>([]);
-  const semesterCreditArray = useRef<Array<number>>([]);
+  const [runningCreditCountArray, setRunningCreditCountArray] = useState<Array<number>>([]);
+  const [semesterCreditArray, setSemesterCreditArray] = useState<Array<number>>([]);
 
   const setOfCurrentCourseIDs = useRef<Set<string> | null>(null);
   const [numberOfCourses, setNumberOfCourses] = useState(0);
   const [settings, setSettings] = useState({
     creditsNeededToGraduate: 120,
-    startingSemester: 'Fall',
-    startingYear: 2021
+    startingSemester: Month.SPRING,
+    startingYear: 2021,
+    startingCredits: 10,
+    minCredits: 12,
+    maxCredits: 20,
   });
+
+  const months = useRef<string[]>([Month.FALL, Month.SPRING]);
+  useEffect(() => {
+    if (settings.startingSemester === Month.FALL) {
+      months.current = [Month.FALL, Month.SPRING];
+    } else {
+      months.current = [Month.SPRING, Month.FALL];
+    }
+  }, [settings]);
 
   const checkIfCourseAlreadyInPlan = (courseId: string) => {
     if (setOfCurrentCourseIDs != null && setOfCurrentCourseIDs.current != null) {
@@ -168,7 +186,7 @@ function Dashboard() {
     return null;
   };
 
-  const handleDeleteCourseCard = (index: number, columnId: string) => {
+  const handleDeleteCourseCard = useCallback((index: number, columnId: string) => {
     if (columns) {
       const modifiedColumn = columns[columnId];
       const modifiedColumnItems = [...modifiedColumn.items];
@@ -181,7 +199,7 @@ function Dashboard() {
         }
       });
     }
-  };
+  }, [columns]);
 
   // TODO: change any type to model schema
   // TODO: Change this function into an overloaded function
@@ -214,23 +232,22 @@ function Dashboard() {
     Object.keys(columns).forEach((key) => {
       arrayOfCredits.push(getCreditSemesterCount(columns[key]));
     });
-
-    semesterCreditArray.current = arrayOfCredits;
+    setSemesterCreditArray(arrayOfCredits);
   };
 
   const updateRunningCreditCountArray = () => {
     if (!columns) return;
     const newArray = new Array(Object.keys(columns).length).fill(0);
 
-    for (let i = 0; i < semesterCreditArray.current.length; i += 1) {
+    for (let i = 0; i < semesterCreditArray.length; i += 1) {
       if (i === 0) {
-        newArray[i] = semesterCreditArray.current[i];
+        newArray[i] = semesterCreditArray[i] + settings.startingCredits;
       } else {
-        newArray[i] = newArray[i - 1] + semesterCreditArray.current[i];
+        newArray[i] = newArray[i - 1] + semesterCreditArray[i];
       }
     }
 
-    runningCreditCountArray.current = newArray;
+    setRunningCreditCountArray(newArray);
   };
 
   const updateSetOfCurrentCourseIDs = () => {
@@ -257,7 +274,7 @@ function Dashboard() {
           setColumns(processedColumns.columns);
           const numberOfColumns = Object.keys(processedColumns.columns).length;
           const defaultArray = new Array(numberOfColumns).fill(0);
-          runningCreditCountArray.current = defaultArray;
+          setRunningCreditCountArray(defaultArray);
         });
       })
       .catch((err) => {
@@ -271,22 +288,20 @@ function Dashboard() {
     uploadNewStudentPlan(columns);
     updateSetOfCurrentCourseIDs();
     createArrayOfSemesterCredits();
-    updateRunningCreditCountArray();
-
-    console.log('change');
+    // updateRunningCreditCountArray();
 
     if (setOfCurrentCourseIDs.current) {
       setNumberOfCourses(setOfCurrentCourseIDs.current.size);
     }
   }, [columns]);
 
+  useEffect(updateRunningCreditCountArray, [semesterCreditArray]);
+
   console.log('dashboad');
   return (
 
     <DragDropContext
       onDragEnd={(result) => {
-        createArrayOfSemesterCredits();
-        updateRunningCreditCountArray();
         onDragEnd(
           result,
           columns,
@@ -331,18 +346,29 @@ function Dashboard() {
                 >
                   {
                     Object.entries(columns).map(([columnId, column], index) => {
+                      // eslint-disable-next-line react/jsx-no-useless-fragment
                       // eslint-disable-next-line max-len
-                      const percentageCompleted = runningCreditCountArray.current[index] / settings.creditsNeededToGraduate;
+                      const percentageCompleted = runningCreditCountArray[index] / settings.creditsNeededToGraduate;
                       // eslint-disable-next-line max-len
                       const quartersOfCreditsCompleted = Math.floor((percentageCompleted * 100) / 25);
+                      const season = months.current[index % 2];
+                      // spring fall spring fall spring
+                      // 0, 1, 2c, 3, 4c
+                      // fall spring fall spring fall
+                      // 0, 1c, 2, 3c, 4
+                      const offset = settings.startingSemester === Month.FALL ? 1 : 2;
+                      const year = settings.startingYear + Math.floor((index + offset) / 2);
+
                       return (
                         <SemesterColumn
                           key={columnId}
                           columnId={columnId}
                           column={column}
                           index={index}
-                          runningCreditCount={runningCreditCountArray.current[index]}
-                          semesterCreditCount={semesterCreditArray.current[index]}
+                          season={season}
+                          year={year}
+                          runningCreditCount={runningCreditCountArray[index]}
+                          semesterCreditCount={semesterCreditArray[index]}
                           quarterIndexUntilGraduation={quartersOfCreditsCompleted}
                           handleDeleteCourseCard={handleDeleteCourseCard}
                           handleCourseInfoChange={handleCourseInfoChange}
