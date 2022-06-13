@@ -10,6 +10,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import React from 'react';
+import { Settings as SettingsInterface } from '../interfaces/Settings';
 
 const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip
@@ -26,11 +27,23 @@ const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
   },
 });
 
-function Settings() {
+interface SettingsProps {
+  // eslint-disable-next-line no-unused-vars
+  changeSettings: (newSettings: SettingsInterface) => void;
+  settings: SettingsInterface;
+}
+
+function Settings(props: SettingsProps) {
+  // eslint-disable-next-line no-unused-vars
   const [startingSeason, setStartingSeason] = React.useState('fall');
+  const { changeSettings, settings } = props;
 
   const handleChange = (event: SelectChangeEvent) => {
-    setStartingSeason(event.target.value as string);
+
+  };
+
+  const upliftNewSettingState = (newSettings) => {
+    changeSettings(newSettings);
   };
 
   return (
@@ -76,7 +89,8 @@ function Settings() {
             label="Number of Semesters"
             type="number"
             size="small"
-            value={0}
+            value={settings.numberOfSemesters}
+            onChange={handleChange}
             sx={{
               width: '100%',
             }}
