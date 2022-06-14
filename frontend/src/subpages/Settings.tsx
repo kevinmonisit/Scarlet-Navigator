@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Button, Grid, TextField, Tooltip, tooltipClasses, TooltipProps } from '@mui/material';
+import { Button, Grid, Select, TextField, Tooltip, tooltipClasses, TooltipProps } from '@mui/material';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import Divider from '@mui/material/Divider';
@@ -8,9 +8,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import React from 'react';
-import { Settings as SettingsInterface } from '../interfaces/Settings';
+import { Settings as SettingsInterface, Month } from '../interfaces/Settings';
 
 const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip
@@ -35,15 +34,18 @@ interface SettingsProps {
 
 function Settings(props: SettingsProps) {
   // eslint-disable-next-line no-unused-vars
-  const [startingSeason, setStartingSeason] = React.useState('fall');
   const { changeSettings, settings } = props;
 
-  const handleChange = (event: SelectChangeEvent) => {
+  const handleSettingsChange = (newValue: string | number, key: string) => {
+    if (!settings[key]) {
+      console.warn(`A setting of key ${key} does not exist in settings prop`);
+      return;
+    }
 
-  };
-
-  const upliftNewSettingState = (newSettings) => {
-    changeSettings(newSettings);
+    changeSettings({
+      ...settings,
+      [key]: newValue
+    });
   };
 
   return (
@@ -51,17 +53,19 @@ function Settings(props: SettingsProps) {
       <div className="flex flex-col items-center justify-center w-full">
         <div className="flex flex-row items-center w-full">
           <FormControl size="small" fullWidth>
-            <InputLabel id="demo-simple-select-label">Starting Season</InputLabel>
+            <InputLabel id="start-season">Starting Season</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={startingSeason}
+              labelId="start-season"
+              // id="demo-simple-select"
+              value={settings.startingSeason}
               label="Starting Season"
-              onChange={handleChange}
+              onChange={(e) => {
+                handleSettingsChange(e.target.value, 'startingSeason');
+              }}
             >
-              <MenuItem value="fall">Fall</MenuItem>
-              <MenuItem value="spring">Spring</MenuItem>
-              <MenuItem value="summer" disabled>Summer</MenuItem>
+              <MenuItem value={Month.FALL}>Fall</MenuItem>
+              <MenuItem value={Month.SPRING}>Spring</MenuItem>
+              <MenuItem value={Month.SUMMER} disabled>Summer</MenuItem>
             </Select>
           </FormControl>
           <FormControl size="small" fullWidth>
@@ -69,13 +73,20 @@ function Settings(props: SettingsProps) {
             <Select
               labelId="select-year"
               id="select-year"
-              value={startingSeason}
+              value={settings.startingYear}
               label="Start Year"
-              onChange={handleChange}
+              onChange={(e) => {
+                console.log(e.target.value);
+                handleSettingsChange(e.target.value, 'startingYear');
+              }}
             >
-              <MenuItem value="fall">2020</MenuItem>
-              <MenuItem value="spring">2021</MenuItem>
-              <MenuItem value="summer">2022</MenuItem>
+              <MenuItem value={2017}>2017</MenuItem>
+              <MenuItem value={2018}>2018</MenuItem>
+              <MenuItem value={2019}>2019</MenuItem>
+              <MenuItem value={2020}>2020</MenuItem>
+              <MenuItem value={2021}>2021</MenuItem>
+              <MenuItem value={2022}>2022</MenuItem>
+              <MenuItem value={2023}>2023</MenuItem>
             </Select>
           </FormControl>
         </div>
@@ -90,7 +101,11 @@ function Settings(props: SettingsProps) {
             type="number"
             size="small"
             value={settings.numberOfSemesters}
-            onChange={handleChange}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const value = e.target.value as unknown as number;
+              if (value > 16 || value < 1) return;
+              handleSettingsChange(value, 'numberOfSemesters');
+            }}
             sx={{
               width: '100%',
             }}

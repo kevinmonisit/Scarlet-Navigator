@@ -8,7 +8,7 @@ enum Month {
 
 interface Settings {
   creditsNeededToGraduate: number;
-  startingSemester: Month;
+  startingSeason: Month;
   startingYear: number;
   startingCredits: number;
   minCredits: number;

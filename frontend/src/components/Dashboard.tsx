@@ -4,10 +4,10 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-unused-vars */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Settings, Month } from '../interfaces/Settings';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
+import { Settings, Month } from '../interfaces/Settings';
 import SemesterColumn, { SemesterColumnInfo } from './SemesterColumn';
 import SearchColumn, { CourseCardInSearch } from './SearchColumn';
 import InfoColumn from './InfoColumn';
@@ -142,24 +142,25 @@ function Dashboard() {
   const [numberOfCourses, setNumberOfCourses] = useState(0);
   const [settings, setSettings] = useState<Settings>({
     creditsNeededToGraduate: 120,
-    startingSemester: Month.SPRING,
+    startingSeason: Month.FALL,
     startingYear: 2021,
     startingCredits: 17,
     minCredits: 12,
     maxCredits: 20,
-    numberOfSemesters: 9
+    numberOfSemesters: 8
   });
 
-  const months = useRef<string[]>([Month.FALL, Month.SPRING]);
+  const [months, setMonths] = useState<string[]>([Month.FALL, Month.SPRING]);
   useEffect(() => {
-    if (settings.startingSemester === Month.FALL) {
-      months.current = [Month.FALL, Month.SPRING];
+    if (settings.startingSeason === Month.FALL) {
+      setMonths([Month.FALL, Month.SPRING]);
     } else {
-      months.current = [Month.SPRING, Month.FALL];
+      setMonths([Month.SPRING, Month.FALL]);
     }
-  }, [settings.startingSemester]);
+  }, [settings.startingSeason]);
 
   useEffect(() => {
+    console.log('matters');
     if (columns) {
       console.log(settings.numberOfSemesters);
       const currentNumberOfSemesters = Object.keys(columns).length;
@@ -174,19 +175,18 @@ function Dashboard() {
           emptyColumns[uuid()] = semesterColumn;
           difference -= 1;
         }
-        // setColumns({
-        //   ...columns,
-        //   ...emptyColumns
-        // });
+        setColumns({
+          ...columns,
+          ...emptyColumns
+        });
       }
     }
   }, [settings.numberOfSemesters]);
 
-  const changeSettings = (newSettings) => {
+  const changeSettings = (newSettings: Settings) => {
     setSettings({
-      ...settings,
       ...newSettings,
-    })
+    });
   };
 
   const checkIfCourseAlreadyInPlan = (courseId: string) => {
@@ -379,17 +379,18 @@ function Dashboard() {
                 >
                   {
                     Object.entries(columns).map(([columnId, column], index) => {
-                      if (index > settings.numberOfSemesters) return <></>;
+                      if (index + 1 > settings.numberOfSemesters) return <></>;
                       // eslint-disable-next-line max-len
                       const percentageCompleted = runningCreditCountArray[index] / settings.creditsNeededToGraduate;
                       // eslint-disable-next-line max-len
                       const quartersOfCreditsCompleted = Math.floor((percentageCompleted * 100) / 25);
-                      const season = months.current[index % 2];
+                      const season = months[index % 2];
                       // spring fall spring fall spring
                       // 0, 1, 2c, 3, 4c
                       // fall spring fall spring fall
                       // 0, 1c, 2, 3c, 4
-                      const offset = settings.startingSemester === Month.FALL ? 1 : 2;
+
+                      const offset = settings.startingSeason === Month.FALL ? 1 : 2;
                       const year = settings.startingYear + Math.floor((index + offset) / 2);
 
                       return (
@@ -416,6 +417,8 @@ function Dashboard() {
         </div>
         <InfoColumn
           currentCourse={currentCourseInfoDisplayed}
+          changeSettings={changeSettings}
+          settings={settings}
         />
       </div>
     </DragDropContext>
