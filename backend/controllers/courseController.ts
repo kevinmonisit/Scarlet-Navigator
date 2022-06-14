@@ -9,7 +9,7 @@ async function getCourses(name: string) {
   const coursesQuery = await CourseModel.find({
     title: { $regex: regexSearch, $options: 'i' },
   })
-    .limit(100)
+    .limit(40)
     .exec();
   return coursesQuery;
 }

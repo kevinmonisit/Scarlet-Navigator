@@ -160,7 +160,10 @@ function Dashboard() {
   }, [settings.startingSeason]);
 
   useEffect(() => {
-    console.log('matters');
+    // originally, we only have 8 semesters
+    // i think it'll look cleaner if we start with 16 blank semesters
+    // from the start instead of having to add them dynamically
+    // if they don't exist
     if (columns) {
       console.log(settings.numberOfSemesters);
       const currentNumberOfSemesters = Object.keys(columns).length;
@@ -328,6 +331,7 @@ function Dashboard() {
     }
   }, [columns]);
 
+  useEffect(createArrayOfSemesterCredits, [settings.startingCredits]);
   useEffect(updateRunningCreditCountArray, [semesterCreditArray]);
 
   console.log('dashboad');
@@ -382,16 +386,16 @@ function Dashboard() {
                       if (index + 1 > settings.numberOfSemesters) return <></>;
                       // eslint-disable-next-line max-len
                       const percentageCompleted = runningCreditCountArray[index] / settings.creditsNeededToGraduate;
+                      const offset = settings.startingSeason === Month.FALL ? 1 : 2;
+
+                      let year = settings.startingYear + Math.floor((index + offset) / 2);
+                      if (settings.startingSeason === Month.SPRING) {
+                        year -= 1;
+                      }
+
                       // eslint-disable-next-line max-len
                       const quartersOfCreditsCompleted = Math.floor((percentageCompleted * 100) / 25);
                       const season = months[index % 2];
-                      // spring fall spring fall spring
-                      // 0, 1, 2c, 3, 4c
-                      // fall spring fall spring fall
-                      // 0, 1c, 2, 3c, 4
-
-                      const offset = settings.startingSeason === Month.FALL ? 1 : 2;
-                      const year = settings.startingYear + Math.floor((index + offset) / 2);
 
                       return (
                         <SemesterColumn

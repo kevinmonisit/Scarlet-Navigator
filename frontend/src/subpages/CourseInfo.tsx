@@ -55,8 +55,8 @@ function CourseInfo(props: CourseInfoProps) {
                 return (
                   // eslint-disable-next-line react/jsx-no-useless-fragment
                   <>
-                    {index === course.campusLocations.length - 1 ? <span className="inline">{modifiedLocation}</span> : (
-                      <span className="inline">
+                    {index === course.campusLocations.length - 1 ? <span key={modifiedLocation} className="inline">{modifiedLocation}</span> : (
+                      <span className="inline" key={modifiedLocation}>
                         {modifiedLocation.concat(',')}
                       </span>
                     )}

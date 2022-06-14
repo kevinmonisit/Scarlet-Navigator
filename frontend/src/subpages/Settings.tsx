@@ -37,7 +37,7 @@ function Settings(props: SettingsProps) {
   const { changeSettings, settings } = props;
 
   const handleSettingsChange = (newValue: string | number, key: string) => {
-    if (!settings[key]) {
+    if (!(key in settings)) {
       console.warn(`A setting of key ${key} does not exist in settings prop`);
       return;
     }
@@ -114,16 +114,23 @@ function Settings(props: SettingsProps) {
             }}
           />
           <TextField
-            id="outlined-number"
             label="Starting Credits"
             type="number"
             size="small"
-            value={0}
+            value={settings.startingCredits}
             sx={{
               width: '100%',
             }}
             InputLabelProps={{
               shrink: true,
+            }}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              let numericValue = parseInt(e.target.value, 10);
+              console.log('starting');
+              console.log(settings.startingCredits);
+              if (Number.isNaN(numericValue)) numericValue = 0;
+              if (numericValue < 0 || numericValue > 120) return;
+              handleSettingsChange(numericValue, 'startingCredits');
             }}
           />
         </div>
