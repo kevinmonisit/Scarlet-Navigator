@@ -36,7 +36,7 @@ function Settings(props: SettingsProps) {
   // eslint-disable-next-line no-unused-vars
   const { changeSettings, settings } = props;
 
-  const handleSettingsChange = (newValue: string | number, key: string) => {
+  const handleSettingsChange = (newValue: string | number | boolean, key: string) => {
     if (!(key in settings)) {
       console.warn(`A setting of key ${key} does not exist in settings prop`);
       return;
@@ -134,7 +134,7 @@ function Settings(props: SettingsProps) {
               }}
             >
               {[...Array(121).keys()].map((startingCredits) => (
-                <MenuItem value={startingCredits}>{startingCredits}</MenuItem>
+                <MenuItem key={`startingCredit-${startingCredits}`} value={startingCredits}>{startingCredits}</MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -153,8 +153,16 @@ function Settings(props: SettingsProps) {
           placement="left"
         >
           <FormControlLabel
-            control={<Checkbox size="small" defaultChecked />}
-            label="Disable minimum credit errors"
+            control={(
+              <Checkbox
+                size="small"
+                checked={settings.enableMinimumCreditErrors}
+                onChange={(e) => {
+                  handleSettingsChange(e.target.checked, 'enableMinimumCreditErrors');
+                }}
+              />
+            )}
+            label="Enable minimum credit errors"
           />
         </Tooltip>
         <FormControlLabel

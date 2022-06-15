@@ -147,7 +147,8 @@ function Dashboard() {
     startingCredits: 17,
     minCredits: 12,
     maxCredits: 20,
-    numberOfSemesters: 8
+    numberOfSemesters: 8,
+    enableMinimumCreditErrors: false,
   });
 
   const [months, setMonths] = useState<string[]>([Month.FALL, Month.SPRING]);
@@ -392,10 +393,16 @@ function Dashboard() {
                       if (settings.startingSeason === Month.SPRING) {
                         year -= 1;
                       }
-
                       // eslint-disable-next-line max-len
                       const quartersOfCreditsCompleted = Math.floor((percentageCompleted * 100) / 25);
                       const season = months[index % 2];
+                      let error = false;
+                      const numberOfCredits = semesterCreditArray[index];
+                      if (settings.enableMinimumCreditErrors
+                        && (numberOfCredits > settings.maxCredits
+                          || numberOfCredits < settings.minCredits)) {
+                        error = true;
+                      }
 
                       return (
                         <SemesterColumn
@@ -411,6 +418,7 @@ function Dashboard() {
                           handleDeleteCourseCard={handleDeleteCourseCard}
                           handleCourseInfoChange={handleCourseInfoChange}
                           getCurrentCourseInfoDisplay={getCurrentCourseInfo}
+                          error={error}
                         />
                       );
                     })
