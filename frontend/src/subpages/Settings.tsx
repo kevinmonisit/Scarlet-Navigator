@@ -113,26 +113,31 @@ function Settings(props: SettingsProps) {
               shrink: true,
             }}
           />
-          <TextField
-            label="Starting Credits"
-            type="number"
-            size="small"
-            value={settings.startingCredits}
-            sx={{
-              width: '100%',
-            }}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              let numericValue = parseInt(e.target.value, 10);
-              console.log('starting');
-              console.log(settings.startingCredits);
-              if (Number.isNaN(numericValue)) numericValue = 0;
-              if (numericValue < 0 || numericValue > 120) return;
-              handleSettingsChange(numericValue, 'startingCredits');
-            }}
-          />
+          <FormControl size="small" fullWidth>
+            <InputLabel id="starting-credits">Starting Credits</InputLabel>
+            <Select
+              labelId="starting-credits"
+              value={settings.startingCredits}
+              label="Starting Credits"
+              size="small"
+              onChange={(e) => {
+                console.log(e.target.value);
+                handleSettingsChange(e.target.value, 'startingCredits');
+              }}
+              sx={{
+                width: '100%'
+              }}
+              MenuProps={{
+                style: {
+                  maxHeight: 200
+                }
+              }}
+            >
+              {[...Array(121).keys()].map((startingCredits) => (
+                <MenuItem value={startingCredits}>{startingCredits}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </div>
       </div>
 
