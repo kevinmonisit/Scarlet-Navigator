@@ -20,6 +20,8 @@ interface SemesterColumnProps {
   semesterCreditCount: number;
   quarterIndexUntilGraduation: number;
   error: boolean;
+  showNumberInsteadOfTitle: boolean;
+  showCourseCredits: boolean;
   getCurrentCourseInfoDisplay: () => any;
   // eslint-disable-next-line no-unused-vars
   handleDeleteCourseCard(index: number, columnId: string);
@@ -41,8 +43,9 @@ function SemesterColumn(props: SemesterColumnProps) {
     handleCourseInfoChange,
     getCurrentCourseInfoDisplay,
     quarterIndexUntilGraduation,
-    // eslint-disable-next-line no-unused-vars
-    error
+    error,
+    showNumberInsteadOfTitle,
+    showCourseCredits,
   } = props;
 
   const defaultBackgroundColor = '#34495e';
@@ -101,7 +104,7 @@ function SemesterColumn(props: SemesterColumnProps) {
         className={`w-full text-center py-2 my-2 rounded-sm text-white relative ${getSemesterBackgroundColor()}`}
         style={{
           // background: defaultBackgroundColor,
-          boxShadow: '0px 3px 4px rgba(0, 0, 0, 0.3)'
+          boxShadow: '0px 3px 4px rgba(0, 0, 0, 0.2)'
         }}
       >
         <div
@@ -156,6 +159,8 @@ function SemesterColumn(props: SemesterColumnProps) {
                     columnId={columnId}
                     isCurrentlySelected={isSelected}
                     indicatorColor={getSemesterBackgroundColor()}
+                    showNumberInsteadOfTitle={showNumberInsteadOfTitle}
+                    showCourseCredits={showCourseCredits}
                   />
                 );
               })}

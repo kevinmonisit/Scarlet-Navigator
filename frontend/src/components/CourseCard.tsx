@@ -7,11 +7,14 @@
 import React, { useRef } from 'react';
 import ClearIcon from '@mui/icons-material/Clear';
 import { Draggable } from 'react-beautiful-dnd';
+import Badge, { BadgeProps } from '@mui/material/Badge';
+import styled from '@emotion/styled';
 
 interface CourseCardInfo {
   _id: string;
   title: string;
   credits: number;
+  courseString: string;
 }
 
 interface CourseCardProps {
@@ -20,18 +23,31 @@ interface CourseCardProps {
   columnId: string;
   isCurrentlySelected: boolean;
   indicatorColor: string;
+  showNumberInsteadOfTitle: boolean;
+  showCourseCredits: boolean;
   // eslint-disable-next-line no-unused-vars
   handleDeleteCourseCard(index: number, columnId: string);
   // eslint-disable-next-line no-unused-vars
   handleCourseInfoChange(courseObject: any);
 }
 
+const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    right: 6,
+    top: 2,
+    border: '2px solid white',
+    width: '4ch',
+    backgroundColor: '#636e72',
+    color: 'white'
+  }
+}));
+
 function CourseCard(props: CourseCardProps) {
   // eslint-disable-next-line no-unused-vars
   const {
     item, index, handleDeleteCourseCard,
     handleCourseInfoChange, columnId, isCurrentlySelected,
-    indicatorColor,
+    indicatorColor, showNumberInsteadOfTitle, showCourseCredits,
   } = props;
 
   const handleDeleteClick = (event) => {
@@ -74,35 +90,47 @@ function CourseCard(props: CourseCardProps) {
             // onMouseOver={() => { handleHover(true); }}
             role="listitem"
           >
-            <div
-              className={
-                `
+            <StyledBadge
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'left'
+              }}
+              badgeContent={item.credits}
+              showZero
+              // color="info"
+              invisible={!showCourseCredits}
+            >
+              <div
+                className={
+                  `
                ${isCurrentlySelected ? 'h-full' : 'h-0'}
                ${indicatorColor}
                bottom-0 left-0 w-1 absolute w-full
                transition-height duration-300 ease-out rounded-sm
                `
-              }
-            />
-            <div className="flex flex-row h-full w-full">
-              <div className="w-10/12 h-full pl-2 py-1 text-lg overflow-hidden text-ellipsis">
-                {item.title}
-              </div>
-              <div
-                className="w-2/12 text-right h-full pr-1 py-2"
-              >
-                <button
-                  className="hover:underline hover:text-gray-400"
-                  // eslint-disable-next-line max-len
-                  onClick={(e) => { handleDeleteClick(e); }}
-                  onKeyDown={(e) => { handleDeleteClick(e); }}
-                  tabIndex={0}
-                  type="button"
+                }
+              />
+
+              <div className="flex flex-row w-full">
+                <div className="w-10/12 h-full pl-2 py-1 text-lg overflow-hidden text-ellipsis">
+                  {showNumberInsteadOfTitle ? item.courseString : item.title}
+                </div>
+                <div
+                  className="w-2/12 text-right h-full pr-1 py-2"
                 >
-                  <ClearIcon fontSize="inherit" />
-                </button>
+                  <button
+                    className="hover:underline hover:text-gray-400"
+                    // eslint-disable-next-line max-len
+                    onClick={(e) => { handleDeleteClick(e); }}
+                    onKeyDown={(e) => { handleDeleteClick(e); }}
+                    tabIndex={0}
+                    type="button"
+                  >
+                    <ClearIcon fontSize="inherit" />
+                  </button>
+                </div>
               </div>
-            </div>
+            </StyledBadge>
           </div>
         );
       }}

@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
-import { Settings, Month } from './interfaces/Settings';
+import { Settings, Month, defaultSettings } from './interfaces/Settings';
 import SemesterColumn, { SemesterColumnInfo } from './components/SemesterColumn';
 import SearchColumn, { CourseCardInSearch } from './columns/SearchColumn';
 import InfoColumn from './columns/infoColumn/InfoColumn';
@@ -140,17 +140,7 @@ function Dashboard() {
 
   const setOfCurrentCourseIDs = useRef<Set<string> | null>(null);
   const [numberOfCourses, setNumberOfCourses] = useState(0);
-  const [settings, setSettings] = useState<Settings>({
-    creditsNeededToGraduate: 120,
-    startingSeason: Month.FALL,
-    startingYear: 2021,
-    startingCredits: 17,
-    minCredits: 12,
-    maxCredits: 20,
-    numberOfSemesters: 8,
-    enableMinimumCreditErrors: false,
-    maxSearchQuery: 30,
-  });
+  const [settings, setSettings] = useState<Settings>({ ...defaultSettings });
 
   const [months, setMonths] = useState<string[]>([Month.FALL, Month.SPRING]);
   useEffect(() => {
@@ -420,6 +410,8 @@ function Dashboard() {
                           handleCourseInfoChange={handleCourseInfoChange}
                           getCurrentCourseInfoDisplay={getCurrentCourseInfo}
                           error={error}
+                          showNumberInsteadOfTitle={settings.showNumberInsteadOfTitle}
+                          showCourseCredits={settings.showCourseCredits}
                         />
                       );
                     })

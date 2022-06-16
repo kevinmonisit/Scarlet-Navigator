@@ -10,6 +10,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import React from 'react';
 import NumberMenu from '../../components/NumberMenu';
+import SettingsCheckBox from '../../components/SettingsCheckbox';
 import { Settings as SettingsInterface, Month } from '../../interfaces/Settings';
 
 const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -144,28 +145,13 @@ function Settings(props: SettingsProps) {
 
       <Box sx={{ height: '1.5rem' }} />
       <FormGroup>
-        <Tooltip
-          title="The minimum credits per semester is 12. If enabled,
-          an error will be shown to indicate a semester does not meet the
-           minimum number of credits."
-          enterDelay={500}
-          enterNextDelay={300}
-          arrow
-          placement="left"
-        >
-          <FormControlLabel
-            control={(
-              <Checkbox
-                size="small"
-                checked={settings.enableMinimumCreditErrors}
-                onChange={(e) => {
-                  handleSettingsChange(e.target.checked, 'enableMinimumCreditErrors');
-                }}
-              />
-            )}
-            label="Enable minimum credit errors"
-          />
-        </Tooltip>
+        <SettingsCheckBox
+          settingName="enableMinimumCreditErrors"
+          labelName="Enable minimum credit errors"
+          toolTip="Show"
+          handleSettingsChange={handleSettingsChange}
+          checked={settings.enableMinimumCreditErrors}
+        />
         <FormControlLabel
           control={<Checkbox size="small" />}
           label="Include summer semesters"
@@ -212,7 +198,7 @@ function Settings(props: SettingsProps) {
             labelName="Max Search Query"
             settingName="maxSearchQuery"
             handleSettingsChange={handleSettingsChange}
-            toolTip="Maximum number of courses shown in search."
+            toolTip="Maximum number of courses shown in search. Keep it low if your computer cannot handle it."
           />
           <NumberMenu
             value={settings.creditsNeededToGraduate}
@@ -227,73 +213,36 @@ function Settings(props: SettingsProps) {
 
       {/* TODO: Rewrite code to look better  */}
 
+      <div className="flex flex-col w-full h-full">
+        <SettingsCheckBox
+          settingName="showNumberInsteadOfTitle"
+          labelName="Show Course Numbers"
+          toolTip="Show things"
+          checked={settings.showNumberInsteadOfTitle}
+          handleSettingsChange={handleSettingsChange}
+        />
+        <SettingsCheckBox
+          settingName="prerequisiteValidationEnabled"
+          labelName="Prerequisite validation enabled"
+          toolTip="Show things"
+          checked={settings.prerequisiteValidationEnabled}
+          handleSettingsChange={handleSettingsChange}
+        />
+        <SettingsCheckBox
+          settingName="showCourseCredits"
+          labelName="Show course credits"
+          toolTip="Show things"
+          checked={settings.showCourseCredits}
+          handleSettingsChange={handleSettingsChange}
+        />
+        <FormControlLabel
+          control={<Checkbox size="small" />}
+          label="Turn on experimental course colors"
+          disabled
+        />
+      </div>
+
       <Grid container direction="column" spacing={0.2}>
-        <Grid item>
-          <CustomWidthTooltip
-            title="Disables errors for minimum or maximum number of credits per semester."
-          >
-            <FormControlLabel
-              control={<Checkbox size="small" />}
-              label="Disable all credit requirements"
-            />
-          </CustomWidthTooltip>
-        </Grid>
-        <Grid item>
-
-          <FormControlLabel
-            control={<Checkbox size="small" />}
-            label="Disable prerequisite validation"
-          />
-
-        </Grid>
-        <Grid item>
-
-          <FormControlLabel
-            control={<Checkbox size="small" />}
-            label="Show course numbers instead of shortened title"
-          />
-
-        </Grid>
-        <Grid item>
-          <CustomWidthTooltip
-            title="When the search is blank, the first 100 random courses are shown.
-            When checked, all courses will show. Only check if your computer can handle it."
-          >
-            <FormControlLabel
-              control={<Checkbox size="small" />}
-              label="Show all courses when search is blank"
-            />
-          </CustomWidthTooltip>
-        </Grid>
-        <Grid item>
-          <FormControlLabel
-            control={<Checkbox size="small" defaultChecked />}
-            label="Show credits in courses"
-          />
-        </Grid>
-        <Grid item>
-          <FormControlLabel
-            control={<Checkbox size="small" defaultChecked />}
-            label="Disable progressive semester coloring"
-          />
-        </Grid>
-        <Grid item>
-          <h2 className="font-semibold text-lg">Experimental</h2>
-        </Grid>
-        <Grid item>
-          <FormControlLabel
-            control={<Checkbox size="small" />}
-            label="Turn on experimental course titles"
-            disabled
-          />
-        </Grid>
-        <Grid item>
-          <FormControlLabel
-            control={<Checkbox size="small" />}
-            label="Turn on experimental course colors"
-            disabled
-          />
-        </Grid>
         <Grid item width="100%">
           <div className="w-full flex flex-col items-center space-y-3 my-5">
             <Grid item>

@@ -16,7 +16,27 @@ interface Settings {
   numberOfSemesters: number;
   maxSearchQuery: number;
   enableMinimumCreditErrors: boolean;
+  showNumberInsteadOfTitle: boolean;
+  includeSummerSemesters: boolean;
+  prerequisiteValidationEnabled: boolean;
+  showCourseCredits: boolean;
 }
 
-export { Month };
+const defaultSettings: Settings = {
+  creditsNeededToGraduate: 120,
+  startingSeason: Month.FALL,
+  startingYear: 2021,
+  startingCredits: 17,
+  minCredits: 12,
+  maxCredits: 20,
+  numberOfSemesters: 8,
+  enableMinimumCreditErrors: false,
+  maxSearchQuery: 30,
+  showNumberInsteadOfTitle: false,
+  includeSummerSemesters: false,
+  prerequisiteValidationEnabled: true,
+  showCourseCredits: false,
+};
+
+export { Month, defaultSettings };
 export type { Settings };
