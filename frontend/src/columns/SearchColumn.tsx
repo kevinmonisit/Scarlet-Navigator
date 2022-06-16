@@ -5,7 +5,7 @@ import Input from '@mui/material/Input';
 import axios from 'axios';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import React, { useCallback, useEffect, useState } from 'react';
-import CourseSearchCard from './CourseSearchCard';
+import CourseSearchCard from '../components/CourseSearchCard';
 
 interface CourseCardInSearch {
   title: string;

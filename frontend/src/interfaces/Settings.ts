@@ -14,6 +14,7 @@ interface Settings {
   minCredits: number;
   maxCredits: number;
   numberOfSemesters: number;
+  maxSearchQuery: number;
   enableMinimumCreditErrors: boolean;
 }
 

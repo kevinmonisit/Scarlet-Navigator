@@ -49,16 +49,16 @@ function CourseInfo(props: CourseInfoProps) {
             <div>
               <span className="font-semibold">Locations: </span>
             </div>
-            <div className="flex flex-row space-x-1">
+            <div className="flex flex-row flex-wrap">
               {course.campusLocations.map((location, index) => {
                 const modifiedLocation = location.toLowerCase() === 'o' ? 'Online' : location;
                 return (
                   // eslint-disable-next-line react/jsx-no-useless-fragment
                   <>
                     {index === course.campusLocations.length - 1 ? <span key={modifiedLocation} className="inline">{modifiedLocation}</span> : (
-                      <span className="inline" key={modifiedLocation}>
+                      <div key={modifiedLocation} className="mr-1">
                         {modifiedLocation.concat(',')}
-                      </span>
+                      </div>
                     )}
                   </>
                 );

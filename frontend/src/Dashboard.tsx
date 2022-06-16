@@ -7,10 +7,10 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
-import { Settings, Month } from '../interfaces/Settings';
-import SemesterColumn, { SemesterColumnInfo } from './SemesterColumn';
-import SearchColumn, { CourseCardInSearch } from './SearchColumn';
-import InfoColumn from './InfoColumn';
+import { Settings, Month } from './interfaces/Settings';
+import SemesterColumn, { SemesterColumnInfo } from './components/SemesterColumn';
+import SearchColumn, { CourseCardInSearch } from './columns/SearchColumn';
+import InfoColumn from './columns/infoColumn/InfoColumn';
 
 const BASE_URL = process.env.REACT_APP_ENV === 'Production' ? process.env.REACT_APP_API_URL : '';
 
@@ -149,6 +149,7 @@ function Dashboard() {
     maxCredits: 20,
     numberOfSemesters: 8,
     enableMinimumCreditErrors: false,
+    maxSearchQuery: 30,
   });
 
   const [months, setMonths] = useState<string[]>([Month.FALL, Month.SPRING]);

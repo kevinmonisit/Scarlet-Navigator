@@ -9,7 +9,8 @@ import FormGroup from '@mui/material/FormGroup';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import React from 'react';
-import { Settings as SettingsInterface, Month } from '../interfaces/Settings';
+import NumberMenu from '../../components/NumberMenu';
+import { Settings as SettingsInterface, Month } from '../../interfaces/Settings';
 
 const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip
@@ -177,7 +178,7 @@ function Settings(props: SettingsProps) {
           placement="left"
         >
           <FormControlLabel
-            control={<Checkbox size="small" />}
+            control={<Checkbox size="small" disabled />}
             label="Enable requirement tab (CS)"
           />
         </Tooltip>
@@ -187,76 +188,40 @@ function Settings(props: SettingsProps) {
 
       <div className="flex flex-col w-full h-full">
         <div className="flex flex-row w-full">
-          <CustomWidthTooltip
-            title="Minimum number of credits to graduate. Default is 120 in SAS."
-          >
-            <TextField
-              id="outlined-number"
-              label="Min credits"
-              type="number"
-              size="small"
-              value={120}
-              sx={{
-                width: '100%'
-              }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </CustomWidthTooltip>
-          <CustomWidthTooltip
-            title="Maximum number of credits per semester until an error is shown. Default is 21."
-          >
-            <TextField
-              id="outlined-number"
-              label="Max credits"
-              type="number"
-              size="small"
-              value={21}
-              sx={{
-                width: '100%'
-              }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </CustomWidthTooltip>
+          <NumberMenu
+            value={settings.minCredits}
+            range={15}
+            labelName="Min Credits"
+            settingName="minCredits"
+            handleSettingsChange={handleSettingsChange}
+            toolTip="Minimum credits per semester"
+          />
+          <NumberMenu
+            value={settings.maxCredits}
+            range={25}
+            labelName="Max Credits"
+            settingName="maxCredits"
+            handleSettingsChange={handleSettingsChange}
+            toolTip="Maximum credits per semester"
+          />
         </div>
         <div className="flex flex-row w-full mt-4">
-          <CustomWidthTooltip
-            title="Minimum number of credits to graduate. Default is 120 in SAS."
-          >
-            <TextField
-              id="outlined-number"
-              label="Max search query"
-              type="number"
-              size="small"
-              value={120}
-              sx={{
-                width: '100%'
-              }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </CustomWidthTooltip>
-          <CustomWidthTooltip
-            title="Minimum number of credits per semester until an error is shown. Default is 12."
-          >
-            <TextField
-              id="outlined-number"
-              label="Graduation req."
-              type="number"
-              size="small"
-              value={12}
-              sx={{
-                width: '100%'
-              }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </CustomWidthTooltip>
+          <NumberMenu
+            value={settings.maxSearchQuery}
+            range={40}
+            labelName="Max Search Query"
+            settingName="maxSearchQuery"
+            handleSettingsChange={handleSettingsChange}
+            toolTip="Maximum number of courses shown in search."
+          />
+          <NumberMenu
+            value={settings.creditsNeededToGraduate}
+            range={150}
+            labelName="Graduation req"
+            settingName="creditsNeededToGraduate"
+            handleSettingsChange={handleSettingsChange}
+            toolTip="Number of credits needed for graduation."
+          />
         </div>
       </div>
 

@@ -6,9 +6,9 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Settings as SettingsInterface } from '../interfaces/Settings';
-import Settings from '../subpages/Settings';
-import CourseInfo from '../subpages/CourseInfo';
+import { Settings as SettingsInterface } from '../../interfaces/Settings';
+import Settings from './Settings';
+import CourseInfo from '../CourseInfo';
 
 interface InfoColumnProps {
   currentCourse: any;
@@ -88,6 +88,7 @@ function InfoColumn(props: InfoColumnProps) {
           >
             {/* <StyledTab label="Planner" /> */}
             <StyledTab label="Course" />
+            <StyledTab label="Core" />
             <StyledTab label="Settings" />
           </StyledTabs>
           <Box sx={{ p: 0.5 }} />
