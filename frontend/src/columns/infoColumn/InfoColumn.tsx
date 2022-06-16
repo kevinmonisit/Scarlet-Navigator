@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-underscore-dangle */
 import { styled } from '@mui/material/styles';
@@ -6,9 +7,11 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import MENU_PAGE from '../../interfaces/CourseInfo';
 import { Settings as SettingsInterface } from '../../interfaces/Settings';
 import Settings from './Settings';
-import CourseInfo from '../CourseInfo';
+import CourseInfo from './CourseInfo';
+import Requirements from './Requirements';
 
 interface InfoColumnProps {
   currentCourse: any;
@@ -67,10 +70,10 @@ const StyledTab = styled((props: StyledTabProps) => (
 
 function InfoColumn(props: InfoColumnProps) {
   const { currentCourse, changeSettings, settings } = props;
-  const [value, setValue] = useState(1);
+  const [value, setValue] = useState(MENU_PAGE.SETTINGS);
 
   useEffect(() => {
-    if (currentCourse) { setValue(0); } // automatically set to course tab
+    if (currentCourse) { setValue(MENU_PAGE.COURSE); } // automatically set to course tab
   }, [currentCourse]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -97,14 +100,17 @@ function InfoColumn(props: InfoColumnProps) {
       <div className="w-full h-full relative">
         <div className="absolute h-full w-full">
           <div className="overflow-hidden overflow-y-scroll h-full">
-            {value === 1
+            {value === MENU_PAGE.SETTINGS
               ? (
                 <Settings
                   changeSettings={changeSettings}
                   settings={settings}
                 />
-              )
-              : <CourseInfo course={currentCourse} />}
+              ) : <></>}
+            {value === MENU_PAGE.COURSE
+              ? <CourseInfo course={currentCourse} /> : <></>}
+            {value === MENU_PAGE.COURSE
+              ? <Requirements /> : <></>}
           </div>
         </div>
       </div>

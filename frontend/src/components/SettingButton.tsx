@@ -6,7 +6,17 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function AlertDialog() {
+interface AlertDialogProps {
+  // eslint-disable-next-line react/no-unused-prop-types
+  handleConfirmation: () => void;
+  buttonLabel: string;
+  dialogText: string;
+  dialogTitle: string;
+  primary?: boolean;
+}
+
+function AlertDialog(props: AlertDialogProps) {
+  const { handleConfirmation, buttonLabel, dialogText, dialogTitle, primary } = props;
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -17,10 +27,15 @@ export default function AlertDialog() {
     setOpen(false);
   };
 
+  const handleAgree = () => {
+    handleClose();
+    handleConfirmation();
+  };
+
   return (
-    <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open alert dialog
+    <div className="my-2">
+      <Button variant={primary ? 'contained' : 'outlined'} onClick={handleClickOpen}>
+        {buttonLabel}
       </Button>
       <Dialog
         open={open}
@@ -29,21 +44,26 @@ export default function AlertDialog() {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          Use Google's location service?
+          {dialogTitle}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous
-            location data to Google, even when no apps are running.
+            {dialogText}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleClose} autoFocus>
-            Agree
+          <Button onClick={handleClose}>Back</Button>
+          <Button onClick={handleAgree} autoFocus>
+            Confirm
           </Button>
         </DialogActions>
       </Dialog>
     </div>
   );
 }
+
+AlertDialog.defaultProps = {
+  primary: false
+};
+
+export default AlertDialog;

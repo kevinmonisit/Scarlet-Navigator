@@ -1,5 +1,4 @@
-import styled from '@emotion/styled';
-import { Button, Grid, Select, TextField, Tooltip, tooltipClasses, TooltipProps } from '@mui/material';
+import { Select, TextField, Tooltip } from '@mui/material';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import Divider from '@mui/material/Divider';
@@ -10,23 +9,9 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import React from 'react';
 import NumberMenu from '../../components/NumberMenu';
+import SettingButton from '../../components/SettingButton';
 import SettingsCheckBox from '../../components/SettingsCheckbox';
-import { Settings as SettingsInterface, Month } from '../../interfaces/Settings';
-
-const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
-  <Tooltip
-    {...props}
-    arrow
-    placement="right"
-    enterDelay={1000}
-    enterNextDelay={300}
-    classes={{ popper: className }}
-  />
-))({
-  [`& .${tooltipClasses.tooltip}`]: {
-    maxWidth: 150,
-  },
-});
+import { Settings as SettingsInterface, Month, defaultSettings } from '../../interfaces/Settings';
 
 interface SettingsProps {
   // eslint-disable-next-line no-unused-vars
@@ -50,8 +35,13 @@ function Settings(props: SettingsProps) {
     });
   };
 
+  // eslint-disable-next-line no-unused-vars
+  const resetSettings = () => {
+    changeSettings({ ...defaultSettings });
+  };
+
   return (
-    <div className="grow p-2 w-full">
+    <div className="grow p-2 w-full select-none">
       <div className="flex flex-col items-center justify-center w-full">
         <div className="flex flex-row items-center w-full">
           <FormControl size="small" fullWidth>
@@ -240,37 +230,32 @@ function Settings(props: SettingsProps) {
           label="Turn on experimental course colors"
           disabled
         />
+        <div className="w-full items-center flex flex-col mt-1">
+          <SettingButton
+            handleConfirmation={() => { }}
+            buttonLabel="Reset Plan"
+            dialogTitle="Reset your plan?"
+            dialogText="All semesters will be reset and you'll start with empty semesters again.
+            This action is not reversible. Do you wish to continue?"
+          />
+          <SettingButton
+            handleConfirmation={resetSettings}
+            buttonLabel="Reset settings"
+            dialogTitle="Reset settings to default?"
+            dialogText="All modifications to settings will be set back to their default values. Do you wish to continue?"
+          />
+          <SettingButton
+            handleConfirmation={() => {
+              resetSettings();
+            }}
+            buttonLabel="Reset Everything"
+            dialogTitle="Reset Everything?"
+            dialogText="All settings will be set back to default and your current plan will be reset.
+            This action is not reversible. Do you wish to continue?"
+            primary
+          />
+        </div>
       </div>
-
-      <Grid container direction="column" spacing={0.2}>
-        <Grid item width="100%">
-          <div className="w-full flex flex-col items-center space-y-3 my-5">
-            <Grid item>
-              <CustomWidthTooltip
-                title="Removes all courses from semesters."
-              >
-                <Button variant="outlined">Reset Plan</Button>
-              </CustomWidthTooltip>
-            </Grid>
-            <Grid item>
-              <CustomWidthTooltip
-                title="Reset settings to default values."
-              >
-                <Button variant="outlined">Reset settings</Button>
-              </CustomWidthTooltip>
-            </Grid>
-            <Grid item>
-              <CustomWidthTooltip
-                title="Resets settings and removes all courses currently placed."
-              >
-                <Button variant="contained">Reset Everything</Button>
-              </CustomWidthTooltip>
-            </Grid>
-          </div>
-
-        </Grid>
-
-      </Grid>
     </div>
   );
 }

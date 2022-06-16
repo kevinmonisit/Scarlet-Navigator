@@ -295,6 +295,25 @@ function Dashboard() {
     setOfCurrentCourseIDs.current = newSet;
   };
 
+  const resetPlan = () => {
+    const MAX_REGULAR_SEMESTERS = 16;
+    const MAX_SUMMER_SEMESTERS = 8;
+    const MAX_TOTAL_SEMESTERS = MAX_REGULAR_SEMESTERS + MAX_SUMMER_SEMESTERS;
+
+    const blankPlan: ColumnContainer = {};
+    for (let k = 0; k < MAX_TOTAL_SEMESTERS; k += 1) {
+      const semesterColumn: SemesterColumnInfo = {
+        items: [],
+        title: ''
+      };
+      blankPlan[uuid()] = semesterColumn;
+    }
+
+    setColumns({
+      ...blankPlan
+    });
+  };
+
   useEffect(() => {
     axios.get(`${BASE_URL}/api/v1/user/${process.env.REACT_APP_USER_ID}/plan`)
       .then((res) => {
@@ -359,6 +378,7 @@ function Dashboard() {
             upstreamQuery={upstreamQuery}
             handleCourseInfoChange={handleCourseInfoChange}
             getCurrentCourseInfoDisplay={getCurrentCourseInfo}
+            showCourseCredits={settings.showCourseCredits}
           />
 
         )}

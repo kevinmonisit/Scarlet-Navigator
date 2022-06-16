@@ -6,8 +6,8 @@ export default styled(({ className, ...props }: TooltipProps) => (
   <Tooltip
     {...props}
     arrow
-    placement="right"
-    enterDelay={1000}
+    placement="top"
+    enterDelay={500}
     enterNextDelay={300}
     classes={{ popper: className }}
   />

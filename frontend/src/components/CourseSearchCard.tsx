@@ -12,9 +12,9 @@ interface CourseSearchCardProps {
   courseId: string;
   courseString: string;
   isCurrentlySelected: boolean;
-  // numberOfCourses: number;
+  showCourseCredits: boolean;
+  credits: number;
   // eslint-disable-next-line no-unused-vars
-  // checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
   handleCourseInfoChange(id: string): void;
   alreadyInPlan: boolean | undefined;
 }
@@ -26,6 +26,8 @@ interface PseudoCourseCardProps {
   backgroundColor?: string;
   isAbsolute?: boolean;
   disabled?: boolean;
+  showCourseCredits: boolean;
+  credits: number;
 }
 
 function PseudoCourseCard(props: PseudoCourseCardProps) {
@@ -34,7 +36,10 @@ function PseudoCourseCard(props: PseudoCourseCardProps) {
     backgroundColor,
     isAbsolute,
     disabled,
-    isCurrentlySelected } = props;
+    isCurrentlySelected,
+    showCourseCredits,
+    credits
+  } = props;
 
   const regularTheme = {
     backgroundColor,
@@ -68,7 +73,7 @@ function PseudoCourseCard(props: PseudoCourseCardProps) {
       ${!isAbsolute ? 'mt-2' : ''}
       bg-gray-100 w-full px-2  text-lg
       font-semibold rounded-sm overflow-hidden text-ellipsis
-      select-none relative
+      select-none relative py-1
       `}
         style={{
           boxShadow: !disabled ? '0px 3px 5px rgba(0, 0, 0, 0.2)' : ''
@@ -86,6 +91,9 @@ function PseudoCourseCard(props: PseudoCourseCardProps) {
           }
         />
         {shortTitle}
+        {showCourseCredits ? <span className="font-normal text-xs ml-1 align-top">{credits}</span>
+          // eslint-disable-next-line react/jsx-no-useless-fragment
+          : <></>}
       </div>
     </Tooltip>
 
@@ -106,6 +114,8 @@ function CourseSearchCard(props: CourseSearchCardProps) {
     courseString,
     handleCourseInfoChange,
     isCurrentlySelected,
+    showCourseCredits,
+    credits
   } = props;
 
   const handleCourseClick = (event) => {
@@ -148,6 +158,8 @@ function CourseSearchCard(props: CourseSearchCardProps) {
                           shortTitle={shortTitle}
                           disabled={!alreadyInPlan}
                           isCurrentlySelected={isCurrentlySelected}
+                          showCourseCredits={showCourseCredits}
+                          credits={credits}
                         />
                       )}
 
@@ -166,6 +178,8 @@ function CourseSearchCard(props: CourseSearchCardProps) {
                         backgroundColor={backgroundColor}
                         disabled={!alreadyInPlan}
                         isCurrentlySelected={isCurrentlySelected}
+                        showCourseCredits={showCourseCredits}
+                        credits={credits}
                       />
                     </div>
                   </>

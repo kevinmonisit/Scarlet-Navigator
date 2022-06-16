@@ -11,11 +11,13 @@ interface CourseCardInSearch {
   title: string;
   courseString: string;
   _id: string;
+  credits: number;
 }
 
 const BASE_URL = process.env.REACT_APP_ENV === 'Production' ? process.env.REACT_APP_API_URL : '';
 
 interface SearchColumnProps {
+  showCourseCredits: boolean;
   // eslint-disable-next-line no-unused-vars
   checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
   handleCourseInfoChange(id: string): void;
@@ -29,7 +31,9 @@ function SearchColumn(props: SearchColumnProps) {
     checkIfCourseAlreadyInPlan,
     upstreamQuery,
     handleCourseInfoChange,
-    getCurrentCourseInfoDisplay } = props;
+    getCurrentCourseInfoDisplay,
+    showCourseCredits,
+  } = props;
   const [queriedCards, setQueriedCards] = useState<CourseCardInSearch[] | null>([]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -149,6 +153,8 @@ function SearchColumn(props: SearchColumnProps) {
                     alreadyInPlan={checkAlreadyExists}
                     handleCourseInfoChange={handleCourseClick}
                     isCurrentlySelected={isSelected}
+                    showCourseCredits={showCourseCredits}
+                    credits={courseCardSearch.credits}
                   />
                 );
               })}
