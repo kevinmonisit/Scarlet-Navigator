@@ -379,6 +379,7 @@ function Dashboard() {
             handleCourseInfoChange={handleCourseInfoChange}
             getCurrentCourseInfoDisplay={getCurrentCourseInfo}
             showCourseCredits={settings.showCourseCredits}
+            numberOfCardsToQuery={settings.maxSearchQuery}
           />
 
         )}
@@ -444,6 +445,7 @@ function Dashboard() {
           currentCourse={currentCourseInfoDisplayed}
           changeSettings={changeSettings}
           settings={settings}
+          resetPlan={resetPlan}
         />
       </div>
     </DragDropContext>

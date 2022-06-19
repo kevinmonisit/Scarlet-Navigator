@@ -15,6 +15,7 @@ interface Settings {
   maxCredits: number;
   numberOfSemesters: number;
   maxSearchQuery: number;
+  /* This should be: enable credit errors */
   enableMinimumCreditErrors: boolean;
   showNumberInsteadOfTitle: boolean;
   includeSummerSemesters: boolean;
@@ -31,7 +32,7 @@ const defaultSettings: Settings = {
   maxCredits: 20,
   numberOfSemesters: 8,
   enableMinimumCreditErrors: false,
-  maxSearchQuery: 30,
+  maxSearchQuery: 20,
   showNumberInsteadOfTitle: false,
   includeSummerSemesters: false,
   prerequisiteValidationEnabled: true,

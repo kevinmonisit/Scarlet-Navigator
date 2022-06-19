@@ -12,6 +12,7 @@ interface NumberMenuProps {
   value: string | number;
   labelName: string;
   toolTip: string;
+  offSetOne?: boolean;
   // eslint-disable-next-line no-unused-vars
   handleSettingsChange: (e, setting: string) => void;
 }
@@ -23,9 +24,12 @@ function NumberMenu(props: NumberMenuProps) {
     value,
     handleSettingsChange,
     toolTip,
+    offSetOne
   } = props;
 
   const id = settingName.replaceAll(' ', '-');
+  // an offset so we don't have 0 as an option for queries
+  const offset = offSetOne ? 1 : 0;
 
   return (
     <CustomToolTip
@@ -51,12 +55,16 @@ function NumberMenu(props: NumberMenuProps) {
           }}
         >
           {[...Array(range).keys()].map((number) => (
-            <MenuItem key={`${settingName}-${number}`} value={number}>{number}</MenuItem>
+            <MenuItem key={`${settingName}-${number + offset}`} value={number + offset}>{number + offset}</MenuItem>
           ))}
         </Select>
       </FormControl>
     </CustomToolTip>
   );
 }
+
+NumberMenu.defaultProps = {
+  offSetOne: false
+};
 
 export default NumberMenu;

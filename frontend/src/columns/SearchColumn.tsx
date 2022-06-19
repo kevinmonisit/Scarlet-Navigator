@@ -14,10 +14,18 @@ interface CourseCardInSearch {
   credits: number;
 }
 
+// eslint-disable-next-line no-shadow
+enum SEARCH_BY {
+  TITLE = 0,
+  NUMBER = 1,
+  EXPANDED_TITLE = 2,
+}
+
 const BASE_URL = process.env.REACT_APP_ENV === 'Production' ? process.env.REACT_APP_API_URL : '';
 
 interface SearchColumnProps {
   showCourseCredits: boolean;
+  numberOfCardsToQuery: number;
   // eslint-disable-next-line no-unused-vars
   checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
   handleCourseInfoChange(id: string): void;
@@ -33,6 +41,8 @@ function SearchColumn(props: SearchColumnProps) {
     handleCourseInfoChange,
     getCurrentCourseInfoDisplay,
     showCourseCredits,
+    numberOfCardsToQuery,
+
   } = props;
   const [queriedCards, setQueriedCards] = useState<CourseCardInSearch[] | null>([]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -64,15 +74,14 @@ function SearchColumn(props: SearchColumnProps) {
     //   return;
     // }
 
-    axios.get(`${BASE_URL}/api/v1/courses`, { params: { search: value } })
+    axios.get(`${BASE_URL}/api/v1/courses`, { params: { search: value, amount: numberOfCardsToQuery } })
       .then((res) => {
         setQueriedCards(res.data.coursesQuery);
       });
   };
 
-  useEffect(queryCourses, []);
   useEffect(() => { upstreamQuery(queriedCards); }, [queriedCards]);
-  useEffect(queryCourses, [value]);
+  useEffect(queryCourses, [value, numberOfCardsToQuery]);
 
   console.log('re render search column');
 
@@ -81,7 +90,7 @@ function SearchColumn(props: SearchColumnProps) {
       <div
         className="flex flex-row z-50 mr-2"
         style={{
-          boxShadow: '0px 3px 10px rgba(0, 0, 0, 0.2)'
+          boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.2)'
         }}
       >
         <Input

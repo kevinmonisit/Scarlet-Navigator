@@ -111,7 +111,7 @@ function SemesterColumn(props: SemesterColumnProps) {
           className={`${error ? 'w-24' : 'w-0'}
                      h-0.5 bg-white absolute top-4 mx-auto
                      left-0 right-0
-                     transition-width duration-300 ease-out`}
+                     transition-width duration-500 ease-in-out`}
         />
         <h2 className="font-semibold">
           {season}

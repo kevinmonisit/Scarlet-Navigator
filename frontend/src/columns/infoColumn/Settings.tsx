@@ -16,12 +16,13 @@ import { Settings as SettingsInterface, Month, defaultSettings } from '../../int
 interface SettingsProps {
   // eslint-disable-next-line no-unused-vars
   changeSettings: (newSettings: SettingsInterface) => void;
+  resetPlan: () => void;
   settings: SettingsInterface;
 }
 
 function Settings(props: SettingsProps) {
   // eslint-disable-next-line no-unused-vars
-  const { changeSettings, settings } = props;
+  const { changeSettings, resetPlan, settings } = props;
 
   const handleSettingsChange = (newValue: string | number | boolean, key: string) => {
     if (!(key in settings)) {
@@ -189,6 +190,7 @@ function Settings(props: SettingsProps) {
             settingName="maxSearchQuery"
             handleSettingsChange={handleSettingsChange}
             toolTip="Maximum number of courses shown in search. Keep it low if your computer cannot handle it."
+            offSetOne
           />
           <NumberMenu
             value={settings.creditsNeededToGraduate}
@@ -232,7 +234,7 @@ function Settings(props: SettingsProps) {
         />
         <div className="w-full items-center flex flex-col mt-1">
           <SettingButton
-            handleConfirmation={() => { }}
+            handleConfirmation={resetPlan}
             buttonLabel="Reset Plan"
             dialogTitle="Reset your plan?"
             dialogText="All semesters will be reset and you'll start with empty semesters again.
@@ -247,6 +249,7 @@ function Settings(props: SettingsProps) {
           <SettingButton
             handleConfirmation={() => {
               resetSettings();
+              resetPlan();
             }}
             buttonLabel="Reset Everything"
             dialogTitle="Reset Everything?"

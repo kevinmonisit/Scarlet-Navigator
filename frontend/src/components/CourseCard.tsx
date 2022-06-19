@@ -49,7 +49,7 @@ function CourseCard(props: CourseCardProps) {
     handleCourseInfoChange(item);
   };
 
-  console.log('re-render');
+  // console.log('re-render');
 
   return (
     <Draggable
@@ -99,7 +99,7 @@ function CourseCard(props: CourseCardProps) {
                   : <></>}
               </div>
               <div
-                className="w-2/12 text-right h-full pr-1"
+                className="w-2/12 text-right h-full pt-1.5 pr-1"
               >
                 <button
                   className="hover:underline hover:text-gray-400"

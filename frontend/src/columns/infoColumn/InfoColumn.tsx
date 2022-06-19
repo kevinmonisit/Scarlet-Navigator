@@ -17,6 +17,7 @@ interface InfoColumnProps {
   currentCourse: any;
   settings: SettingsInterface;
   changeSettings: (settings: SettingsInterface) => void;
+  resetPlan: () => void;
 }
 
 // TODO: replace type any with the course model schema
@@ -69,7 +70,7 @@ const StyledTab = styled((props: StyledTabProps) => (
 }));
 
 function InfoColumn(props: InfoColumnProps) {
-  const { currentCourse, changeSettings, settings } = props;
+  const { currentCourse, changeSettings, resetPlan, settings } = props;
   const [value, setValue] = useState(MENU_PAGE.SETTINGS);
 
   useEffect(() => {
@@ -105,11 +106,12 @@ function InfoColumn(props: InfoColumnProps) {
                 <Settings
                   changeSettings={changeSettings}
                   settings={settings}
+                  resetPlan={resetPlan}
                 />
               ) : <></>}
             {value === MENU_PAGE.COURSE
               ? <CourseInfo course={currentCourse} /> : <></>}
-            {value === MENU_PAGE.COURSE
+            {value === MENU_PAGE.CORE
               ? <Requirements /> : <></>}
           </div>
         </div>
