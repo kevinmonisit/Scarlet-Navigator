@@ -145,9 +145,9 @@ function Dashboard() {
   const [months, setMonths] = useState<string[]>([Month.FALL, Month.SPRING]);
   useEffect(() => {
     if (settings.startingSeason === Month.FALL) {
-      setMonths([Month.FALL, Month.SPRING]);
+      setMonths([Month.FALL, Month.SPRING, Month.SUMMER]);
     } else {
-      setMonths([Month.SPRING, Month.FALL]);
+      setMonths([Month.SPRING, Month.SUMMER, Month.FALL]);
     }
   }, [settings.startingSeason]);
 
@@ -314,6 +314,62 @@ function Dashboard() {
     });
   };
 
+  const createSemesterProps = (index): {
+    quartersOfCreditsCompleted: number,
+    year: number,
+    season: string,
+    error: boolean,
+  } => {
+    // eslint-disable-next-line max-len
+    const percentageCompleted = runningCreditCountArray[index] / settings.creditsNeededToGraduate;
+    const offset = settings.startingSeason === Month.FALL ? 1 : 2;
+    // eslint-disable-next-line max-len
+    const quartersOfCreditsCompleted = Math.floor((percentageCompleted * 100) / 25);
+
+    const numberOfSeasons = settings.includeSummerSemesters ? 3 : 2;
+    // eslint-disable-next-line max-len
+    let year = settings.startingYear + Math.floor((index + offset) / numberOfSeasons);
+    if (settings.startingSeason === Month.SPRING) {
+      year -= 1;
+    }
+
+    // SPRING SUMMER FALL
+    // SPRING SUMMER FALL SPRING SUMMER FALL SPRING SUMMER FALL
+    // 0, 1, 2, 0, 1, 2, 0, 1, 2
+    // no summer
+    // SPRING FALL SPRING FALL SPRING FALL SPRING FALL
+    // 0, 2, 0, 2, 0, 2, 0, 2
+
+    // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+    // 0, 2, 1 - 1 = 0, 0, 4
+
+
+    let monthIndex = index % 3;
+    if (months[monthIndex] === Month.SUMMER && !settings.includeSummerSemesters) {
+      monthIndex = (monthIndex + 1) % 3;
+    }
+
+    const season = months[monthIndex];
+    // if (settings.includeSummerSemesters && (index === 0 || index % 3 === 0)) {
+    //   season = Month.SUMMER;
+    // }
+
+    let error = false;
+    const numberOfCredits = semesterCreditArray[index];
+    if (settings.enableMinimumCreditErrors
+      && (numberOfCredits > settings.maxCredits
+        || numberOfCredits < settings.minCredits)) {
+      error = true;
+    }
+
+    return {
+      quartersOfCreditsCompleted,
+      year,
+      season,
+      error,
+    };
+  };
+
   useEffect(() => {
     axios.get(`${BASE_URL}/api/v1/user/${process.env.REACT_APP_USER_ID}/plan`)
       .then((res) => {
@@ -397,24 +453,13 @@ function Dashboard() {
                   {
                     Object.entries(columns).map(([columnId, column], index) => {
                       if (index + 1 > settings.numberOfSemesters) return <></>;
-                      // eslint-disable-next-line max-len
-                      const percentageCompleted = runningCreditCountArray[index] / settings.creditsNeededToGraduate;
-                      const offset = settings.startingSeason === Month.FALL ? 1 : 2;
 
-                      let year = settings.startingYear + Math.floor((index + offset) / 2);
-                      if (settings.startingSeason === Month.SPRING) {
-                        year -= 1;
-                      }
-                      // eslint-disable-next-line max-len
-                      const quartersOfCreditsCompleted = Math.floor((percentageCompleted * 100) / 25);
-                      const season = months[index % 2];
-                      let error = false;
-                      const numberOfCredits = semesterCreditArray[index];
-                      if (settings.enableMinimumCreditErrors
-                        && (numberOfCredits > settings.maxCredits
-                          || numberOfCredits < settings.minCredits)) {
-                        error = true;
-                      }
+                      const {
+                        quartersOfCreditsCompleted,
+                        year,
+                        season,
+                        error
+                      } = createSemesterProps(index);
 
                       return (
                         <SemesterColumn

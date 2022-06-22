@@ -49,19 +49,12 @@ function SemesterColumn(props: SemesterColumnProps) {
   } = props;
 
   const defaultBackgroundColor = '#34495e';
-  // const freshmanYearColor = 'bg-red-500';
-  // const sophomoreYearColor = 'bg-orange-400';
-  // const juniorYearColor = 'bg-cyan-500';
-  // const seniorYearColor = 'bg-emerald-500';
+
   const beyondColor = 'bg-red-900';
   const freshmanYearColor = 'bg-red-400';
   const sophomoreYearColor = 'bg-red-500';
   const juniorYearColor = 'bg-red-700';
   const seniorYearColor = 'bg-red-800';
-  /**
-   *
-
-   */
 
   const getSemesterBackgroundColor = () => {
     switch (quarterIndexUntilGraduation) {

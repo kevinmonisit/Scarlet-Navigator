@@ -21,6 +21,18 @@ enum SEARCH_BY {
   EXPANDED_TITLE = 2,
 }
 
+const getSearchByString = (type: SEARCH_BY) => {
+  if (type === SEARCH_BY.TITLE) {
+    return 'title';
+  }
+
+  if (type === SEARCH_BY.NUMBER) {
+    return 'course #';
+  }
+
+  return 'full titles';
+};
+
 const BASE_URL = process.env.REACT_APP_ENV === 'Production' ? process.env.REACT_APP_API_URL : '';
 
 interface SearchColumnProps {
@@ -42,9 +54,9 @@ function SearchColumn(props: SearchColumnProps) {
     getCurrentCourseInfoDisplay,
     showCourseCredits,
     numberOfCardsToQuery,
-
   } = props;
   const [queriedCards, setQueriedCards] = useState<CourseCardInSearch[] | null>([]);
+  const [searchType, setSearchType] = useState<SEARCH_BY>(SEARCH_BY.EXPANDED_TITLE);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [value, setValue] = useState('');
@@ -66,15 +78,13 @@ function SearchColumn(props: SearchColumnProps) {
   };
 
   const queryCourses = () => {
-    // keep this in the back burner
-    // if it's more performant to keep it empty
-    // then do so. only when it's a problem.
-    // if (value.length === 0) {
-    //   setQueriedCards([]);
-    //   return;
-    // }
-
-    axios.get(`${BASE_URL}/api/v1/courses`, { params: { search: value, amount: numberOfCardsToQuery } })
+    axios.get(`${BASE_URL}/api/v1/courses`, {
+      params: {
+        search: value,
+        amount: numberOfCardsToQuery,
+        searchType
+      }
+    })
       .then((res) => {
         setQueriedCards(res.data.coursesQuery);
       });
@@ -94,9 +104,10 @@ function SearchColumn(props: SearchColumnProps) {
         }}
       >
         <Input
-          placeholder="Search by titles"
+          placeholder={`By ${getSearchByString(searchType)}`}
           onChange={onChange}
           disableUnderline
+          aria-label="Search course"
           sx={{
             '& .MuiInput-input': {
               paddingLeft: '3px',
@@ -123,15 +134,33 @@ function SearchColumn(props: SearchColumnProps) {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem onClick={handleSearchMenuClose}>By course title</MenuItem>
-        <MenuItem onClick={handleSearchMenuClose}>By course numbers</MenuItem>
         <Tooltip
           arrow
-          title="Experimental: Some courses do not have an expanded title, only a shortened one."
+          title="Some courses do not have an expanded title, only a shortened one."
           placement="right"
         >
-          <MenuItem onClick={handleSearchMenuClose}>By expanded title if applicable</MenuItem>
+          <MenuItem onClick={() => {
+            handleSearchMenuClose();
+            setSearchType(SEARCH_BY.EXPANDED_TITLE);
+          }}
+          >
+            By expanded title if applicable
+          </MenuItem>
         </Tooltip>
+        <MenuItem onClick={() => {
+          handleSearchMenuClose();
+          setSearchType(SEARCH_BY.TITLE);
+        }}
+        >
+          By shortened course title
+        </MenuItem>
+        <MenuItem onClick={() => {
+          handleSearchMenuClose();
+          setSearchType(SEARCH_BY.NUMBER);
+        }}
+        >
+          By course numbers
+        </MenuItem>
       </Menu>
       <div
         className="w-full grow relative"
@@ -167,9 +196,9 @@ function SearchColumn(props: SearchColumnProps) {
                   />
                 );
               })}
-            {queriedCards && queriedCards!.length >= 100 && (
-              <div className="w-full flex justify-center mt-1 mb-2">
-                <Chip label="Showing first 100 courses" />
+            {queriedCards && queriedCards.length > 15 && (
+              <div className="w-full flex justify-center mt-2 mb-2">
+                <Chip label={`Showing first ${numberOfCardsToQuery} courses`} />
               </div>
             )}
 

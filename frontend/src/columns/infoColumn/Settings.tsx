@@ -143,9 +143,12 @@ function Settings(props: SettingsProps) {
           handleSettingsChange={handleSettingsChange}
           checked={settings.enableMinimumCreditErrors}
         />
-        <FormControlLabel
-          control={<Checkbox size="small" />}
-          label="Include summer semesters"
+        <SettingsCheckBox
+          settingName="includeSummerSemesters"
+          labelName="Include summer semesters"
+          toolTip="Show things"
+          checked={settings.includeSummerSemesters}
+          handleSettingsChange={handleSettingsChange}
         />
         <Tooltip
           title="Experimental tab for planning out computer science major requirements"

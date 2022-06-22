@@ -11,6 +11,11 @@ enum SEARCH_BY {
   EXPANDED_TITLE = 2,
 }
 
+/**
+ *
+ * TODO: ADD ERROR HANDLING
+ * The entire app crashes when you search a slash '/'
+ */
 async function getCourses(
   name: string,
   numberToQuery: number,
