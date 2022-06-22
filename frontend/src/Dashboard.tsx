@@ -135,9 +135,7 @@ const seasonArrays = {
 };
 
 function setSeasonArray(startingSeason: Season, includeSummers: boolean) {
-  console.log(`INCLUDE SUMMER: ${includeSummers}`);
   const arrays = includeSummers ? seasonArrays.summer : seasonArrays.noSummer;
-  console.log(arrays);
   if (!(startingSeason in arrays)) {
     console.warn('Invalid starting season.');
   }
@@ -390,7 +388,6 @@ function Dashboard() {
     uploadNewStudentPlan(columns);
     updateSetOfCurrentCourseIDs();
     createArrayOfSemesterCredits();
-    // updateRunningCreditCountArray();
 
     if (setOfCurrentCourseIDs.current) {
       setNumberOfCourses(setOfCurrentCourseIDs.current.size);
