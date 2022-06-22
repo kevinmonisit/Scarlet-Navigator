@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
-import { Settings, Month, defaultSettings } from './interfaces/Settings';
+import { Settings, Season, defaultSettings } from './interfaces/Settings';
 import SemesterColumn, { SemesterColumnInfo } from './components/SemesterColumn';
 import SearchColumn, { CourseCardInSearch } from './columns/SearchColumn';
 import InfoColumn from './columns/infoColumn/InfoColumn';
@@ -122,8 +122,31 @@ function getCreditSemesterCount(column: SemesterColumnInfo) {
   return column.items.reduce((previous, current) => (previous + current.credits), 0);
 }
 
+const seasonArrays = {
+  noSummer: {
+    [Season.FALL]: [Season.FALL, Season.SPRING],
+    [Season.SPRING]: [Season.SPRING, Season.FALL]
+  },
+
+  summer: {
+    [Season.FALL]: [Season.FALL, Season.SPRING, Season.SUMMER],
+    [Season.SPRING]: [Season.SPRING, Season.SUMMER, Season.FALL]
+  }
+};
+
+function setSeasonArray(startingSeason: Season, includeSummers: boolean) {
+  console.log(`INCLUDE SUMMER: ${includeSummers}`);
+  const arrays = includeSummers ? seasonArrays.summer : seasonArrays.noSummer;
+  console.log(arrays);
+  if (!(startingSeason in arrays)) {
+    console.warn('Invalid starting season.');
+  }
+
+  return arrays[startingSeason];
+}
+
 // eslint-disable-next-line no-shadow
-// enum Month {
+// enum Season {
 //   FALL = 'Fall',
 //   SPRING = 'Spring',
 //   SUMMER = 'Summer'
@@ -142,14 +165,17 @@ function Dashboard() {
   const [numberOfCourses, setNumberOfCourses] = useState(0);
   const [settings, setSettings] = useState<Settings>({ ...defaultSettings });
 
-  const [months, setMonths] = useState<string[]>([Month.FALL, Month.SPRING]);
+  const [seasons, setSeasons] = useState<string[]>(
+    setSeasonArray(
+      settings.startingSeason,
+      settings.includeSummerSemesters
+    )
+  );
+
   useEffect(() => {
-    if (settings.startingSeason === Month.FALL) {
-      setMonths([Month.FALL, Month.SPRING, Month.SUMMER]);
-    } else {
-      setMonths([Month.SPRING, Month.SUMMER, Month.FALL]);
-    }
-  }, [settings.startingSeason]);
+    const seasonsArray = setSeasonArray(settings.startingSeason, settings.includeSummerSemesters);
+    setSeasons(seasonsArray);
+  }, [settings.startingSeason, settings.includeSummerSemesters]);
 
   useEffect(() => {
     // originally, we only have 8 semesters
@@ -314,45 +340,18 @@ function Dashboard() {
     });
   };
 
-  const createSemesterProps = (index): {
+  const createSemesterProps = (index: number): {
     quartersOfCreditsCompleted: number,
     year: number,
     season: string,
     error: boolean,
   } => {
-    // eslint-disable-next-line max-len
     const percentageCompleted = runningCreditCountArray[index] / settings.creditsNeededToGraduate;
-    const offset = settings.startingSeason === Month.FALL ? 1 : 2;
-    // eslint-disable-next-line max-len
     const quartersOfCreditsCompleted = Math.floor((percentageCompleted * 100) / 25);
 
-    const numberOfSeasons = settings.includeSummerSemesters ? 3 : 2;
-    // eslint-disable-next-line max-len
-    let year = settings.startingYear + Math.floor((index + offset) / numberOfSeasons);
-    if (settings.startingSeason === Month.SPRING) {
-      year -= 1;
-    }
-
-    // SPRING SUMMER FALL
-    // SPRING SUMMER FALL SPRING SUMMER FALL SPRING SUMMER FALL
-    // 0, 1, 2, 0, 1, 2, 0, 1, 2
-    // no summer
-    // SPRING FALL SPRING FALL SPRING FALL SPRING FALL
-    // 0, 2, 0, 2, 0, 2, 0, 2
-
-    // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
-    // 0, 2, 1 - 1 = 0, 0, 4
-
-
-    let monthIndex = index % 3;
-    if (months[monthIndex] === Month.SUMMER && !settings.includeSummerSemesters) {
-      monthIndex = (monthIndex + 1) % 3;
-    }
-
-    const season = months[monthIndex];
-    // if (settings.includeSummerSemesters && (index === 0 || index % 3 === 0)) {
-    //   season = Month.SUMMER;
-    // }
+    const offset = settings.startingSeason === Season.FALL ? 1 : 0;
+    const year = settings.startingYear + Math.floor((index - offset) / seasons.length);
+    const season = seasons[index % seasons.length];
 
     let error = false;
     const numberOfCredits = semesterCreditArray[index];
@@ -418,14 +417,6 @@ function Dashboard() {
       <div
         className="flex flex-row flex-nowrap
         justify-center items-stretch w-full grow"
-        onClick={() => {
-          // allow user to de-select a course when selecting off of it
-          // however, in the future, with accessibility in mind...
-          // course info should be a toggling idea.
-          // only when clicked does a course change. perhaps, we can have a separate
-          // accessibility mode.
-          // setCurrentCourseInfoDisplayed(null);
-        }}
       >
         {/* Load search columns after columns is initialized to prevent re-loading */}
         {columns == null ? <>Loading course data...</> : (

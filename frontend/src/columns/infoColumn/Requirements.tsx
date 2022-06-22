@@ -74,19 +74,18 @@ function Requirements() {
           sx={{ height: 240, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
         >
           <TreeItem nodeId="1" label="Contemporary Challenges 0/2">
-            <TreeItem nodeId="2" label="Calendar" />
+            <TreeItem nodeId="15" label="Unfulfilled" />
+            <TreeItem nodeId="16" label="Unfulfilled" />
           </TreeItem>
-          <TreeItem nodeId="5" label="Cognitive Skills">
-            <TreeItem nodeId="10" label="OSS" />
-            <TreeItem nodeId="6" label="MUI">
-              <TreeItem nodeId="8" label="index.js" />
-            </TreeItem>
+          <TreeItem nodeId="5" label="Cognitive Skills 0/4">
+            <TreeItem nodeId="3" label="Unfulfilled" />
+            <TreeItem nodeId="4" label="Unfulfilled" />
+            <TreeItem nodeId="7" label="Unfulfilled" />
           </TreeItem>
-          <TreeItem nodeId="5" label="Areas of Inquiry">
-            <TreeItem nodeId="10" label="OSS" />
-            <TreeItem nodeId="6" label="MUI">
-              <TreeItem nodeId="8" label="index.js" />
-            </TreeItem>
+          <TreeItem nodeId="6" label="Areas of Inquiry 0/3">
+            <TreeItem nodeId="10" label="Unfulfilled" />
+            <TreeItem nodeId="11" label="Unfulfilled" />
+            <TreeItem nodeId="12" label="Unfulfilled" />
           </TreeItem>
         </TreeView>
       </div>

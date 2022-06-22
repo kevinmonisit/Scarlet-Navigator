@@ -1,6 +1,6 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-unused-vars */
-enum Month {
+enum Season {
   FALL = 'Fall',
   SPRING = 'Spring',
   SUMMER = 'Summer',
@@ -8,7 +8,7 @@ enum Month {
 
 interface Settings {
   creditsNeededToGraduate: number;
-  startingSeason: Month;
+  startingSeason: Season;
   startingYear: number;
   startingCredits: number;
   minCredits: number;
@@ -25,7 +25,7 @@ interface Settings {
 
 const defaultSettings: Settings = {
   creditsNeededToGraduate: 120,
-  startingSeason: Month.FALL,
+  startingSeason: Season.FALL,
   startingYear: 2021,
   startingCredits: 17,
   minCredits: 12,
@@ -39,5 +39,5 @@ const defaultSettings: Settings = {
   showCourseCredits: false,
 };
 
-export { Month, defaultSettings };
+export { Season, defaultSettings };
 export type { Settings };

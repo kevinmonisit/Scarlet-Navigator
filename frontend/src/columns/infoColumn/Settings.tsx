@@ -11,7 +11,7 @@ import React from 'react';
 import NumberMenu from '../../components/NumberMenu';
 import SettingButton from '../../components/SettingButton';
 import SettingsCheckBox from '../../components/SettingsCheckbox';
-import { Settings as SettingsInterface, Month, defaultSettings } from '../../interfaces/Settings';
+import { Settings as SettingsInterface, Season, defaultSettings } from '../../interfaces/Settings';
 
 interface SettingsProps {
   // eslint-disable-next-line no-unused-vars
@@ -56,9 +56,8 @@ function Settings(props: SettingsProps) {
                 handleSettingsChange(e.target.value, 'startingSeason');
               }}
             >
-              <MenuItem value={Month.FALL}>Fall</MenuItem>
-              <MenuItem value={Month.SPRING}>Spring</MenuItem>
-              <MenuItem value={Month.SUMMER} disabled>Summer</MenuItem>
+              <MenuItem value={Season.FALL}>Fall</MenuItem>
+              <MenuItem value={Season.SPRING}>Spring</MenuItem>
             </Select>
           </FormControl>
           <FormControl size="small" fullWidth>
