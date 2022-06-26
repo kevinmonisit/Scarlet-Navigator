@@ -7,7 +7,7 @@ import re
 # TODO: Set local database url to something in dotenv
 # pip3 install pymongo[srv] put into the README.md
 
-client = pymongo.MongoClient("mongodb+srv://doadmin:36s8M2o4y095uZdX@scarletnav-db-d5385c42.mongo.ondigitalocean.com/s-n-t?tls=true&authSource=admin&replicaSet=scarletnav-db")
+client = pymongo.MongoClient("mongodb://localhost:27017/s-n-t")
 db = client["s-n-t"]
 collection = db.courses
 collection.delete_many({})
@@ -24,20 +24,24 @@ with open(r"jsonminifier.json") as f:
                 return 'Online'
             return desc
 
+        def get_core(obj):
+            return obj['code']
+
         for course in courses:
             campus_locations = list(map(get_campus, course['campusLocations']))
+            cores = list(map(get_core, course['coreCodes']))
             projection = {
               'title': course['title'],
               'credits': course['credits'],
               'school': course['school']['description'],
               'subject': course['subjectDescription'],
               'courseString': course['courseString'],
-              'campusLocations': campus_locations
+              'campusLocations': campus_locations,
+              'cores': cores
             }
 
             query_title = course['expandedTitle'] if course['expandedTitle'] else course['title']
             query_title = " ".join(query_title.split())
-            # query_title = query_title.replace("\t", "")
             projection['queryTitle'] = query_title
 
             requesting.append(InsertOne(projection))
@@ -50,8 +54,9 @@ collection.delete_many({})
 user = {
     'courses': [],
     'startingYear': 2021,
-    'plan': [[] for _ in range(8)]
+    'plan': [[] for _ in range(24)]
 }
-collection.insert_one(user)
+res = collection.insert_one(user)
+print('User ID: ', res.inserted_id)
 
 client.close()

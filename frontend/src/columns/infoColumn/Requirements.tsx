@@ -3,21 +3,22 @@ import TreeItem from '@mui/lab/TreeItem';
 import TreeView from '@mui/lab/TreeView';
 import { ExpandMore, ChevronRight } from '@mui/icons-material';
 import React from 'react';
+import CustomToolTip from '../../components/CustomToolTip';
 
-interface CoreSpecifications {
-  title: string;
-  credits: number;
-}
+// interface CoreSpecifications {
+//   title: string;
+//   credits: number;
+// }
 
-interface Goal {
-  [coreCode: string]: CoreSpecifications;
-}
+// interface Goal {
+//   [coreCode: string]: CoreSpecifications;
+// }
 
-interface RequirementsInterface {
-  [goal: string]: Goal;
-}
+// interface RequirementsInterface {
+//   [goal: string]: Goal;
+// }
 
-const requirements: RequirementsInterface = {
+const requirementss = {
   'Contemporary Challenges': {
     CCD: {
       title: 'Diversities and Social Inequalities',
@@ -51,6 +52,69 @@ const requirements: RequirementsInterface = {
   }
 };
 
+/**
+ * 1. Initialize an object/state that records core fulfillment (core-state)
+ * 2. Loop through entire array of courses in the plan
+ * 3. If not already present, add to the core-state a core that the course fulfills and the credits
+ * it has
+ *
+ * For example:
+ * {
+ *  HST: 3,
+ *  SCL: 3,
+ *  ... and so on.
+ * }
+ *
+ * const requirements = {
+ *  'Areas of Inquiry': [CCD, CCO]
+ * }
+ *
+ * ^^ just get from the object.
+ *
+ */
+
+// eslint-disable-next-line no-shadow
+enum SAS_CORES {
+  CCD = 'CCD',
+  CCO = 'CCO',
+  NS = 'NS',
+  HST = 'HST',
+  SCL = 'SCL',
+  AH = 'AH'
+}
+
+interface RequirementsInterface {
+  [SASRequirement: string]: SAS_CORES[]
+}
+
+interface CoreStateInterface {
+  [core: string]: {
+    creditsToFulfillment: number;
+    creditsFulfilled: number;
+    code: string;
+    coreTitle: string;
+  }
+}
+
+const coreState: CoreStateInterface = {
+  [SAS_CORES.CCD]: {
+    creditsToFulfillment: 3,
+    creditsFulfilled: 0,
+    code: 'CCD',
+    coreTitle: 'Diversities and Social Inequalities'
+  },
+  [SAS_CORES.NS]: {
+    creditsToFulfillment: 3,
+    creditsFulfilled: 0,
+    code: 'NS',
+    coreTitle: 'Natural Sciences'
+  }
+};
+
+const requirements: RequirementsInterface = {
+  'Areas of Inquiry': [SAS_CORES.CCD, SAS_CORES.NS]
+};
+
 function Requirements() {
   return (
     <div
@@ -73,20 +137,27 @@ function Requirements() {
           defaultExpandIcon={<ChevronRight />}
           sx={{ height: 240, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
         >
-          <TreeItem nodeId="1" label="Contemporary Challenges 0/2">
-            <TreeItem nodeId="15" label="Unfulfilled" />
-            <TreeItem nodeId="16" label="Unfulfilled" />
-          </TreeItem>
-          <TreeItem nodeId="5" label="Cognitive Skills 0/4">
-            <TreeItem nodeId="3" label="Unfulfilled" />
-            <TreeItem nodeId="4" label="Unfulfilled" />
-            <TreeItem nodeId="7" label="Unfulfilled" />
-          </TreeItem>
-          <TreeItem nodeId="6" label="Areas of Inquiry 0/3">
-            <TreeItem nodeId="10" label="Unfulfilled" />
-            <TreeItem nodeId="11" label="Unfulfilled" />
-            <TreeItem nodeId="12" label="Unfulfilled" />
-          </TreeItem>
+          {
+            Object.keys(requirements).map((requirementTitle, index) => (
+              <TreeItem nodeId={index.toString()} label={requirementTitle}>
+                {requirements[requirementTitle].map((coreCode) => {
+                  if (!(coreCode in coreState)) {
+                    console.warn(`
+                    Invalid core code ${coreCode} under requirement
+                    ${requirementTitle}. Will not render.`);
+                    // eslint-disable-next-line react/jsx-no-useless-fragment
+                    return <></>;
+                  }
+                  const { coreTitle } = coreState[coreCode];
+                  return (
+                    <CustomToolTip title={coreTitle} placement="left">
+                      <TreeItem nodeId={coreCode} label={coreCode} />
+                    </CustomToolTip>
+                  );
+                })}
+              </TreeItem>
+            ))
+          }
         </TreeView>
       </div>
     </div>

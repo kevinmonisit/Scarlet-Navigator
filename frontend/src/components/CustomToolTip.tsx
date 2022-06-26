@@ -4,12 +4,12 @@ import Tooltip, { tooltipClasses, TooltipProps } from '@mui/material/Tooltip';
 
 export default styled(({ className, ...props }: TooltipProps) => (
   <Tooltip
-    {...props}
-    arrow
     placement="top"
+    arrow
     enterDelay={500}
     classes={{ popper: className }}
     enterNextDelay={300}
+    {...props}
   />
 ))({
   [`& .${tooltipClasses.tooltip}`]: {
