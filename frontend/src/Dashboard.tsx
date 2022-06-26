@@ -410,6 +410,7 @@ function Dashboard() {
         console.warn('Columns could not be fetched: ');
         console.warn(err);
       });
+    collectCoreFulfillmentInfo();
   }, []);
 
   useEffect(() => {
@@ -425,6 +426,7 @@ function Dashboard() {
 
   useEffect(createArrayOfSemesterCredits, [settings.startingCredits]);
   useEffect(updateRunningCreditCountArray, [semesterCreditArray]);
+  useEffect(collectCoreFulfillmentInfo, [numberOfCourses]);
 
   console.log('dashboad');
   return (

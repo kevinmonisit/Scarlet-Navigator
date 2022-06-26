@@ -73,7 +73,7 @@ const StyledTab = styled((props: StyledTabProps) => (
 
 function InfoColumn(props: InfoColumnProps) {
   const { currentCourse, changeSettings, coreFulfillmentState, resetPlan, settings } = props;
-  const [value, setValue] = useState(MENU_PAGE.SETTINGS);
+  const [value, setValue] = useState(MENU_PAGE.CORE);
 
   useEffect(() => {
     if (currentCourse) { setValue(MENU_PAGE.COURSE); } // automatically set to course tab

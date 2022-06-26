@@ -94,7 +94,10 @@ function SemesterColumn(props: SemesterColumnProps) {
       key={columnId}
     >
       <div
-        className={`w-full text-center py-2 my-2 rounded-sm text-white relative ${getSemesterBackgroundColor()}`}
+        className={`
+        w-full text-center py-2 my-2 rounded-sm text-white
+        relative ${getSemesterBackgroundColor()}
+        `}
         style={{
           // background: defaultBackgroundColor,
           boxShadow: '0px 3px 4px rgba(0, 0, 0, 0.2)'
@@ -128,9 +131,9 @@ function SemesterColumn(props: SemesterColumnProps) {
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...provided.droppableProps}
               ref={provided.innerRef}
-              className="w-full h-full px-2 pb-2 rounded mb-2"
+              className="w-full h-full px-2 pb-2 rounded mb-2 shadow-md"
               style={{
-                boxShadow: '3px 3px 5px rgba(0, 0, 0, 0.10)'
+                // boxShadow: '3px 3px 5px rgba(0, 0, 0, 0.10)'
               }}
             >
               {column.items.map((item, cardIndex) => {

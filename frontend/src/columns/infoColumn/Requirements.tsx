@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import TreeItem from '@mui/lab/TreeItem';
 import TreeView from '@mui/lab/TreeView';
-import { ExpandMore, ChevronRight } from '@mui/icons-material';
-import React from 'react';
+import { ExpandMore, ChevronRight, CheckCircleOutlineSharp, CheckCircleSharp } from '@mui/icons-material';
+import React, { useEffect, useState } from 'react';
 import CustomToolTip from '../../components/CustomToolTip';
 import { CoreStateInterface, SAS_CORES } from '../../interfaces/CoreFulfillmentInterface';
 
@@ -28,11 +28,18 @@ import { CoreStateInterface, SAS_CORES } from '../../interfaces/CoreFulfillmentI
  */
 
 interface RequirementsInterface {
-  [SASRequirement: string]: SAS_CORES[]
+  [SASRequirement: string]: {
+    cores: SAS_CORES[],
+  }
 }
 
-const requirements: RequirementsInterface = {
-  'Areas of Inquiry': [SAS_CORES.CCD, SAS_CORES.NS]
+const requirementsDefaultState: RequirementsInterface = {
+  'Areas of Inquiry': {
+    cores: [SAS_CORES.CCD, SAS_CORES.NS, SAS_CORES.WC],
+  },
+  'Areas of Inquiryt': {
+    cores: [SAS_CORES.CCD, SAS_CORES.NS, SAS_CORES.WC],
+  }
 };
 
 interface RequirementsProps {
@@ -41,6 +48,22 @@ interface RequirementsProps {
 
 function Requirements(props: RequirementsProps) {
   const { coreFulfillmentState } = props;
+  const [requirementState, setRequirementState] = useState<RequirementsInterface>({
+    ...requirementsDefaultState
+  });
+
+  const requirementCompletedCount = {};
+
+  const setRequirementCompleteCountToState = () => {
+    Object.keys(requirementCompletedCount).forEach((title) => {
+
+    });
+  };
+
+  useEffect(() => {
+    setRequirementCompleteCountToState();
+  }, [requirementState]);
+
   return (
     <div
       className="h-full w-full flex flex-col px-2"
@@ -63,26 +86,57 @@ function Requirements(props: RequirementsProps) {
           sx={{ height: 240, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
         >
           {
-            Object.keys(requirements).map((requirementTitle, index) => (
-              <TreeItem nodeId={index.toString()} label={requirementTitle}>
-                {requirements[requirementTitle].map((coreCode) => {
-                  if (!Object.prototype.hasOwnProperty.call(coreFulfillmentState, coreCode)) {
-                    console.warn(`
-                    Invalid core code ${coreCode} under requirement
-                    ${requirementTitle}. Will not render.`);
-                    // eslint-disable-next-line react/jsx-no-useless-fragment
-                    return <></>;
-                  }
-                  const { coreTitle } = coreFulfillmentState[coreCode];
-                  console.log(coreFulfillmentState);
-                  return (
-                    <CustomToolTip title={coreTitle} placement="left">
-                      <TreeItem nodeId={coreCode} label={coreCode} />
-                    </CustomToolTip>
-                  );
-                })}
-              </TreeItem>
-            ))
+            Object.keys(requirementState).map((requirementTitle, index) => {
+              requirementCompletedCount[requirementTitle] = 0;
+              return (
+                <div className="relative">
+                  <TreeItem nodeId={index.toString()} label={requirementTitle} className="relative">
+                    {
+                      requirementState[requirementTitle].cores.map((coreCode) => {
+                        if (!Object.prototype.hasOwnProperty.call(coreFulfillmentState, coreCode)) {
+                          console.warn(`
+                          Invalid core code ${coreCode} under requirement
+                          ${requirementTitle}. Will not render.`);
+                          // eslint-disable-next-line react/jsx-no-useless-fragment
+                          return <></>;
+                        }
+                        const { coreTitle,
+                          creditsFulfilled,
+                          creditsNeededForFulfillment } = coreFulfillmentState[coreCode];
+                        const fulfilled = creditsFulfilled >= creditsNeededForFulfillment;
+                        const label = coreCode;
+                        // let courseThatFulfillsReq = '';
+                        if (fulfilled) {
+                          requirementCompletedCount[requirementTitle] += 1;
+                          // eslint-disable-next-line max-len
+                          // const courseArray = coreFulfillmentState[requirementTitle].coursesThatFulfill;
+                          // THIS IS A MESS
+                          // courseThatFulfillsReq = course;
+                          // label.concat(`. Satisfied by ${courseThatFulfillsReq}`);
+                        }
+
+                        return (
+                          <div>
+                            <CustomToolTip title={coreTitle} placement="left">
+                              <TreeItem
+                                nodeId={coreCode}
+                                label={label}
+                                endIcon={fulfilled && <CheckCircleSharp htmlColor="#374151" fontSize="inherit" />}
+                              />
+                            </CustomToolTip>
+                          </div>
+                        );
+                      })
+                    }
+                  </TreeItem>
+                  <span className="absolute right-1 top-0 text-base">
+                    {requirementCompletedCount[requirementTitle].completed}
+                    /
+                    {requirementState[requirementTitle].cores.length}
+                  </span>
+                </div>
+              );
+            })
           }
         </TreeView>
       </div>
