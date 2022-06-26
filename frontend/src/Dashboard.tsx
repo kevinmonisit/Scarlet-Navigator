@@ -10,6 +10,7 @@ import axios from 'axios';
 import { Settings, Season, defaultSettings } from './interfaces/Settings';
 import SemesterColumn, { SemesterColumnInfo } from './components/SemesterColumn';
 import SearchColumn, { CourseCardInSearch } from './columns/SearchColumn';
+import { CoreStateInterface, defaultSASCoreState } from './interfaces/CoreFulfillmentInterface';
 import InfoColumn from './columns/infoColumn/InfoColumn';
 
 const BASE_URL = process.env.REACT_APP_ENV === 'Production' ? process.env.REACT_APP_API_URL : '';
@@ -138,6 +139,7 @@ function setSeasonArray(startingSeason: Season, includeSummers: boolean) {
   const arrays = includeSummers ? seasonArrays.summer : seasonArrays.noSummer;
   if (!(startingSeason in arrays)) {
     console.warn('Invalid starting season.');
+    return {};
   }
 
   return arrays[startingSeason];
@@ -158,6 +160,9 @@ function Dashboard() {
 
   const [runningCreditCountArray, setRunningCreditCountArray] = useState<Array<number>>([]);
   const [semesterCreditArray, setSemesterCreditArray] = useState<Array<number>>([]);
+  const [coreFulfillmentState, setCoreFulfillmentState] = useState<CoreStateInterface>(
+    { ...defaultSASCoreState }
+  );
 
   const setOfCurrentCourseIDs = useRef<Set<string> | null>(null);
   const [numberOfCourses, setNumberOfCourses] = useState(0);
@@ -367,6 +372,29 @@ function Dashboard() {
     };
   };
 
+  const collectCoreFulfillmentInfo = () => {
+    if (!columns) return;
+
+    const newCoreState: CoreStateInterface = { ...coreFulfillmentState };
+
+    Object.keys(columns).forEach((key) => {
+      columns[key].items.forEach((course) => {
+        // TODO: Deal with AH core and different varieties
+        course.cores.forEach((coreCode) => {
+          if (!Object.prototype.hasOwnProperty.call(coreFulfillmentState, coreCode)) {
+            console.warn(`Core ${coreCode} not a part of specified core interface`);
+            return;
+          }
+          const courseCredits = course.credits;
+          newCoreState[coreCode].creditsFulfilled += courseCredits;
+          newCoreState[coreCode].coursesThatFulfill.push(course.title);
+        });
+      });
+    });
+    console.log(newCoreState);
+    setCoreFulfillmentState(newCoreState);
+  };
+
   useEffect(() => {
     axios.get(`${BASE_URL}/api/v1/user/${process.env.REACT_APP_USER_ID}/plan`)
       .then((res) => {
@@ -388,6 +416,7 @@ function Dashboard() {
     uploadNewStudentPlan(columns);
     updateSetOfCurrentCourseIDs();
     createArrayOfSemesterCredits();
+    collectCoreFulfillmentInfo();
 
     if (setOfCurrentCourseIDs.current) {
       setNumberOfCourses(setOfCurrentCourseIDs.current.size);
@@ -476,6 +505,7 @@ function Dashboard() {
         </div>
         <InfoColumn
           currentCourse={currentCourseInfoDisplayed}
+          coreFulfillmentState={coreFulfillmentState}
           changeSettings={changeSettings}
           settings={settings}
           resetPlan={resetPlan}

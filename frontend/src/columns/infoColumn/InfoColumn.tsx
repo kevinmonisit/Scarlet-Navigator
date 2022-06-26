@@ -7,15 +7,17 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import MENU_PAGE from '../../interfaces/CourseInfo';
+import MENU_PAGE from '../../interfaces/InfoColumn';
 import { Settings as SettingsInterface } from '../../interfaces/Settings';
 import Settings from './Settings';
 import CourseInfo from './CourseInfo';
 import Requirements from './Requirements';
+import { CoreStateInterface } from '../../interfaces/CoreFulfillmentInterface';
 
 interface InfoColumnProps {
   currentCourse: any;
   settings: SettingsInterface;
+  coreFulfillmentState: CoreStateInterface;
   changeSettings: (settings: SettingsInterface) => void;
   resetPlan: () => void;
 }
@@ -70,7 +72,7 @@ const StyledTab = styled((props: StyledTabProps) => (
 }));
 
 function InfoColumn(props: InfoColumnProps) {
-  const { currentCourse, changeSettings, resetPlan, settings } = props;
+  const { currentCourse, changeSettings, coreFulfillmentState, resetPlan, settings } = props;
   const [value, setValue] = useState(MENU_PAGE.SETTINGS);
 
   useEffect(() => {
@@ -112,7 +114,7 @@ function InfoColumn(props: InfoColumnProps) {
             {value === MENU_PAGE.COURSE
               ? <CourseInfo course={currentCourse} /> : <></>}
             {value === MENU_PAGE.CORE
-              ? <Requirements /> : <></>}
+              ? <Requirements coreFulfillmentState={coreFulfillmentState} /> : <></>}
           </div>
         </div>
       </div>

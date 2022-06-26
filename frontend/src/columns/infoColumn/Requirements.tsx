@@ -4,53 +4,7 @@ import TreeView from '@mui/lab/TreeView';
 import { ExpandMore, ChevronRight } from '@mui/icons-material';
 import React from 'react';
 import CustomToolTip from '../../components/CustomToolTip';
-
-// interface CoreSpecifications {
-//   title: string;
-//   credits: number;
-// }
-
-// interface Goal {
-//   [coreCode: string]: CoreSpecifications;
-// }
-
-// interface RequirementsInterface {
-//   [goal: string]: Goal;
-// }
-
-const requirementss = {
-  'Contemporary Challenges': {
-    CCD: {
-      title: 'Diversities and Social Inequalities',
-      credits: 3
-    },
-    CCO: {
-      title: 'Our Common Future',
-      credits: 3
-    }
-  },
-  'Areas of Inquiry': {
-    NS: {
-      title: 'Natural Sciences',
-      credits: 6
-    },
-    HST: {
-      title: 'Historical Analysis',
-      credits: 3
-    },
-    SCL: {
-      title: 'Social Analysis',
-      credits: 3
-    },
-    AH: {
-      title: 'Arts and Humanities',
-      credits: 3
-    }
-  },
-  'Cognitive Skills and Processes': {
-
-  }
-};
+import { CoreStateInterface, SAS_CORES } from '../../interfaces/CoreFulfillmentInterface';
 
 /**
  * 1. Initialize an object/state that records core fulfillment (core-state)
@@ -73,49 +27,20 @@ const requirementss = {
  *
  */
 
-// eslint-disable-next-line no-shadow
-enum SAS_CORES {
-  CCD = 'CCD',
-  CCO = 'CCO',
-  NS = 'NS',
-  HST = 'HST',
-  SCL = 'SCL',
-  AH = 'AH'
-}
-
 interface RequirementsInterface {
   [SASRequirement: string]: SAS_CORES[]
 }
-
-interface CoreStateInterface {
-  [core: string]: {
-    creditsToFulfillment: number;
-    creditsFulfilled: number;
-    code: string;
-    coreTitle: string;
-  }
-}
-
-const coreState: CoreStateInterface = {
-  [SAS_CORES.CCD]: {
-    creditsToFulfillment: 3,
-    creditsFulfilled: 0,
-    code: 'CCD',
-    coreTitle: 'Diversities and Social Inequalities'
-  },
-  [SAS_CORES.NS]: {
-    creditsToFulfillment: 3,
-    creditsFulfilled: 0,
-    code: 'NS',
-    coreTitle: 'Natural Sciences'
-  }
-};
 
 const requirements: RequirementsInterface = {
   'Areas of Inquiry': [SAS_CORES.CCD, SAS_CORES.NS]
 };
 
-function Requirements() {
+interface RequirementsProps {
+  coreFulfillmentState: CoreStateInterface;
+}
+
+function Requirements(props: RequirementsProps) {
+  const { coreFulfillmentState } = props;
   return (
     <div
       className="h-full w-full flex flex-col px-2"
@@ -141,14 +66,15 @@ function Requirements() {
             Object.keys(requirements).map((requirementTitle, index) => (
               <TreeItem nodeId={index.toString()} label={requirementTitle}>
                 {requirements[requirementTitle].map((coreCode) => {
-                  if (!(coreCode in coreState)) {
+                  if (!Object.prototype.hasOwnProperty.call(coreFulfillmentState, coreCode)) {
                     console.warn(`
                     Invalid core code ${coreCode} under requirement
                     ${requirementTitle}. Will not render.`);
                     // eslint-disable-next-line react/jsx-no-useless-fragment
                     return <></>;
                   }
-                  const { coreTitle } = coreState[coreCode];
+                  const { coreTitle } = coreFulfillmentState[coreCode];
+                  console.log(coreFulfillmentState);
                   return (
                     <CustomToolTip title={coreTitle} placement="left">
                       <TreeItem nodeId={coreCode} label={coreCode} />

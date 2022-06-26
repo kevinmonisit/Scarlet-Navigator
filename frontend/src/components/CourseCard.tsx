@@ -15,6 +15,7 @@ interface CourseCardInfo {
   title: string;
   credits: number;
   courseString: string;
+  cores: string[];
 }
 
 interface CourseCardProps {
