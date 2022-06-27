@@ -28,41 +28,57 @@ import { CoreStateInterface, SAS_CORES } from '../../interfaces/CoreFulfillmentI
  */
 
 interface RequirementsInterface {
-  [SASRequirement: string]: {
-    cores: SAS_CORES[],
-  }
+  [SASRequirement: string]: SAS_CORES[]
 }
 
-const requirementsDefaultState: RequirementsInterface = {
-  'Areas of Inquiry': {
-    cores: [SAS_CORES.CCD, SAS_CORES.NS, SAS_CORES.WC],
-  },
-  'Areas of Inquiryt': {
-    cores: [SAS_CORES.CCD, SAS_CORES.NS, SAS_CORES.WC],
-  }
-};
+interface RequirementCountsInterface {
+  [SASRequirement: string]: number;
+}
 
 interface RequirementsProps {
   coreFulfillmentState: CoreStateInterface;
 }
 
+const requirementInfo: RequirementsInterface = {
+  'Areas of Inquiry': [SAS_CORES.CCD, SAS_CORES.NS, SAS_CORES.WC],
+  'Areas of Inquiryt': [SAS_CORES.CCD, SAS_CORES.NS, SAS_CORES.WC]
+};
+
 function Requirements(props: RequirementsProps) {
   const { coreFulfillmentState } = props;
-  const [requirementState, setRequirementState] = useState<RequirementsInterface>({
-    ...requirementsDefaultState
-  });
+  const [requirementCounts, setRequirementCounts] = useState<RequirementCountsInterface>({});
 
-  const requirementCompletedCount = {};
+  const getCompletionFraction = (requirementTitle: string) => {
+    let numerator = 0;
+    if (requirementCounts && requirementCounts[requirementTitle]) {
+      numerator = requirementCounts[requirementTitle];
+    }
 
-  const setRequirementCompleteCountToState = () => {
-    Object.keys(requirementCompletedCount).forEach((title) => {
-
-    });
+    return `${numerator}/${requirementInfo[requirementTitle].length}`;
   };
 
   useEffect(() => {
-    setRequirementCompleteCountToState();
-  }, [requirementState]);
+    if (!coreFulfillmentState) return;
+
+    const countingCompletedCores = {};
+    Object.keys(requirementInfo).forEach((reqTitle) => {
+      let counter = 0;
+
+      for (let i = 0; i < requirementInfo[reqTitle].length; i += 1) {
+        const coreCode = requirementInfo[reqTitle][i];
+        if (Object.prototype.hasOwnProperty.call(coreFulfillmentState, coreCode)) {
+          const { creditsFulfilled, creditsNeededForFulfillment } = coreFulfillmentState[coreCode];
+          if (creditsFulfilled >= creditsNeededForFulfillment) {
+            counter += 1;
+          }
+        }
+      }
+
+      countingCompletedCores[reqTitle] = counter;
+    });
+
+    setRequirementCounts(countingCompletedCores);
+  }, [coreFulfillmentState]);
 
   return (
     <div
@@ -86,57 +102,43 @@ function Requirements(props: RequirementsProps) {
           sx={{ height: 240, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
         >
           {
-            Object.keys(requirementState).map((requirementTitle, index) => {
-              requirementCompletedCount[requirementTitle] = 0;
-              return (
-                <div className="relative">
-                  <TreeItem nodeId={index.toString()} label={requirementTitle} className="relative">
-                    {
-                      requirementState[requirementTitle].cores.map((coreCode) => {
-                        if (!Object.prototype.hasOwnProperty.call(coreFulfillmentState, coreCode)) {
-                          console.warn(`
+            Object.keys(requirementInfo).map((requirementTitle, index) => (
+              <div className="relative">
+                <TreeItem nodeId={index.toString()} label={requirementTitle} className="relative">
+                  {
+                    requirementInfo[requirementTitle].map((coreCode) => {
+                      if (!Object.prototype.hasOwnProperty.call(coreFulfillmentState, coreCode)) {
+                        console.warn(`
                           Invalid core code ${coreCode} under requirement
                           ${requirementTitle}. Will not render.`);
-                          // eslint-disable-next-line react/jsx-no-useless-fragment
-                          return <></>;
-                        }
-                        const { coreTitle,
-                          creditsFulfilled,
-                          creditsNeededForFulfillment } = coreFulfillmentState[coreCode];
-                        const fulfilled = creditsFulfilled >= creditsNeededForFulfillment;
-                        const label = coreCode;
-                        // let courseThatFulfillsReq = '';
-                        if (fulfilled) {
-                          requirementCompletedCount[requirementTitle] += 1;
-                          // eslint-disable-next-line max-len
-                          // const courseArray = coreFulfillmentState[requirementTitle].coursesThatFulfill;
-                          // THIS IS A MESS
-                          // courseThatFulfillsReq = course;
-                          // label.concat(`. Satisfied by ${courseThatFulfillsReq}`);
-                        }
+                        // eslint-disable-next-line react/jsx-no-useless-fragment
+                        return <></>;
+                      }
+                      const { coreTitle,
+                        creditsFulfilled,
+                        creditsNeededForFulfillment } = coreFulfillmentState[coreCode];
+                      const fulfilled = creditsFulfilled >= creditsNeededForFulfillment;
+                      const label = coreCode;
 
-                        return (
-                          <div>
-                            <CustomToolTip title={coreTitle} placement="left">
-                              <TreeItem
-                                nodeId={coreCode}
-                                label={label}
-                                endIcon={fulfilled && <CheckCircleSharp htmlColor="#374151" fontSize="inherit" />}
-                              />
-                            </CustomToolTip>
-                          </div>
-                        );
-                      })
-                    }
-                  </TreeItem>
-                  <span className="absolute right-1 top-0 text-base">
-                    {requirementCompletedCount[requirementTitle].completed}
-                    /
-                    {requirementState[requirementTitle].cores.length}
-                  </span>
-                </div>
-              );
-            })
+                      return (
+                        <div>
+                          <CustomToolTip title={coreTitle} placement="left">
+                            <TreeItem
+                              nodeId={coreCode}
+                              label={label}
+                              endIcon={fulfilled && <CheckCircleSharp htmlColor="#374151" fontSize="inherit" />}
+                            />
+                          </CustomToolTip>
+                        </div>
+                      );
+                    })
+                  }
+                </TreeItem>
+                <span className="absolute right-1 top-0 text-base">
+                  {getCompletionFraction(requirementTitle)}
+                </span>
+              </div>
+            ))
           }
         </TreeView>
       </div>
