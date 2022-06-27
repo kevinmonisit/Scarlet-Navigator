@@ -6,29 +6,8 @@ import React, { useEffect, useState } from 'react';
 import CustomToolTip from '../../components/CustomToolTip';
 import { CoreStateInterface, SAS_CORES } from '../../interfaces/CoreFulfillmentInterface';
 
-/**
- * 1. Initialize an object/state that records core fulfillment (core-state)
- * 2. Loop through entire array of courses in the plan
- * 3. If not already present, add to the core-state a core that the course fulfills and the credits
- * it has
- *
- * For example:
- * {
- *  HST: 3,
- *  SCL: 3,
- *  ... and so on.
- * }
- *
- * const requirements = {
- *  'Areas of Inquiry': [CCD, CCO]
- * }
- *
- * ^^ just get from the object.
- *
- */
-
 interface RequirementsInterface {
-  [SASRequirement: string]: SAS_CORES[]
+  [SASRequirement: string]: SAS_CORES[];
 }
 
 interface RequirementCountsInterface {
@@ -41,8 +20,77 @@ interface RequirementsProps {
 
 const requirementInfo: RequirementsInterface = {
   'Areas of Inquiry': [SAS_CORES.CCD, SAS_CORES.NS, SAS_CORES.WC],
-  'Areas of Inquiryt': [SAS_CORES.CCD, SAS_CORES.NS, SAS_CORES.WC]
+  'Baap baap': [SAS_CORES.CCD, SAS_CORES.AHo]
 };
+
+interface RequirementSubItemsInterface {
+  coreCodeArray: SAS_CORES[];
+  coreFulfillmentState: CoreStateInterface;
+  requirementTitle: string;
+}
+
+function RequirementSubItems(props: RequirementSubItemsInterface) {
+  const { coreCodeArray, coreFulfillmentState, requirementTitle } = props;
+  return (
+    <>
+      {coreCodeArray.map((coreCode) => {
+        if (!Object.prototype.hasOwnProperty.call(coreFulfillmentState, coreCode)) {
+          console.warn(`
+          Invalid core code ${coreCode} under requirement
+          ${requirementTitle}. Will not render.`);
+          // eslint-disable-next-line react/jsx-no-useless-fragment
+          return <></>;
+        }
+
+        const { coreTitle,
+          creditsFulfilled,
+          creditsNeededForFulfillment } = coreFulfillmentState[coreCode];
+        const fulfilled = creditsFulfilled >= creditsNeededForFulfillment;
+        const label = coreCode;
+
+        // TODO ADD COURSES THAT FULFILL
+
+        return (
+          <div>
+            <CustomToolTip title={coreTitle} placement="left">
+              <TreeItem
+                nodeId={coreCode}
+                label={label}
+                endIcon={fulfilled && <CheckCircleSharp htmlColor="#374151" fontSize="inherit" />}
+              />
+            </CustomToolTip>
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
+interface TreeItemInterface {
+  nodeId: number;
+  label: string;
+  completionFraction: string;
+  coreFulfillmentState: CoreStateInterface;
+  coreCodeArray: SAS_CORES[];
+}
+
+function RequirementTreeItem(props: TreeItemInterface) {
+  const { nodeId, label, completionFraction, coreCodeArray, coreFulfillmentState } = props;
+  return (
+    <div className="relative">
+      <TreeItem nodeId={nodeId.toString()} label={label} className="relative">
+        <RequirementSubItems
+          coreCodeArray={coreCodeArray}
+          coreFulfillmentState={coreFulfillmentState}
+          requirementTitle={label}
+        />
+      </TreeItem>
+      <span className="absolute right-1 top-0 text-base">
+        {completionFraction}
+      </span>
+    </div>
+  );
+}
 
 function Requirements(props: RequirementsProps) {
   const { coreFulfillmentState } = props;
@@ -102,43 +150,20 @@ function Requirements(props: RequirementsProps) {
           sx={{ height: 240, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
         >
           {
-            Object.keys(requirementInfo).map((requirementTitle, index) => (
-              <div className="relative">
-                <TreeItem nodeId={index.toString()} label={requirementTitle} className="relative">
-                  {
-                    requirementInfo[requirementTitle].map((coreCode) => {
-                      if (!Object.prototype.hasOwnProperty.call(coreFulfillmentState, coreCode)) {
-                        console.warn(`
-                          Invalid core code ${coreCode} under requirement
-                          ${requirementTitle}. Will not render.`);
-                        // eslint-disable-next-line react/jsx-no-useless-fragment
-                        return <></>;
-                      }
-                      const { coreTitle,
-                        creditsFulfilled,
-                        creditsNeededForFulfillment } = coreFulfillmentState[coreCode];
-                      const fulfilled = creditsFulfilled >= creditsNeededForFulfillment;
-                      const label = coreCode;
+            Object.keys(requirementInfo).map((requirementTitle, index) => {
+              const fraction = getCompletionFraction(requirementTitle);
+              const coresOfRequirement = requirementInfo[requirementTitle];
 
-                      return (
-                        <div>
-                          <CustomToolTip title={coreTitle} placement="left">
-                            <TreeItem
-                              nodeId={coreCode}
-                              label={label}
-                              endIcon={fulfilled && <CheckCircleSharp htmlColor="#374151" fontSize="inherit" />}
-                            />
-                          </CustomToolTip>
-                        </div>
-                      );
-                    })
-                  }
-                </TreeItem>
-                <span className="absolute right-1 top-0 text-base">
-                  {getCompletionFraction(requirementTitle)}
-                </span>
-              </div>
-            ))
+              return (
+                <RequirementTreeItem
+                  label={requirementTitle}
+                  nodeId={index}
+                  completionFraction={fraction}
+                  coreFulfillmentState={coreFulfillmentState}
+                  coreCodeArray={coresOfRequirement}
+                />
+              );
+            })
           }
         </TreeView>
       </div>

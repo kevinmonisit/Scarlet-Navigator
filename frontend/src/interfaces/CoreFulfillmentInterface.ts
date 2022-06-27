@@ -82,7 +82,7 @@ const defaultSASCoreState = {
     coursesThatFulfill: [],
   },
   [SAS_CORES.WC]: {
-    creditsNeededForFulfillment: 6,
+    creditsNeededForFulfillment: 3,
     creditsFulfilled: 0,
     coreTitle: 'Arts and Humanities',
     coursesThatFulfill: [],

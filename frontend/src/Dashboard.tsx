@@ -161,7 +161,7 @@ function Dashboard() {
   const [runningCreditCountArray, setRunningCreditCountArray] = useState<Array<number>>([]);
   const [semesterCreditArray, setSemesterCreditArray] = useState<Array<number>>([]);
   const [coreFulfillmentState, setCoreFulfillmentState] = useState<CoreStateInterface>(
-    { ...defaultSASCoreState }
+    JSON.parse(JSON.stringify(defaultSASCoreState))
   );
 
   const setOfCurrentCourseIDs = useRef<Set<string> | null>(null);
@@ -375,7 +375,8 @@ function Dashboard() {
   const collectCoreFulfillmentInfo = () => {
     if (!columns) return;
 
-    const newCoreState: CoreStateInterface = { ...coreFulfillmentState };
+    // we perform a deep copy of a nested object
+    const newCoreState: CoreStateInterface = JSON.parse(JSON.stringify(defaultSASCoreState));
 
     Object.keys(columns).forEach((key) => {
       columns[key].items.forEach((course) => {
@@ -391,7 +392,7 @@ function Dashboard() {
         });
       });
     });
-    console.log(newCoreState);
+
     setCoreFulfillmentState(newCoreState);
   };
 
@@ -410,14 +411,12 @@ function Dashboard() {
         console.warn('Columns could not be fetched: ');
         console.warn(err);
       });
-    collectCoreFulfillmentInfo();
   }, []);
 
   useEffect(() => {
     uploadNewStudentPlan(columns);
     updateSetOfCurrentCourseIDs();
     createArrayOfSemesterCredits();
-    collectCoreFulfillmentInfo();
 
     if (setOfCurrentCourseIDs.current) {
       setNumberOfCourses(setOfCurrentCourseIDs.current.size);
