@@ -42,11 +42,11 @@ const defaultSASCoreState = {
   [SAS_CORES.CCO]: {
     creditsNeededForFulfillment: 3,
     creditsFulfilled: 0,
-    coreTitle: 'Diversities and Social Inequalities',
+    coreTitle: 'Our Common Future',
     coursesThatFulfill: [],
   },
   [SAS_CORES.NS]: {
-    creditsNeededForFulfillment: 3,
+    creditsNeededForFulfillment: 6,
     creditsFulfilled: 0,
     coreTitle: 'Natural Sciences',
     coursesThatFulfill: [],
@@ -69,22 +69,36 @@ const defaultSASCoreState = {
     coreTitle: 'Arts and Humanities',
     coursesThatFulfill: [],
   },
-  [SAS_CORES.AHo]: {
-    creditsNeededForFulfillment: 6,
-    creditsFulfilled: 0,
-    coreTitle: 'Arts and Humanities',
-    coursesThatFulfill: [],
-  },
-  [SAS_CORES.AHp]: {
-    creditsNeededForFulfillment: 6,
-    creditsFulfilled: 0,
-    coreTitle: 'Arts and Humanities',
-    coursesThatFulfill: [],
-  },
   [SAS_CORES.WC]: {
     creditsNeededForFulfillment: 3,
     creditsFulfilled: 0,
-    coreTitle: 'Arts and Humanities',
+    coreTitle: 'Writing and Communication',
+    coursesThatFulfill: [],
+  },
+  [SAS_CORES.WCr]: {
+    creditsNeededForFulfillment: 3,
+    creditsFulfilled: 0,
+    coreTitle: 'Writing and Revisions',
+    coursesThatFulfill: [],
+  },
+  [SAS_CORES.WCd]: {
+    creditsNeededForFulfillment: 3,
+    creditsFulfilled: 0,
+    coreTitle: 'Writing to a Discipline',
+    coursesThatFulfill: [],
+  },
+  [SAS_CORES.QR]: {
+    creditsNeededForFulfillment: 3,
+    creditsFulfilled: 0,
+    coreTitle:
+      'Apply effective and efficient mathematical or other formal processes to reason and to solve problems.',
+    coursesThatFulfill: [],
+  },
+  [SAS_CORES.QQ]: {
+    creditsNeededForFulfillment: 3,
+    creditsFulfilled: 0,
+    coreTitle:
+      'Formulate, evaluate, and communicate conclusions and inferences from quantitative information. ',
     coursesThatFulfill: [],
   },
 };

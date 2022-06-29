@@ -33,11 +33,12 @@ function NavBar() {
           className="text-gray-50 select-none"
           style={{
             fontStyle: 'Roboto',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            textShadow: '0px 3px 4px rgba(0, 0, 0, 0.2)'
           }}
         >
           <ExploreIcon sx={{
-            marginBottom: '3px'
+            marginBottom: '3px',
           }}
           />
           {' '}

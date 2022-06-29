@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import TreeItem from '@mui/lab/TreeItem';
+import { fontWeight } from '@mui/system';
 import TreeView from '@mui/lab/TreeView';
 import { ExpandMore, ChevronRight, CheckCircleOutlineSharp, CheckCircleSharp } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
@@ -19,8 +20,28 @@ interface RequirementsProps {
 }
 
 const requirementInfo: RequirementsInterface = {
-  'Areas of Inquiry': [SAS_CORES.CCD, SAS_CORES.NS, SAS_CORES.WC],
-  'Baap baap': [SAS_CORES.CCD, SAS_CORES.AHo]
+  'Contemporary Challenges':
+    [
+      SAS_CORES.CCD,
+      SAS_CORES.CCO,
+    ],
+  'Natural Sciences': [
+    SAS_CORES.NS
+  ],
+  'Social and Historical Analysis': [
+    SAS_CORES.HST,
+    SAS_CORES.SCL,
+    SAS_CORES.AH
+  ],
+  'Writing & Communication': [
+    SAS_CORES.WC,
+    SAS_CORES.WCd,
+    SAS_CORES.WCr
+  ],
+  'Quantitative Reasoning': [
+    SAS_CORES.QQ,
+    SAS_CORES.QR
+  ],
 };
 
 interface RequirementSubItemsInterface {
@@ -55,7 +76,7 @@ function RequirementSubItems(props: RequirementSubItemsInterface) {
             <CustomToolTip title={coreTitle} placement="left">
               <TreeItem
                 nodeId={coreCode}
-                label={label}
+                label={label.concat(` (${creditsNeededForFulfillment} credits)`)}
                 endIcon={fulfilled && <CheckCircleSharp htmlColor="#374151" fontSize="inherit" />}
               />
             </CustomToolTip>
@@ -78,7 +99,11 @@ function RequirementTreeItem(props: TreeItemInterface) {
   const { nodeId, label, completionFraction, coreCodeArray, coreFulfillmentState } = props;
   return (
     <div className="relative">
-      <TreeItem nodeId={nodeId.toString()} label={label} className="relative">
+      <TreeItem
+        nodeId={nodeId.toString()}
+        label={label}
+        className="relative"
+      >
         <RequirementSubItems
           coreCodeArray={coreCodeArray}
           coreFulfillmentState={coreFulfillmentState}
@@ -130,7 +155,7 @@ function Requirements(props: RequirementsProps) {
 
   return (
     <div
-      className="h-full w-full flex flex-col px-2"
+      className="h-full w-full flex flex-col px-2 grow"
     >
       <div className="text-2xl font-semibold pr-2 italic">
         <span className="font-normal">Core Curriculum</span>
@@ -142,12 +167,12 @@ function Requirements(props: RequirementsProps) {
         The School of Arts and Sciences (SAS) requires that all
         students complete a goal-based Core Curriculum.
       </div>
-      <div>
+      <div className="pb-2">
         <TreeView
           aria-label="file system navigator"
           defaultCollapseIcon={<ExpandMore />}
           defaultExpandIcon={<ChevronRight />}
-          sx={{ height: 240, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
+          sx={{ height: '100%', maxWidth: 400, overflowY: 'auto' }}
         >
           {
             Object.keys(requirementInfo).map((requirementTitle, index) => {
