@@ -99,12 +99,13 @@ function Settings(props: SettingsProps) {
         />
         <div className="flex flex-row items-center w-full">
           <NumberMenu
-            value={settings.minCredits}
-            range={121}
+            value={settings.numberOfSemesters}
+            range={24}
             labelName="Number of Semesters"
             settingName="numberOfSemesters"
             handleSettingsChange={handleSettingsChange}
             toolTip="Total number of semesters to display on the dashboard"
+            offSetOne
           />
           <NumberMenu
             value={settings.minCredits}

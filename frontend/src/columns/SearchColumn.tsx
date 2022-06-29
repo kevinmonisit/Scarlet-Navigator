@@ -4,6 +4,7 @@ import { Button, Chip, Fade, IconButton, Menu, MenuItem, Tooltip } from '@mui/ma
 import Input from '@mui/material/Input';
 import axios from 'axios';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import CircularProgress from '@mui/material/CircularProgress';
 import React, { useCallback, useEffect, useState } from 'react';
 import CourseSearchCard from '../components/CourseSearchCard';
 
@@ -58,6 +59,7 @@ function SearchColumn(props: SearchColumnProps) {
   const [queriedCards, setQueriedCards] = useState<CourseCardInSearch[] | null>([]);
   const [searchType, setSearchType] = useState<SEARCH_BY>(SEARCH_BY.EXPANDED_TITLE);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [searching, setSearching] = React.useState<boolean>(false);
   const open = Boolean(anchorEl);
   const [value, setValue] = useState('');
 
@@ -87,11 +89,20 @@ function SearchColumn(props: SearchColumnProps) {
     })
       .then((res) => {
         setQueriedCards(res.data.coursesQuery);
+        setSearching(false);
       });
   };
 
   useEffect(() => { upstreamQuery(queriedCards); }, [queriedCards]);
-  useEffect(queryCourses, [value, numberOfCardsToQuery]);
+  useEffect(() => {
+    setQueriedCards([]);
+    setSearching(true);
+    const delayDebounceFn = setTimeout(() => {
+      queryCourses();
+    }, 1000);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [value, numberOfCardsToQuery]);
 
   console.log('re render search column');
 
@@ -167,7 +178,7 @@ function SearchColumn(props: SearchColumnProps) {
       >
         <div className="absolute h-full w-full">
           <div className="w-full h-full overflow-hidden overflow-y-scroll">
-            {queriedCards == null ? <>Loading search...</>
+            {queriedCards == null || searching ? <div className="w-full h-full flex flex-row justify-center mt-20"><CircularProgress /></div>
               : queriedCards.map((courseCardSearch) => {
                 // React memo only runs when props change.
                 // Thus, run this function outside of the search card component,
