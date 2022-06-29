@@ -10,7 +10,7 @@ import axios from 'axios';
 import { Settings, Season, defaultSettings } from './interfaces/Settings';
 import SemesterColumn, { SemesterColumnInfo } from './components/SemesterColumn';
 import SearchColumn, { CourseCardInSearch } from './columns/SearchColumn';
-import { CoreStateInterface, defaultSASCoreState } from './interfaces/CoreFulfillmentInterface';
+import { CoreStateInterface, defaultSASCoreState, SAS_CORES } from './interfaces/CoreFulfillmentInterface';
 import InfoColumn from './columns/infoColumn/InfoColumn';
 
 const BASE_URL = process.env.REACT_APP_ENV === 'Production' ? process.env.REACT_APP_API_URL : '';
@@ -380,15 +380,20 @@ function Dashboard() {
 
     Object.keys(columns).forEach((key) => {
       columns[key].items.forEach((course) => {
-        // TODO: Deal with AH core and different varieties
         course.cores.forEach((coreCode) => {
-          if (!Object.prototype.hasOwnProperty.call(coreFulfillmentState, coreCode)) {
+          // AH is a weird code. AHp/AHr/AHo can satisfy AH, but there needs to be two courses that
+          // satisfy at least two. If core is one of the AHs, just add to AH as one core code.
+          const isCoreAH = /AH/.test(coreCode);
+          if (!Object.prototype.hasOwnProperty.call(coreFulfillmentState, coreCode) && !isCoreAH) {
             console.warn(`Core ${coreCode} not a part of specified core interface`);
             return;
           }
           const courseCredits = course.credits;
-          newCoreState[coreCode].creditsFulfilled += courseCredits;
-          newCoreState[coreCode].coursesThatFulfill.push(course.title);
+          let coreCodeTmp = coreCode;
+          if (isCoreAH) coreCodeTmp = SAS_CORES.AH;
+
+          newCoreState[coreCodeTmp].creditsFulfilled += courseCredits;
+          newCoreState[coreCodeTmp].coursesThatFulfill.push(course.title);
         });
       });
     });
