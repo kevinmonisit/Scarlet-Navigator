@@ -28,13 +28,23 @@ async function getCoursesOfUser(userID: Schema.Types.ObjectId) {
   });
 }
 
-async function getPlanOfUser(userID: Schema.Types.ObjectId) {
+async function getPlanOfUser(userID: Schema.Types.ObjectId, planIndex: number) {
   const userDocument = await getUser(userID);
   if (userDocument == null) {
     return null;
   }
 
-  const { plan } = userDocument;
+  let { plan } = userDocument;
+
+  const planIndexAsNumber = parseInt(planIndex as unknown as string, 10);
+
+  if ((planIndexAsNumber as unknown as number) === 2) {
+    plan = userDocument.secondPlan;
+  } else if ((planIndexAsNumber as unknown as number) === 3) {
+    plan = userDocument.thirdPlan;
+  }
+
+  console.log(plan);
 
   const planWithCourseDocs: Array<Array<HydratedDocument<Course> | null>> = [];
 
@@ -70,14 +80,22 @@ async function getPlanOfUser(userID: Schema.Types.ObjectId) {
 
 async function updatePlanOfUser(
   userID: Schema.Types.ObjectId,
-  newPlan: Array<Array<Schema.Types.ObjectId>>
+  newPlan: Array<Array<Schema.Types.ObjectId>>,
+  planIndex: 1 | 2 | 3
 ) {
   const userDocument = await getUser(userID);
   if (userDocument == null) {
     return null;
   }
 
-  userDocument.plan = newPlan;
+  if (planIndex === 1) {
+    userDocument.plan = newPlan;
+  } else if (planIndex === 2) {
+    userDocument.secondPlan = newPlan;
+  } else if (planIndex === 3) {
+    userDocument.thirdPlan = newPlan;
+  }
+
   return userDocument.save();
 }
 

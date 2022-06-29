@@ -103,7 +103,7 @@ async function processSemesterColumnQuery(plainJSON: { plan: Array<Array<any>>; 
   return { columns };
 }
 
-function uploadNewStudentPlan(columns: ColumnContainer | null) {
+function uploadNewStudentPlan(columns: ColumnContainer | null, planIndex: 1 | 2 | 3) {
   if (!columns) {
     return;
   }
@@ -115,7 +115,8 @@ function uploadNewStudentPlan(columns: ColumnContainer | null) {
   });
 
   axios.patch(`${BASE_URL}/api/v1/user/${process.env.REACT_APP_USER_ID}/plan`, {
-    plan: arrayOfCourseObjectIds
+    plan: arrayOfCourseObjectIds,
+    planIndex
   });
 }
 
@@ -402,7 +403,12 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/api/v1/user/${process.env.REACT_APP_USER_ID}/plan`)
+    console.log('hey');
+    axios.get(`${BASE_URL}/api/v1/user/${process.env.REACT_APP_USER_ID}/plan`, {
+      params: {
+        planIndex: settings.planIndex
+      }
+    })
       .then((res) => {
         processSemesterColumnQuery(res.data).then((processedColumns) => {
           setColumns(processedColumns.columns);
@@ -416,10 +422,10 @@ function Dashboard() {
         console.warn('Columns could not be fetched: ');
         console.warn(err);
       });
-  }, []);
+  }, [settings.planIndex]);
 
   useEffect(() => {
-    uploadNewStudentPlan(columns);
+    uploadNewStudentPlan(columns, settings.planIndex);
     updateSetOfCurrentCourseIDs();
     createArrayOfSemesterCredits();
 

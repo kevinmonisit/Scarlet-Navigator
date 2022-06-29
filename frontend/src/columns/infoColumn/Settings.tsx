@@ -1,4 +1,4 @@
-import { Select, TextField, Tooltip } from '@mui/material';
+import { Select, Tooltip } from '@mui/material';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import Divider from '@mui/material/Divider';
@@ -43,6 +43,17 @@ function Settings(props: SettingsProps) {
 
   return (
     <div className="grow p-2 w-full select-none">
+      <div className="mb-4">
+        <NumberMenu
+          value={settings.planIndex}
+          range={3}
+          labelName="Plan Save Number"
+          settingName="planIndex"
+          handleSettingsChange={handleSettingsChange}
+          toolTip="Choose one of multiple plans you can save."
+          offSetOne
+        />
+      </div>
       <div className="flex flex-col items-center justify-center w-full">
         <div className="flex flex-row items-center w-full">
           <FormControl size="small" fullWidth>
@@ -87,49 +98,22 @@ function Settings(props: SettingsProps) {
         }}
         />
         <div className="flex flex-row items-center w-full">
-          <TextField
-            id="outlined-number"
-            label="Number of Semesters"
-            type="number"
-            size="small"
-            value={settings.numberOfSemesters}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              const value = e.target.value as unknown as number;
-              if (value > 16 || value < 1) return;
-              handleSettingsChange(value, 'numberOfSemesters');
-            }}
-            sx={{
-              width: '100%',
-            }}
-            InputLabelProps={{
-              shrink: true,
-            }}
+          <NumberMenu
+            value={settings.minCredits}
+            range={121}
+            labelName="Number of Semesters"
+            settingName="numberOfSemesters"
+            handleSettingsChange={handleSettingsChange}
+            toolTip="Total number of semesters to display on the dashboard"
           />
-          <FormControl size="small" fullWidth>
-            <InputLabel id="starting-credits">Starting Credits</InputLabel>
-            <Select
-              labelId="starting-credits"
-              value={settings.startingCredits}
-              label="Starting Credits"
-              size="small"
-              onChange={(e) => {
-                console.log(e.target.value);
-                handleSettingsChange(e.target.value, 'startingCredits');
-              }}
-              sx={{
-                width: '100%'
-              }}
-              MenuProps={{
-                style: {
-                  maxHeight: 200
-                }
-              }}
-            >
-              {[...Array(121).keys()].map((startingCredits) => (
-                <MenuItem key={`startingCredit-${startingCredits}`} value={startingCredits}>{startingCredits}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <NumberMenu
+            value={settings.minCredits}
+            range={121}
+            labelName="Starting Credits"
+            settingName="startingCredits"
+            handleSettingsChange={handleSettingsChange}
+            toolTip="Credits going into freshman year"
+          />
         </div>
       </div>
 

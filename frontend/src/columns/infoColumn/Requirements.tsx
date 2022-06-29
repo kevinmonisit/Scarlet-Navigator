@@ -175,6 +175,11 @@ function Requirements(props: RequirementsProps) {
       <div className="pr-2 my-4">
         The School of Arts and Sciences (SAS) requires that all
         students complete a goal-based Core Curriculum.
+        {' '}
+        <br />
+        <br />
+        Please confer with a counselor about core fulfillment. This feature
+        has not been fully implemented/tested and the info may be incorrect.
       </div>
       <div className="pb-2">
         <TreeView

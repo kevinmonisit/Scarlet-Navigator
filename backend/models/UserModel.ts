@@ -8,10 +8,8 @@ interface User {
   courses: Array<Schema.Types.ObjectId>;
   startingYear: number;
   plan: Array<Array<Schema.Types.ObjectId>>;
-}
-
-function arrayLimit(val: Array<any>) {
-  return val.length <= MAX_TOTAL_SEMESTERS;
+  secondPlan: Array<Array<Schema.Types.ObjectId>>;
+  thirdPlan: Array<Array<Schema.Types.ObjectId>>;
 }
 
 const UserSchema = new Schema<User>({
@@ -22,10 +20,18 @@ const UserSchema = new Schema<User>({
     {
       type: Array,
       default: [],
-      validate: [
-        arrayLimit,
-        `User exceeds the limit of ${MAX_TOTAL_SEMESTERS} semesters`,
-      ],
+    },
+  ],
+  secondPlan: [
+    {
+      type: Array,
+      default: [],
+    },
+  ],
+  thirdPlan: [
+    {
+      type: Array,
+      default: [],
     },
   ],
 });

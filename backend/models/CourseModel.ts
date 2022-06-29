@@ -9,6 +9,7 @@ interface Course {
   courseString: string;
   queryTitle: string;
   campusLocations: Array<string>;
+  cores: Array<string>;
   // prerequisites: Array<Schema.Types.ObjectId>;
 }
 
@@ -20,6 +21,7 @@ const CourseSchema = new Schema<Course>({
   subject: { type: String },
   courseString: { type: String },
   campusLocations: [{ type: String }],
+  cores: [{ type: String }],
   // prerequisites: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
 });
 

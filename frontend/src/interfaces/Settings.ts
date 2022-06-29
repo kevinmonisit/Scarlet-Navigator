@@ -21,6 +21,7 @@ interface Settings {
   includeSummerSemesters: boolean;
   prerequisiteValidationEnabled: boolean;
   showCourseCredits: boolean;
+  planIndex: 1 | 2 | 3;
 }
 
 const defaultSettings: Settings = {
@@ -37,6 +38,7 @@ const defaultSettings: Settings = {
   includeSummerSemesters: false,
   prerequisiteValidationEnabled: true,
   showCourseCredits: false,
+  planIndex: 1,
 };
 
 export { Season, defaultSettings };

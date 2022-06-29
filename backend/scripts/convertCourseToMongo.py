@@ -54,7 +54,9 @@ collection.delete_many({})
 user = {
     'courses': [],
     'startingYear': 2021,
-    'plan': [[] for _ in range(24)]
+    'plan': [[] for _ in range(24)],
+    'secondPlan': [[] for _ in range(24)],
+    'thirdPlan': [[] for _ in range(24)]
 }
 res = collection.insert_one(user)
 print('User ID: ', res.inserted_id)
