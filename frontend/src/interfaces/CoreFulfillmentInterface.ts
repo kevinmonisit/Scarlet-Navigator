@@ -66,7 +66,7 @@ const defaultSASCoreState = {
   [SAS_CORES.AH]: {
     creditsNeededForFulfillment: 6,
     creditsFulfilled: 0,
-    coreTitle: 'Arts and Humanities',
+    coreTitle: 'Arts and Humanities. Two of AHo/AHp/AHr must be met.',
     coursesThatFulfill: [],
   },
   [SAS_CORES.WC]: {

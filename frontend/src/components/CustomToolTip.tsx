@@ -13,6 +13,6 @@ export default styled(({ className, ...props }: TooltipProps) => (
   />
 ))({
   [`& .${tooltipClasses.tooltip}`]: {
-    maxWidth: 150,
+    maxWidth: 200,
   },
 });

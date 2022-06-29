@@ -8,6 +8,7 @@ interface Course {
   school: string;
   credits: number;
   campusLocations: string[];
+  cores: string[];
 }
 
 interface CourseInfoProps {
@@ -63,7 +64,22 @@ function CourseInfo(props: CourseInfoProps) {
                   </>
                 );
               })}
-
+            </div>
+            <div className="mt-2">
+              <span className="font-semibold">Cores satisfied: </span>
+            </div>
+            <div className="flex flex-row flex-wrap">
+              {course.cores.map((coreCode, index) => (
+                // eslint-disable-next-line react/jsx-no-useless-fragment
+                <>
+                  {index === course.cores.length - 1 ? <span key={coreCode} className="inline">{coreCode}</span> : (
+                    <div key={coreCode} className="mr-1">
+                      {coreCode.concat(',')}
+                    </div>
+                  )}
+                </>
+              ))}
+              {course.cores.length === 0 && <div>None</div>}
             </div>
           </div>
         )}

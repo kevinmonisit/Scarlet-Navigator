@@ -65,17 +65,26 @@ function RequirementSubItems(props: RequirementSubItemsInterface) {
 
         const { coreTitle,
           creditsFulfilled,
-          creditsNeededForFulfillment } = coreFulfillmentState[coreCode];
+          creditsNeededForFulfillment,
+          coursesThatFulfill
+        } = coreFulfillmentState[coreCode];
         const fulfilled = creditsFulfilled >= creditsNeededForFulfillment;
         const label = coreCode;
 
-        // TODO ADD COURSES THAT FULFILL
+        const createListOfCourses = () => coursesThatFulfill.map((course, index) => {
+          if (index === coursesThatFulfill.length - 1) {
+            return course;
+          }
+          return course.concat(', ');
+        });
+
+        const satisfiedList = coursesThatFulfill.length > 0 ? ` Satisfied by: ${createListOfCourses().join(' ')}` : '';
 
         return (
           <div>
-            <CustomToolTip title={coreTitle} placement="left">
+            <CustomToolTip title={coreTitle.concat(satisfiedList)} placement="left">
               <TreeItem
-                nodeId={coreCode}
+                nodeId={coreTitle}
                 label={label.concat(` (${creditsNeededForFulfillment} credits)`)}
                 endIcon={fulfilled && <CheckCircleSharp htmlColor="#374151" fontSize="inherit" />}
               />
