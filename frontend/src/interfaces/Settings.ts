@@ -21,24 +21,22 @@ interface Settings {
   includeSummerSemesters: boolean;
   prerequisiteValidationEnabled: boolean;
   showCourseCredits: boolean;
-  planIndex: 1 | 2 | 3;
 }
 
 const defaultSettings: Settings = {
   creditsNeededToGraduate: 120,
   startingSeason: Season.FALL,
-  startingYear: 2021,
-  startingCredits: 17,
+  startingYear: new Date().getFullYear(),
+  startingCredits: 0,
   minCredits: 12,
   maxCredits: 20,
-  numberOfSemesters: 8,
+  numberOfSemesters: 9,
   enableMinimumCreditErrors: false,
   maxSearchQuery: 20,
   showNumberInsteadOfTitle: false,
-  includeSummerSemesters: false,
-  prerequisiteValidationEnabled: true,
+  includeSummerSemesters: true,
+  prerequisiteValidationEnabled: false,
   showCourseCredits: false,
-  planIndex: 1,
 };
 
 export { Season, defaultSettings };

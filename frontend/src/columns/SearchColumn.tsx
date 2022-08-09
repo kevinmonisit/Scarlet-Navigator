@@ -1,12 +1,14 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-underscore-dangle */
-import { Button, Chip, Fade, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
+import { Chip, IconButton } from '@mui/material';
 import Input from '@mui/material/Input';
-import axios from 'axios';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { CollectionReference } from 'firebase/firestore';
 import CircularProgress from '@mui/material/CircularProgress';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { httpsCallable } from 'firebase/functions';
 import CourseSearchCard from '../components/CourseSearchCard';
+import { Course } from '../interfaces/Course';
 
 interface CourseCardInSearch {
   title: string;
@@ -39,10 +41,10 @@ const BASE_URL = process.env.REACT_APP_ENV === 'Production' ? process.env.REACT_
 interface SearchColumnProps {
   showCourseCredits: boolean;
   numberOfCardsToQuery: number;
+  courseCollectionRef: CollectionReference;
+  functionReference: any,
   // eslint-disable-next-line no-unused-vars
-  checkIfCourseAlreadyInPlan(id: string): boolean | undefined;
-  handleCourseInfoChange(id: string): void;
-  getCurrentCourseInfoDisplay: () => any;
+  checkIfCourseAlreadyInPlan(id: string): boolean | undefined,
   // eslint-disable-next-line no-unused-vars
   upstreamQuery(queryList: any);
 }
@@ -51,24 +53,21 @@ function SearchColumn(props: SearchColumnProps) {
   const {
     checkIfCourseAlreadyInPlan,
     upstreamQuery,
-    handleCourseInfoChange,
-    getCurrentCourseInfoDisplay,
     showCourseCredits,
     numberOfCardsToQuery,
+    functionReference,
+    courseCollectionRef,
   } = props;
-  const [queriedCards, setQueriedCards] = useState<CourseCardInSearch[] | null>([]);
+  const [queriedCards, setQueriedCards] = useState<CourseCardInSearch[] | any>([]);
   const [searchType, setSearchType] = useState<SEARCH_BY>(SEARCH_BY.EXPANDED_TITLE);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [searching, setSearching] = React.useState<boolean>(false);
   const open = Boolean(anchorEl);
   const [value, setValue] = useState('');
+  const searchCourses = httpsCallable(functionReference, 'search');
 
   const onChange = (event) => {
     setValue(event.target.value);
-  };
-
-  const handleCourseClick = (id: string) => {
-    handleCourseInfoChange(id);
   };
 
   const handleSearchMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -79,18 +78,32 @@ function SearchColumn(props: SearchColumnProps) {
     setAnchorEl(null);
   };
 
-  const queryCourses = () => {
-    axios.get(`${BASE_URL}/api/v1/courses`, {
-      params: {
-        search: value,
-        amount: numberOfCardsToQuery,
-        searchType
-      }
-    })
-      .then((res) => {
-        setQueriedCards(res.data.coursesQuery);
+  const queryCourses = async () => {
+    searchCourses({ query: !value ? '' : value, amountToQuery: numberOfCardsToQuery })
+      .then((result) => {
+        setQueriedCards(result.data);
         setSearching(false);
+      })
+      .catch((error) => {
+        const { code, message, details } = error;
+        console.error(`Error ${code}: ${message}. Details: ${details}`);
       });
+
+    // setQueriedCards(courses);
+    // console.log(query(courseCollectionRef, limit(5)));
+    // if (courses) { setQueriedCards(courses); }
+
+    // axios.get(`${BASE_URL}/api/v1/courses`, {
+    //   params: {
+    //     search: value,
+    //     amount: numberOfCardsToQuery,
+    //     searchType
+    //   }
+    // })
+    //   .then((res) => {
+    //     setQueriedCards(res.data.coursesQuery);
+    //     setSearching(false);
+    //   });
   };
 
   useEffect(() => { upstreamQuery(queriedCards); }, [queriedCards]);
@@ -99,12 +112,10 @@ function SearchColumn(props: SearchColumnProps) {
     setSearching(true);
     const delayDebounceFn = setTimeout(() => {
       queryCourses();
-    }, 1000);
+    }, 500);
 
     return () => clearTimeout(delayDebounceFn);
   }, [value, numberOfCardsToQuery]);
-
-  console.log('re render search column');
 
   return (
     <div className="w-2/12 h-full flex flex-col max-w-fit">
@@ -115,7 +126,8 @@ function SearchColumn(props: SearchColumnProps) {
         }}
       >
         <Input
-          placeholder={`By ${getSearchByString(searchType)}`}
+          // placeholder={`By ${getSearchByString(searchType)}`}
+          placeholder="Search courses"
           onChange={onChange}
           disableUnderline
           aria-label="Search course"
@@ -135,7 +147,7 @@ function SearchColumn(props: SearchColumnProps) {
           <KeyboardArrowDownIcon />
         </IconButton>
       </div>
-      <Menu
+      {/* <Menu
         id="basic-menu"
         anchorEl={anchorEl}
         open={open}
@@ -172,47 +184,26 @@ function SearchColumn(props: SearchColumnProps) {
         >
           By course numbers
         </MenuItem>
-      </Menu>
+      </Menu> */}
       <div
         className="w-full grow relative"
       >
         <div className="absolute h-full w-full">
           <div className="w-full h-full overflow-hidden overflow-y-scroll">
             {queriedCards == null || searching ? <div className="w-full h-full flex flex-row justify-center mt-20"><CircularProgress /></div>
-              : queriedCards.map((courseCardSearch) => {
-                // React memo only runs when props change.
-                // Thus, run this function outside of the search card component,
-                // instead of inside the search card component.
+              : queriedCards.map((courseCardSearch: Course) => {
                 const checkAlreadyExists = checkIfCourseAlreadyInPlan(courseCardSearch._id);
-                const courseCurrentlyDisplayedInInfoColumn = getCurrentCourseInfoDisplay();
-                let isSelected = false;
-                if (courseCurrentlyDisplayedInInfoColumn) {
-                  const { _id } = courseCurrentlyDisplayedInInfoColumn;
-                  isSelected = courseCardSearch._id === _id;
-                }
-                // looks like search card being re-rendered needlessly again 6/9/21
-                // probably because of handleCourseInfoChange prop
 
                 return (
                   <CourseSearchCard
-                    shortTitle={courseCardSearch.title}
-                    courseString={courseCardSearch.courseString}
+                    courseDocument={courseCardSearch}
                     key={courseCardSearch._id}
-                    courseId={courseCardSearch._id}
                     alreadyInPlan={checkAlreadyExists}
-                    handleCourseInfoChange={handleCourseClick}
-                    isCurrentlySelected={isSelected}
                     showCourseCredits={showCourseCredits}
-                    credits={courseCardSearch.credits}
                   />
                 );
               })}
-            {queriedCards && queriedCards.length > 15 && (
-              <div className="w-full flex justify-center mt-2 mb-2">
-                <Chip label={`Showing first ${numberOfCardsToQuery} courses`} />
-              </div>
-            )}
-
+            <div className="w-full h-3" />
           </div>
         </div>
       </div>

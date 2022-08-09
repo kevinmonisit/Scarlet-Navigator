@@ -8,7 +8,10 @@ import React, { useRef } from 'react';
 import ClearIcon from '@mui/icons-material/Clear';
 import { Draggable } from 'react-beautiful-dnd';
 import Badge, { BadgeProps } from '@mui/material/Badge';
-import styled from '@emotion/styled';
+import { useAppDispatch, useAppSelector } from '../redux/store';
+import { changeCourseDisplay, selectCurrentCourseDisplay } from '../redux/slices/courseDisplaySlice';
+import { Course } from '../interfaces/Course';
+import { deleteCourse, deleteTransferCourse } from '../redux/slices/planSlice';
 
 interface CourseCardInfo {
   _id: string;
@@ -19,38 +22,48 @@ interface CourseCardInfo {
 }
 
 interface CourseCardProps {
-  item: CourseCardInfo;
+  item: Course;
   index: number;
   columnId: string;
   isCurrentlySelected: boolean;
   indicatorColor: string;
   showNumberInsteadOfTitle: boolean;
   showCourseCredits: boolean;
-  // eslint-disable-next-line no-unused-vars
-  handleDeleteCourseCard(index: number, columnId: string);
-  // eslint-disable-next-line no-unused-vars
-  handleCourseInfoChange(courseObject: any);
+  isInTransferColumn?: boolean;
 }
 
 function CourseCard(props: CourseCardProps) {
+  const dispatch = useAppDispatch();
+  const currentDisplayCourse = useAppSelector(selectCurrentCourseDisplay);
+
   // eslint-disable-next-line no-unused-vars
   const {
-    item, index, handleDeleteCourseCard,
-    handleCourseInfoChange, columnId, isCurrentlySelected,
-    indicatorColor, showNumberInsteadOfTitle, showCourseCredits,
+    item,
+    index,
+    columnId,
+    indicatorColor,
+    showCourseCredits,
+    isInTransferColumn,
+    isCurrentlySelected,
+    showNumberInsteadOfTitle,
   } = props;
 
   const handleDeleteClick = (event) => {
     event.stopPropagation();
-    handleDeleteCourseCard(index, columnId);
+    if (isInTransferColumn) {
+      dispatch(deleteTransferCourse(index));
+    } else {
+      dispatch(deleteCourse({
+        index,
+        columnId
+      }));
+    }
   };
 
   const handleCourseClick = (event) => {
     event.stopPropagation();
-    handleCourseInfoChange(item);
+    dispatch(changeCourseDisplay(item));
   };
-
-  // console.log('re-render');
 
   return (
     <Draggable
@@ -70,14 +83,13 @@ function CourseCard(props: CourseCardProps) {
             {...provided.draggableProps}
             style={{
               // boxShadow: '3px 3px 5px rgba(0, 0, 0, 0.05)',
-              ...provided.draggableProps.style
+              ...provided.draggableProps.style,
             }}
             className={`${backgroundColor} w-full
-             text-black font-semibold mt-2 rounded-sm relative
+             text-black font-semibold mt-2 rounded-sm relative z-50
              `}
             onClick={(e) => { handleCourseClick(e); }}
             onKeyDown={(e) => { handleCourseClick(e); }}
-            // onMouseOver={() => { handleHover(true); }}
             role="listitem"
           >
 
@@ -86,8 +98,8 @@ function CourseCard(props: CourseCardProps) {
                 `
                ${isCurrentlySelected ? 'h-full' : 'h-0'}
                ${indicatorColor}
-               bottom-0 left-0 w-1 absolute w-full
-               transition-height duration-300 ease-out rounded-sm
+               bottom-0 left-0 w-1 absolute
+               transition-height duration-300 ease-out rounded-sm z-50
                `
               }
             />
@@ -121,6 +133,10 @@ function CourseCard(props: CourseCardProps) {
     </Draggable>
   );
 }
+
+CourseCard.defaultProps = {
+  isInTransferColumn: false,
+};
 
 export default CourseCard;
 export type { CourseCardInfo };

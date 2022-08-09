@@ -5,24 +5,13 @@ import { styled } from '@mui/material/styles';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import MENU_PAGE from '../../interfaces/InfoColumn';
-import { Settings as SettingsInterface } from '../../interfaces/Settings';
-import Settings from './Settings';
-import CourseInfo from './CourseInfo';
-import Requirements from './Requirements';
-import { CoreStateInterface } from '../../interfaces/CoreFulfillmentInterface';
-
-interface InfoColumnProps {
-  currentCourse: any;
-  settings: SettingsInterface;
-  coreFulfillmentState: CoreStateInterface;
-  changeSettings: (settings: SettingsInterface) => void;
-  resetPlan: () => void;
-}
-
-// TODO: replace type any with the course model schema
+import Settings from './columnTabs/Settings';
+import CourseInfo from './columnTabs/CourseInfo';
+import { useAppSelector } from '../../redux/hooks';
+import { selectCurrentCourseDisplay } from '../../redux/slices/courseDisplaySlice';
+import Requirements from './columnTabs/Requirements';
 
 interface StyledTabsProps {
   children?: React.ReactNode;
@@ -47,8 +36,8 @@ const StyledTabs = styled((props: StyledTabsProps) => (
     backgroundColor: 'rgb(220, 38, 38)',
   },
 
-  marginLeft: '1rem',
-  marginRight: '1rem'
+  display: 'flex',
+  width: '100%'
 });
 
 interface StyledTabProps {
@@ -60,7 +49,7 @@ const StyledTab = styled((props: StyledTabProps) => (
 ))(({ theme }) => ({
   textTransform: 'none',
   fontWeight: theme.typography.fontWeightRegular,
-  fontSize: theme.typography.pxToRem(15),
+  fontSize: theme.typography.pxToRem(16),
   // marginRight: theme.spacing(1),
   color: '#000',
   '&.Mui-selected': {
@@ -69,11 +58,14 @@ const StyledTab = styled((props: StyledTabProps) => (
   '&.Mui-focusVisible': {
     backgroundColor: 'rgba(100, 95, 228, 0.32)',
   },
+  padding: 0,
 }));
 
-function InfoColumn(props: InfoColumnProps) {
-  const { currentCourse, changeSettings, coreFulfillmentState, resetPlan, settings } = props;
+function InfoColumn(props: { infoColumn: boolean }) {
   const [value, setValue] = useState(MENU_PAGE.CORE);
+  const { infoColumn } = props;
+
+  const currentCourse = useAppSelector(selectCurrentCourseDisplay);
 
   useEffect(() => {
     if (currentCourse) { setValue(MENU_PAGE.COURSE); } // automatically set to course tab
@@ -84,9 +76,9 @@ function InfoColumn(props: InfoColumnProps) {
   };
 
   return (
-    <div className="w-1/4 h-full flex flex-col relative">
-      <div className="w-full flex justify-center">
-        <Box>
+    <div className="w-full h-full flex flex-col absolute -top-9">
+      <div className="w-full flex justify-center mb-2">
+        <div className={`${infoColumn ? '' : 'hidden'}`}>
           <StyledTabs
             value={value}
             onChange={handleChange}
@@ -97,24 +89,19 @@ function InfoColumn(props: InfoColumnProps) {
             <StyledTab label="Core" />
             <StyledTab label="Settings" />
           </StyledTabs>
-          <Box sx={{ p: 0.5 }} />
-        </Box>
+        </div>
       </div>
-      <div className="w-full h-full relative">
+      <div className="w-full grow relative">
         <div className="absolute h-full w-full">
-          <div className="overflow-hidden overflow-y-scroll h-full">
+          <div className="overflow-auto overflow-y-scroll h-full">
             {value === MENU_PAGE.SETTINGS
               ? (
-                <Settings
-                  changeSettings={changeSettings}
-                  settings={settings}
-                  resetPlan={resetPlan}
-                />
+                <Settings />
               ) : <></>}
-            {value === MENU_PAGE.COURSE
+            {(value === MENU_PAGE.COURSE)
               ? <CourseInfo course={currentCourse} /> : <></>}
             {value === MENU_PAGE.CORE
-              ? <Requirements coreFulfillmentState={coreFulfillmentState} /> : <></>}
+              ? <Requirements /> : <></>}
           </div>
         </div>
       </div>

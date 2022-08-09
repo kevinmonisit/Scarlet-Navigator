@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -6,17 +7,14 @@
 import { Tooltip } from '@mui/material';
 import React, { useState, useEffect, useRef } from 'react';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
+import { useAppDispatch, useAppSelector } from '../redux/store';
+import { selectCurrentCourseDisplay, changeCourseDisplay } from '../redux/slices/courseDisplaySlice';
+import { Course } from '../interfaces/Course';
 
 interface CourseSearchCardProps {
-  shortTitle: string;
-  courseId: string;
-  courseString: string;
-  isCurrentlySelected: boolean;
   showCourseCredits: boolean;
-  credits: number;
-  // eslint-disable-next-line no-unused-vars
-  handleCourseInfoChange(id: string): void;
   alreadyInPlan: boolean | undefined;
+  courseDocument: Course;
 }
 
 interface PseudoCourseCardProps {
@@ -107,27 +105,30 @@ PseudoCourseCard.defaultProps = {
 };
 
 function CourseSearchCard(props: CourseSearchCardProps) {
-  const {
-    shortTitle,
-    courseId,
-    alreadyInPlan,
-    courseString,
-    handleCourseInfoChange,
-    isCurrentlySelected,
-    showCourseCredits,
-    credits
-  } = props;
+  const { courseDocument, alreadyInPlan, showCourseCredits } = props;
+  const { title, courseString, _id, credits } = courseDocument;
+  const dispatch = useAppDispatch();
 
   const handleCourseClick = (event) => {
     event.stopPropagation();
-    handleCourseInfoChange(courseId);
+    dispatch(changeCourseDisplay(courseDocument));
   };
 
-  console.log('search card');
+  const currentCourseDisplayed = useAppSelector(selectCurrentCourseDisplay);
+  const [isCurrentlySelected, setIsCurrentlySelected] = useState<boolean>(false);
+  const widthToUse = '100px';
+
+  useEffect(() => {
+    if (currentCourseDisplayed && currentCourseDisplayed._id === _id) {
+      setIsCurrentlySelected(true);
+    } else {
+      setIsCurrentlySelected(false);
+    }
+  }, [currentCourseDisplayed]);
 
   return (
     <div className="bg-gray-300 rounded-sm mr-3 ml-2">
-      <Droppable droppableId={shortTitle} key={shortTitle} isDropDisabled>
+      <Droppable droppableId={title} key={title} isDropDisabled>
         {(providedDroppable) => (
           <div
             {...providedDroppable.droppableProps}
@@ -135,8 +136,8 @@ function CourseSearchCard(props: CourseSearchCardProps) {
             className="relative"
           >
             <Draggable
-              key={courseId}
-              draggableId={`searchCard-${courseId}`}
+              key={_id}
+              draggableId={`searchCard*${_id}`}
               index={0}
               isDragDisabled={alreadyInPlan}
             >
@@ -155,7 +156,7 @@ function CourseSearchCard(props: CourseSearchCardProps) {
                       ? <></>
                       : (
                         <PseudoCourseCard
-                          shortTitle={shortTitle}
+                          shortTitle={title}
                           disabled={!alreadyInPlan}
                           isCurrentlySelected={isCurrentlySelected}
                           showCourseCredits={showCourseCredits}
@@ -174,7 +175,7 @@ function CourseSearchCard(props: CourseSearchCardProps) {
                       tabIndex={0}
                     >
                       <PseudoCourseCard
-                        shortTitle={shortTitle}
+                        shortTitle={title}
                         backgroundColor={backgroundColor}
                         disabled={!alreadyInPlan}
                         isCurrentlySelected={isCurrentlySelected}
@@ -205,4 +206,4 @@ function CourseSearchCard(props: CourseSearchCardProps) {
   );
 }
 
-export default React.memo(CourseSearchCard);
+export default CourseSearchCard;

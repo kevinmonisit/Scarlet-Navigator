@@ -8,11 +8,11 @@ export default styled(({ className, ...props }: TooltipProps) => (
     arrow
     enterDelay={500}
     classes={{ popper: className }}
-    enterNextDelay={300}
+    enterNextDelay={100}
     {...props}
   />
 ))({
   [`& .${tooltipClasses.tooltip}`]: {
-    maxWidth: 200,
+    hyphens: 'auto'
   },
 });

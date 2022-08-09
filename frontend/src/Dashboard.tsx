@@ -1,218 +1,79 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-unused-vars */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { DragDropContext, DropResult } from 'react-beautiful-dnd';
-import { v4 as uuid } from 'uuid';
-import axios from 'axios';
-import { Settings, Season, defaultSettings } from './interfaces/Settings';
-import SemesterColumn, { SemesterColumnInfo } from './components/SemesterColumn';
-import SearchColumn, { CourseCardInSearch } from './columns/SearchColumn';
-import { CoreStateInterface, defaultSASCoreState, SAS_CORES } from './interfaces/CoreFulfillmentInterface';
-import InfoColumn from './columns/infoColumn/InfoColumn';
+import React, { useEffect, useRef, useState } from 'react';
+import { DragDropContext } from 'react-beautiful-dnd';
+import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
+import { CollectionReference, DocumentReference } from 'firebase/firestore';
+import { SemesterColumnInfo } from './components/SemesterColumn';
+import SearchColumn from './columns/SearchColumn';
+import useWindowDimensions from './tools/WindowDimensions';
+import { processTransferCourses, processUserDocumentPlan } from './logic/processQuery';
+import { getPlanKeyByIndex, onDragEnd, uploadNewStudentPlanFirestore } from './logic/handlePlan';
+import { useAppSelector, useAppDispatch } from './redux/hooks';
+import { changeSetting, selectCurrentPlanIndex, selectCurrentSettings, setPlanIndex, setSettings } from './redux/slices/settingsSlice';
+import { selectSemesterCreditArray, setTransferCredits, updateRunningCreditArray } from './redux/slices/creditTrackingSlice';
+import { selectCurrentPlan, selectCurrentTransferCourses, setPlan, setTransferArray } from './redux/slices/planSlice';
+import { Course, PlanContainer } from './interfaces/Course';
+import collectCoreFulfillmentInfo from './logic/handleCoreFulfillment';
+import { selectCoreState, setCoreState } from './redux/slices/coreFulfillmentSlice';
+import MainColumnContainer from './columns/MainColumnContainer';
+import { getTransferCreditCount } from './logic/handleCredits';
+import ErrorPage from './ErrorPage';
 
-const BASE_URL = process.env.REACT_APP_ENV === 'Production' ? process.env.REACT_APP_API_URL : '';
+function setLocalPlanIndex(planIndex: 1 | 2 | 3) {
+  localStorage.setItem('planIndex', planIndex.toString());
+}
+
+function getLocalPlanIndex() {
+  const planIndex = localStorage.getItem('planIndex');
+  if (!planIndex) {
+    return 1;
+  }
+
+  return parseInt(planIndex, 10);
+}
 
 // eslint-disable-next-line no-unused-vars
 interface ColumnContainer {
   [key: string]: SemesterColumnInfo;
 }
 
-function onDragEnd(
-  result: DropResult,
-  columns: any,
-  setColumns: any,
-  // TODO: substitute any[] with the actual interface schema of a course represented in MongoDB
-  findCourseInSearchQuery: (id: string) => boolean,
-  checkIfCourseAlreadyInPlan: (id: string) => boolean | undefined
-) {
-  if (!result.destination) return;
-  const { source, destination } = result;
-  if (result.draggableId.includes('searchCard')) {
-    const newCourseCardId = result.draggableId.split('-')[1];
-    if (checkIfCourseAlreadyInPlan(newCourseCardId)) {
-      console.log('already in plan');
-      return;
-    }
+function Dashboard(props: {
+  courseCollectionRef: CollectionReference,
+  userDocReference: DocumentReference,
+  dbReference: any,
+  functionReference: any,
+}) {
+  const useDispatch = useAppDispatch();
+  const settings = useAppSelector(selectCurrentSettings);
+  const planIndex = useAppSelector(selectCurrentPlanIndex);
+  const semesterCreditArray = useAppSelector(selectSemesterCreditArray);
+  const currentPlan = useAppSelector(selectCurrentPlan);
+  const currentCoreFulfillmentState = useAppSelector(selectCoreState);
+  const currentTransferCourseArray = useAppSelector(selectCurrentTransferCourses);
 
-    const destColumn = columns[destination.droppableId];
-    const destItems = [...destColumn.items];
-    const newCourseToAdd = findCourseInSearchQuery(newCourseCardId);
-    if (!newCourseToAdd) return;
-    destItems.splice(destination.index, 0, newCourseToAdd);
-    setColumns({
-      ...columns,
-      [destination.droppableId]: {
-        ...destColumn,
-        items: destItems,
-      }
+  const [errorOccurredDuringFetch, setErrorOccurredDuringFetch] = useState<boolean>(false);
 
-    });
-    return;
-  }
+  const { courseCollectionRef, userDocReference, dbReference, functionReference } = props;
+  const [userDoc, loading, error, snapshot, reload] = useDocumentDataOnce<any>(userDocReference);
 
-  if (source.droppableId !== destination.droppableId) {
-    const sourceColumn = columns[source.droppableId];
-    const destColumn = columns[destination.droppableId];
-    const sourceItems = [...sourceColumn.items];
-    const destItems = [...destColumn.items];
-    const [removed] = sourceItems.splice(source.index, 1);
-    destItems.splice(destination.index, 0, removed);
-    setColumns({
-      ...columns,
-      [source.droppableId]: {
-        ...sourceColumn,
-        items: sourceItems,
-      },
-      [destination.droppableId]: {
-        ...destColumn,
-        items: destItems,
-      },
-    });
-  } else {
-    const column = columns[source.droppableId];
-    const copiedItems = [...column.items];
-    const [removed] = copiedItems.splice(source.index, 1);
-    copiedItems.splice(destination.index, 0, removed);
-    setColumns({
-      ...columns,
-      [source.droppableId]: {
-        ...column,
-        items: copiedItems,
-      },
-    });
-  }
-}
-
-async function processSemesterColumnQuery(plainJSON: { plan: Array<Array<any>>; }) {
-  const columns = {};
-  const { plan } = plainJSON;
-
-  for (let semesterIndex = 0; semesterIndex < plan.length; semesterIndex += 1) {
-    const courseSemesterID = uuid();
-    columns[courseSemesterID] = {};
-    columns[courseSemesterID].title = 'Fall 2022';
-    columns[courseSemesterID].items = [];
-
-    for (let courseIndex = 0; courseIndex < plan[semesterIndex].length; courseIndex += 1) {
-      columns[courseSemesterID].items.push(plan[semesterIndex][courseIndex]);
-    }
-  }
-  return { columns };
-}
-
-function uploadNewStudentPlan(columns: ColumnContainer | null, planIndex: 1 | 2 | 3) {
-  if (!columns) {
-    return;
-  }
-
-  const arrayOfCourseObjectIds: Array<Array<String>> = [];
-  Object.keys(columns).forEach((columnId) => {
-    // eslint-disable-next-line no-underscore-dangle
-    arrayOfCourseObjectIds.push(columns[columnId].items.map((item) => item._id));
-  });
-
-  axios.patch(`${BASE_URL}/api/v1/user/${process.env.REACT_APP_USER_ID}/plan`, {
-    plan: arrayOfCourseObjectIds,
-    planIndex
-  });
-}
-
-function getCreditSemesterCount(column: SemesterColumnInfo) {
-  return column.items.reduce((previous, current) => (previous + current.credits), 0);
-}
-
-const seasonArrays = {
-  noSummer: {
-    [Season.FALL]: [Season.FALL, Season.SPRING],
-    [Season.SPRING]: [Season.SPRING, Season.FALL]
-  },
-
-  summer: {
-    [Season.FALL]: [Season.FALL, Season.SPRING, Season.SUMMER],
-    [Season.SPRING]: [Season.SPRING, Season.SUMMER, Season.FALL]
-  }
-};
-
-function setSeasonArray(startingSeason: Season, includeSummers: boolean) {
-  const arrays = includeSummers ? seasonArrays.summer : seasonArrays.noSummer;
-  if (!(startingSeason in arrays)) {
-    console.warn('Invalid starting season.');
-    return {};
-  }
-
-  return arrays[startingSeason];
-}
-
-// eslint-disable-next-line no-shadow
-// enum Season {
-//   FALL = 'Fall',
-//   SPRING = 'Spring',
-//   SUMMER = 'Summer'
-// }
-
-function Dashboard() {
-  // TODO TOMORROW: Monday june 6th, change columns to a ref
-  const [columns, setColumns] = useState<ColumnContainer | null>(null);
   const [searchQueryList, setSearchQueryList] = useState<any[] | null>(null);
-  const [currentCourseInfoDisplayed, setCurrentCourseInfoDisplayed] = useState<any | null>(null);
-
-  const [runningCreditCountArray, setRunningCreditCountArray] = useState<Array<number>>([]);
-  const [semesterCreditArray, setSemesterCreditArray] = useState<Array<number>>([]);
-  const [coreFulfillmentState, setCoreFulfillmentState] = useState<CoreStateInterface>(
-    JSON.parse(JSON.stringify(defaultSASCoreState))
-  );
 
   const setOfCurrentCourseIDs = useRef<Set<string> | null>(null);
   const [numberOfCourses, setNumberOfCourses] = useState(0);
-  const [settings, setSettings] = useState<Settings>({ ...defaultSettings });
 
-  const [seasons, setSeasons] = useState<string[]>(
-    setSeasonArray(
-      settings.startingSeason,
-      settings.includeSummerSemesters
-    )
-  );
+  const { width } = useWindowDimensions();
+  const [widthTooSmall, setWidthTooSmall] = useState<boolean>(false);
 
   useEffect(() => {
-    const seasonsArray = setSeasonArray(settings.startingSeason, settings.includeSummerSemesters);
-    setSeasons(seasonsArray);
-  }, [settings.startingSeason, settings.includeSummerSemesters]);
-
-  useEffect(() => {
-    // originally, we only have 8 semesters
-    // i think it'll look cleaner if we start with 16 blank semesters
-    // from the start instead of having to add them dynamically
-    // if they don't exist
-    if (columns) {
-      console.log(settings.numberOfSemesters);
-      const currentNumberOfSemesters = Object.keys(columns).length;
-      if (currentNumberOfSemesters > 0 && settings.numberOfSemesters > currentNumberOfSemesters) {
-        let difference = settings.numberOfSemesters - currentNumberOfSemesters;
-        const emptyColumns: ColumnContainer | null = {};
-        while (difference >= 0) {
-          const semesterColumn: SemesterColumnInfo = {
-            items: [],
-            title: ''
-          };
-          emptyColumns[uuid()] = semesterColumn;
-          difference -= 1;
-        }
-        setColumns({
-          ...columns,
-          ...emptyColumns
-        });
-      }
+    if (width <= 1000) {
+      setWidthTooSmall(true);
+    } else {
+      setWidthTooSmall(false);
     }
-  }, [settings.numberOfSemesters]);
-
-  const changeSettings = (newSettings: Settings) => {
-    setSettings({
-      ...newSettings,
-    });
-  };
+  }, [width]);
 
   const checkIfCourseAlreadyInPlan = (courseId: string) => {
     if (setOfCurrentCourseIDs != null && setOfCurrentCourseIDs.current != null) {
@@ -226,15 +87,10 @@ function Dashboard() {
     setSearchQueryList(courseListQuery);
   };
 
-  // O(n), could be better by indexing courses by their _id in the backend
-  // but until it's a problem, I offload this work to the user
-  // make this a hashet (aka an object)
-  const findCourseInSearchQueryList = (id: string): any => {
+  const findCourseInSearchQueryList = (id: string): Course | null => {
     if (!searchQueryList) return null;
     // eslint-disable-next-line no-restricted-syntax
     for (const queriedCourse of searchQueryList) {
-      console.log('find query');
-
       // eslint-disable-next-line no-underscore-dangle
       if (queriedCourse._id === id) {
         return queriedCourse;
@@ -244,209 +100,154 @@ function Dashboard() {
     return null;
   };
 
-  const handleDeleteCourseCard = useCallback((index: number, columnId: string) => {
-    if (columns) {
-      const modifiedColumn = columns[columnId];
-      const modifiedColumnItems = [...modifiedColumn.items];
-      modifiedColumnItems.splice(index, 1);
-      setColumns({
-        ...columns,
-        [columnId]: {
-          ...modifiedColumn,
-          items: modifiedColumnItems,
-        }
-      });
-    }
-  }, [columns]);
-
-  // TODO: change any type to model schema
-  // TODO: Change this function into an overloaded function
-  // handleCourseInfoChange(courseObject: courseSchema)
-  // handleCourseInfoChange(coureId: string)
-  // for now, handle by type
-  const handleCourseInfoChange = (course: any) => {
-    if (typeof course === 'string') {
-      const course_ = findCourseInSearchQueryList(course);
-      if (!course_) return;
-      setCurrentCourseInfoDisplayed({ ...course_ });
-    } else {
-      // we assume it's an object. however, make this more cleaner in the future.
-      setCurrentCourseInfoDisplayed({ ...course });
-    }
-  };
-
-  const getCurrentCourseInfo = () => {
-    if (currentCourseInfoDisplayed) {
-      return currentCourseInfoDisplayed;
-    }
-
-    return null;
-  };
-
-  const createArrayOfSemesterCredits = () => {
-    if (!columns) return;
-    const arrayOfCredits: Array<number> = [];
-
-    Object.keys(columns).forEach((key) => {
-      arrayOfCredits.push(getCreditSemesterCount(columns[key]));
-    });
-    setSemesterCreditArray(arrayOfCredits);
-  };
-
-  const updateRunningCreditCountArray = () => {
-    if (!columns) return;
-    const newArray = new Array(Object.keys(columns).length).fill(0);
-
-    for (let i = 0; i < semesterCreditArray.length; i += 1) {
-      if (i === 0) {
-        newArray[i] = semesterCreditArray[i] + settings.startingCredits;
-      } else {
-        newArray[i] = newArray[i - 1] + semesterCreditArray[i];
-      }
-    }
-
-    setRunningCreditCountArray(newArray);
-  };
-
   const updateSetOfCurrentCourseIDs = () => {
-    if (!columns) return;
+    if (!currentPlan) return;
 
-    const columnKeys = Object.keys(columns);
+    const columnKeys = Object.keys(currentPlan);
     const newSet: Set<string> = new Set();
 
     for (let semesterIndex = 0; semesterIndex < columnKeys.length; semesterIndex += 1) {
       const key = columnKeys[semesterIndex];
-      const courses = columns[key].items;
+      const courses = currentPlan[key].items;
       for (let courseIndex = 0; courseIndex < courses.length; courseIndex += 1) {
         newSet.add(courses[courseIndex]._id);
       }
     }
 
+    for (let index = 0; index < currentTransferCourseArray.length; index += 1) {
+      newSet.add(currentTransferCourseArray[index]._id);
+    }
+
     setOfCurrentCourseIDs.current = newSet;
   };
 
-  const resetPlan = () => {
-    const MAX_REGULAR_SEMESTERS = 16;
-    const MAX_SUMMER_SEMESTERS = 8;
-    const MAX_TOTAL_SEMESTERS = MAX_REGULAR_SEMESTERS + MAX_SUMMER_SEMESTERS;
+  /*
+    =========== Initialization to changes ===========
 
-    const blankPlan: ColumnContainer = {};
-    for (let k = 0; k < MAX_TOTAL_SEMESTERS; k += 1) {
-      const semesterColumn: SemesterColumnInfo = {
-        items: [],
-        title: ''
-      };
-      blankPlan[uuid()] = semesterColumn;
-    }
-
-    setColumns({
-      ...blankPlan
-    });
-  };
-
-  const createSemesterProps = (index: number): {
-    quartersOfCreditsCompleted: number,
-    year: number,
-    season: string,
-    error: boolean,
-  } => {
-    const percentageCompleted = runningCreditCountArray[index] / settings.creditsNeededToGraduate;
-    const quartersOfCreditsCompleted = Math.floor((percentageCompleted * 100) / 25);
-
-    const offset = settings.startingSeason === Season.FALL ? 1 : 0;
-    const year = settings.startingYear + Math.floor((index - offset) / seasons.length);
-    const season = seasons[index % seasons.length];
-
-    let error = false;
-    const numberOfCredits = semesterCreditArray[index];
-    if (settings.enableMinimumCreditErrors
-      && (numberOfCredits > settings.maxCredits
-        || numberOfCredits < settings.minCredits)) {
-      error = true;
-    }
-
-    return {
-      quartersOfCreditsCompleted,
-      year,
-      season,
-      error,
-    };
-  };
-
-  const collectCoreFulfillmentInfo = () => {
-    if (!columns) return;
-
-    // we perform a deep copy of a nested object
-    const newCoreState: CoreStateInterface = JSON.parse(JSON.stringify(defaultSASCoreState));
-
-    Object.keys(columns).forEach((key) => {
-      columns[key].items.forEach((course) => {
-        course.cores.forEach((coreCode) => {
-          // AH is a weird code. AHp/AHr/AHo can satisfy AH, but there needs to be two courses that
-          // satisfy at least two. If core is one of the AHs, just add to AH as one core code.
-          const isCoreAH = /AH/.test(coreCode);
-          if (!Object.prototype.hasOwnProperty.call(coreFulfillmentState, coreCode) && !isCoreAH) {
-            console.warn(`Core ${coreCode} not a part of specified core interface`);
-            return;
-          }
-          const courseCredits = course.credits;
-          let coreCodeTmp = coreCode;
-          if (isCoreAH) coreCodeTmp = SAS_CORES.AH;
-
-          newCoreState[coreCodeTmp].creditsFulfilled += courseCredits;
-          newCoreState[coreCodeTmp].coursesThatFulfill.push(course.title);
-        });
-      });
-    });
-
-    setCoreFulfillmentState(newCoreState);
-  };
+    TOOD: Improve the flow of data change
+  */
 
   useEffect(() => {
-    console.log('hey');
-    axios.get(`${BASE_URL}/api/v1/user/${process.env.REACT_APP_USER_ID}/plan`, {
-      params: {
-        planIndex: settings.planIndex
-      }
-    })
-      .then((res) => {
-        processSemesterColumnQuery(res.data).then((processedColumns) => {
-          setColumns(processedColumns.columns);
-          const numberOfColumns = Object.keys(processedColumns.columns).length;
-          const defaultArray = new Array(numberOfColumns).fill(0);
-          setRunningCreditCountArray(defaultArray);
-        });
+    useDispatch(setPlanIndex(getLocalPlanIndex() as 1 | 2 | 3));
+  }, []);
+
+  /**
+   * Student Plan is first accessed here
+   */
+  useEffect(() => {
+    if (loading || !userDoc) return;
+    processUserDocumentPlan(userDoc, planIndex)
+      .then((processedColumns: PlanContainer) => {
+        useDispatch(setPlan(processedColumns));
+        useDispatch(setSettings(userDoc[getPlanKeyByIndex(planIndex)].settings));
       })
       .catch((err) => {
-        setColumns(null);
+        setErrorOccurredDuringFetch(true);
+        useDispatch(setPlan({}));
         console.warn('Columns could not be fetched: ');
         console.warn(err);
       });
-  }, [settings.planIndex]);
+
+    processTransferCourses(userDoc)
+      .then((transferCourses: Course[]) => {
+        useDispatch(setTransferArray(transferCourses));
+      })
+      .catch((err) => {
+        setErrorOccurredDuringFetch(true);
+        useDispatch(setTransferArray([]));
+        console.warn('Transfer course array could not be fetched');
+        console.warn(err);
+      });
+  }, [userDoc]);
 
   useEffect(() => {
-    uploadNewStudentPlan(columns, settings.planIndex);
+    reload();
+    setLocalPlanIndex(planIndex);
+  }, [planIndex]);
+
+  /*
+    =========== Response to changes ===========
+  */
+
+  useEffect(() => {
+    // if an error occurred, don't send back and ratify a blank plan
+    if (userDoc && settings && !errorOccurredDuringFetch && !loading) {
+      uploadNewStudentPlanFirestore(
+        currentPlan,
+        currentTransferCourseArray,
+        planIndex,
+        userDocReference,
+        dbReference,
+        settings
+      );
+    }
     updateSetOfCurrentCourseIDs();
-    createArrayOfSemesterCredits();
 
     if (setOfCurrentCourseIDs.current) {
       setNumberOfCourses(setOfCurrentCourseIDs.current.size);
     }
-  }, [columns]);
+  }, [currentPlan, currentTransferCourseArray, settings]);
 
-  useEffect(createArrayOfSemesterCredits, [settings.startingCredits]);
-  useEffect(updateRunningCreditCountArray, [semesterCreditArray]);
-  useEffect(collectCoreFulfillmentInfo, [numberOfCourses]);
+  useEffect(() => {
+    const transferCredits = getTransferCreditCount(currentTransferCourseArray);
+    useDispatch(setTransferCredits(transferCredits));
+    /**
+     * Reset starting credits to transfer credit count
+     * ONLY when transfer course array is modified
+     */
+    useDispatch(changeSetting({
+      key: 'startingCredits',
+      newValue: transferCredits
+    }));
+  }, [currentTransferCourseArray.length]);
 
-  console.log('dashboad');
+  useEffect(() => {
+    useDispatch(updateRunningCreditArray({
+      startingCredits: settings.startingCredits
+    }));
+  }, [settings.startingCredits, semesterCreditArray]);
+
+  useEffect(() => {
+    const newCoreState = collectCoreFulfillmentInfo(
+      currentPlan,
+      currentCoreFulfillmentState,
+      currentTransferCourseArray
+    );
+    useDispatch(setCoreState(newCoreState));
+  }, [numberOfCourses, currentTransferCourseArray.length]);
+
+  if (widthTooSmall) {
+    return (
+      <ErrorPage
+        message="Scarlet Navigator is a desktop-only experience. Please
+        try again with a larger screen."
+      />
+    );
+  }
+
+  if (errorOccurredDuringFetch) {
+    return (
+      <ErrorPage
+        message="Scarlet Navigator had trouble fetching your data. Either refresh the page or
+        consult the console for errors."
+      />
+    );
+  }
+
   return (
 
     <DragDropContext
       onDragEnd={(result) => {
         onDragEnd(
           result,
-          columns,
-          setColumns,
+          currentPlan,
+          currentTransferCourseArray,
+          (plan: PlanContainer) => {
+            useDispatch(setPlan(plan));
+          },
+          (transferCourseArray: Course[]) => {
+            useDispatch(setTransferArray(transferCourseArray));
+          },
           findCourseInSearchQueryList,
           checkIfCourseAlreadyInPlan
         );
@@ -454,73 +255,20 @@ function Dashboard() {
     >
       <div
         className="flex flex-row flex-nowrap
-        justify-center items-stretch w-full grow"
+        justify-center items-stretch w-full grow overflow-hidden"
       >
         {/* Load search columns after columns is initialized to prevent re-loading */}
-        {columns == null ? <>Loading course data...</> : (
-          <SearchColumn
-            checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan}
-            upstreamQuery={upstreamQuery}
-            handleCourseInfoChange={handleCourseInfoChange}
-            getCurrentCourseInfoDisplay={getCurrentCourseInfo}
-            showCourseCredits={settings.showCourseCredits}
-            numberOfCardsToQuery={settings.maxSearchQuery}
-          />
-
-        )}
-        <div className="grow relative h-full">
-          {(columns == null)
-            ? <>Loading course data...</> : (
-
-              <div className="absolute h-full w-full">
-                <div
-                  className="grid grid-cols-4 gap-x-3 h-full
-                justify-center min-w-fit overflow-auto
-                pr-3 pl-1
-                "
-                >
-                  {
-                    Object.entries(columns).map(([columnId, column], index) => {
-                      if (index + 1 > settings.numberOfSemesters) return <></>;
-
-                      const {
-                        quartersOfCreditsCompleted,
-                        year,
-                        season,
-                        error
-                      } = createSemesterProps(index);
-
-                      return (
-                        <SemesterColumn
-                          key={columnId}
-                          columnId={columnId}
-                          column={column}
-                          index={index}
-                          season={season}
-                          year={year}
-                          runningCreditCount={runningCreditCountArray[index]}
-                          semesterCreditCount={semesterCreditArray[index]}
-                          quarterIndexUntilGraduation={quartersOfCreditsCompleted}
-                          handleDeleteCourseCard={handleDeleteCourseCard}
-                          handleCourseInfoChange={handleCourseInfoChange}
-                          getCurrentCourseInfoDisplay={getCurrentCourseInfo}
-                          error={error}
-                          showNumberInsteadOfTitle={settings.showNumberInsteadOfTitle}
-                          showCourseCredits={settings.showCourseCredits}
-                        />
-                      );
-                    })
-                  }
-                </div>
-              </div>
-            )}
-        </div>
-        <InfoColumn
-          currentCourse={currentCourseInfoDisplayed}
-          coreFulfillmentState={coreFulfillmentState}
-          changeSettings={changeSettings}
+        <SearchColumn
+          checkIfCourseAlreadyInPlan={checkIfCourseAlreadyInPlan}
+          upstreamQuery={upstreamQuery}
+          showCourseCredits={settings.showCourseCredits}
+          numberOfCardsToQuery={settings.maxSearchQuery}
+          courseCollectionRef={courseCollectionRef}
+          functionReference={functionReference}
+        />
+        <MainColumnContainer
+          currentPlan={currentPlan}
           settings={settings}
-          resetPlan={resetPlan}
         />
       </div>
     </DragDropContext>

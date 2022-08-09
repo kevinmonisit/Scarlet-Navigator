@@ -3,8 +3,7 @@ module.exports = {
   theme: {
     extend: {
       transitionProperty: {
-        height: 'height',
-        width: 'width',
+        size: ['width', 'height']
       },
     },
   },

@@ -13,9 +13,19 @@ interface NumberMenuProps {
   labelName: string;
   toolTip: string;
   offSetOne?: boolean;
+  includeHalfSteps?: boolean;
   // eslint-disable-next-line no-unused-vars
   handleSettingsChange: (e, setting: string) => void;
 }
+
+const createRange = (length, stepValue = 0) => {
+  const array: number[] = [];
+  for (let i = 0; i < length; i += stepValue) {
+    array.push(i);
+  }
+
+  return array;
+};
 
 function NumberMenu(props: NumberMenuProps) {
   const { range,
@@ -24,7 +34,8 @@ function NumberMenu(props: NumberMenuProps) {
     value,
     handleSettingsChange,
     toolTip,
-    offSetOne
+    offSetOne,
+    includeHalfSteps
   } = props;
 
   const id = settingName.replaceAll(' ', '-');
@@ -54,7 +65,7 @@ function NumberMenu(props: NumberMenuProps) {
             }
           }}
         >
-          {[...Array(range).keys()].map((number) => (
+          {[...createRange(range, includeHalfSteps ? 0.5 : 1)].map((number) => (
             <MenuItem key={`${settingName}-${number + offset}`} value={number + offset}>{number + offset}</MenuItem>
           ))}
         </Select>
@@ -64,7 +75,8 @@ function NumberMenu(props: NumberMenuProps) {
 }
 
 NumberMenu.defaultProps = {
-  offSetOne: false
+  offSetOne: false,
+  includeHalfSteps: false,
 };
 
 export default NumberMenu;

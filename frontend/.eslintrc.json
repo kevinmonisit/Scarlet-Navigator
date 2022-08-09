@@ -20,7 +20,8 @@
     "no-console": "off",
     "import/extensions": [2, "never"],
     "comma-dangle": "off",
-    "object-curly-newline": "off"
+    "object-curly-newline": "off",
+    "no-underscore-dangle":"off"
   },
   "settings": {
     "import/parsers": {
