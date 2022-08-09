@@ -11,7 +11,7 @@ const algoliaClient = algoliasearch(process.env.APP_ID as string, process.env.AP
 const index = algoliaClient.initIndex('prod_COURSES');
 
 export const search = functions.runWith({
-  maxInstances: 10,
+  maxInstances: 15,
   timeoutSeconds: 60,
 }).https.onCall(async (request: Request & {
   query: string,
