@@ -58,7 +58,7 @@ function CreateBlankPlan() {
   };
 }
 
-async function createUser(uid: string) {
+async function createUser(uid: string, displayName: string) {
   const userCollectionRef = collection(db, 'users');
   await setDoc(doc(userCollectionRef, uid), {
     uid,
@@ -67,6 +67,7 @@ async function createUser(uid: string) {
     secondPlan: CreateBlankPlan(),
     thirdPlan: CreateBlankPlan(),
     transferCourses: [],
+    displayName
   });
 }
 
@@ -88,7 +89,7 @@ function App() {
     const docRef = doc(db, 'users', user.uid);
     getDoc(docRef).then(async (userDocTemp) => {
       if (!userDocTemp.exists()) {
-        await createUser(user.uid);
+        await createUser(user.uid, user.displayName);
       }
       setUserDataExists(true);
     });
