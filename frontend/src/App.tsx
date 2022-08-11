@@ -58,7 +58,7 @@ function CreateBlankPlan() {
   };
 }
 
-async function createUser(uid: string, displayName: string) {
+async function createUser(uid: string, displayName) {
   const userCollectionRef = collection(db, 'users');
   await setDoc(doc(userCollectionRef, uid), {
     uid,
