@@ -7,6 +7,7 @@ Scarlet Navigator is a free and open source project designed to make planning yo
 Technology: React, Tailwind CSS, TypeScript, Firebase, Algolia
 
 Reddit post @ [go.rutgers.edu/scarletnav](https://go.rutgers.edu/scarletnav)
+
 Check it out @ [scarletnav.io](https://scarletnav.io)
 
 
