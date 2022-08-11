@@ -6,7 +6,6 @@ import dashboardMobile from './images/dashboard-mobile.png';
 import dashboard from './images/dashboard-preview.png';
 import CustomToolTip from './components/CustomToolTip';
 
-// eslint-disable-next-line no-unused-vars
 function InfoPiece(props: { title: string, description: string, wide?: boolean, icon?: string }) {
   const { title, description, wide, icon } = props;
 

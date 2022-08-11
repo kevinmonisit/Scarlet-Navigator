@@ -114,23 +114,6 @@ const generateBlankPlan = () => {
   return blankPlan;
 };
 
-// function uploadNewStudentPlan(columns: PlanContainer | null, planIndex: 1 | 2 | 3) {
-//   if (!columns) {
-//     return;
-//   }
-
-//   const arrayOfCourseObjectIds: Array<Array<String>> = [];
-//   Object.keys(columns).forEach((columnId) => {
-//     // eslint-disable-next-line no-underscore-dangle
-//     arrayOfCourseObjectIds.push(columns[columnId].items.map((item) => item._id));
-//   });
-
-//   axios.patch(`${BASE_URL}/api/v1/user/${process.env.REACT_APP_USER_ID}/plan`, {
-//     plan: arrayOfCourseObjectIds,
-//     planIndex
-//   });
-// }
-
 const uploadNewStudentPlanFirestore = async (
   columns: PlanContainer | null,
   transferCourses: Course[],

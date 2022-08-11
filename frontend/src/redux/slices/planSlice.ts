@@ -9,7 +9,6 @@ interface PlanState {
   transferCourses: Course[];
 }
 
-// Define the initial state using that type
 const initialState: PlanState = {
   currentPlan: {},
   transferCourses: []

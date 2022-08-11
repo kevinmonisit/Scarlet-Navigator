@@ -58,11 +58,68 @@ function AboutPopup(props: { open: boolean, handleClose: () => void }) {
   );
 }
 
+function ChangelogPopup(props: { open: boolean, handleClose: () => void }) {
+  const { open, handleClose } = props;
+
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">
+        Changelog
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          Based on the feedback and comments that were given, I thought this is the best place to
+          showcase upcoming and deployed changes.
+          <br />
+          <br />
+          <strong>Known bugs:</strong>
+          <br />
+          <ul className="list-disc list-outside ml-5">
+            <li>
+              Not every class is shown. Physics II is not available.
+              Classes that aren&#39;t offered in the Fall are not shown.
+            </li>
+            <li>
+              Some courses count twice for a core requirement when it needs to be
+              two different courses
+            </li>
+            <li>
+              Lack of Nintendo 3DS support
+            </li>
+          </ul>
+          <br />
+          <strong>Upcoming Changes:</strong>
+          <ul className="list-disc list-outside ml-5">
+            <li>
+              Adding other school core requirements (SEBS, RBS, Pre-med, etc)
+            </li>
+            <li>
+              Prerequisite Validation
+            </li>
+            <li>
+              ...possibly more.
+            </li>
+          </ul>
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Close</Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
 // eslint-disable-next-line react/no-unused-prop-types
 function NavBar(props: { name: string | null, auth: any }) {
   const { name, auth } = props;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [aboutOpen, setAboutOpen] = useState<boolean>(false);
+  const [changelogOpen, setChangelogOpen] = useState<boolean>(false);
 
   const openMenu = Boolean(anchorEl);
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -75,11 +132,16 @@ function NavBar(props: { name: string | null, auth: any }) {
   const handleClose = () => {
     setAnchorEl(null);
     setAboutOpen(false);
+    setChangelogOpen(false);
   };
 
   return (
     <>
       <AboutPopup open={aboutOpen} handleClose={handleClose} />
+      <ChangelogPopup
+        open={changelogOpen}
+        handleClose={handleClose}
+      />
       <div
         className="w-screen h-14 flex flex-row
         flex-none text-white items-center z-50
@@ -107,6 +169,7 @@ function NavBar(props: { name: string | null, auth: any }) {
         </div>
         <div className="grow" />
         <ColorButton onClick={handleAboutClick} disableRipple>About</ColorButton>
+        <ColorButton onClick={() => setChangelogOpen(true)} disableRipple>Changelog</ColorButton>
         <ColorButton
           onClick={() => {
             window.open('https://forms.gle/npzgKrJs3wQRLPU4A', '_blank');

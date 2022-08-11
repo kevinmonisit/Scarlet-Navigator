@@ -1,9 +1,7 @@
-/* eslint-disable no-shadow */
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import React, { Suspense, useEffect, useState } from 'react';
 import 'normalize.css';
 import { initializeApp } from 'firebase/app';
-// import { getAnalytics } from 'firebase/analytics';
 import { getFunctions } from 'firebase/functions';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -45,7 +43,6 @@ const functions = getFunctions(app);
 // connectFunctionsEmulator(functions, 'localhost', 5001);
 const coursesRef = collection(db, 'courses');
 
-// eslint-disable-next-line no-unused-vars
 // const analytics = getAnalytics(app);
 
 // connectFirestoreEmulator(db, 'localhost', 8080);
@@ -102,9 +99,7 @@ function App() {
 
   return (
     <div className="h-screen w-screen flex flex-col">
-
       {
-        // eslint-disable-next-line no-constant-condition
         user && userDocRef && userDataExists && isRutgersDomain(user.email)
           ? (
             <>

@@ -1,7 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/jsx-no-useless-fragment */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect, useRef, useState } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
@@ -35,7 +31,6 @@ function getLocalPlanIndex() {
   return parseInt(planIndex, 10);
 }
 
-// eslint-disable-next-line no-unused-vars
 interface ColumnContainer {
   [key: string]: SemesterColumnInfo;
 }
@@ -57,6 +52,7 @@ function Dashboard(props: {
   const [errorOccurredDuringFetch, setErrorOccurredDuringFetch] = useState<boolean>(false);
 
   const { courseCollectionRef, userDocReference, dbReference, functionReference } = props;
+  // eslint-disable-next-line no-unused-vars
   const [userDoc, loading, error, snapshot, reload] = useDocumentDataOnce<any>(userDocReference);
 
   const [searchQueryList, setSearchQueryList] = useState<any[] | null>(null);
