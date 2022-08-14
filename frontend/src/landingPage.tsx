@@ -1,9 +1,11 @@
+/* eslint-disable jsx-a11y/media-has-caption */
 import { useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import Divider from '@mui/material/Divider/Divider';
 import { Auth } from 'firebase/auth';
 import React from 'react';
 import dashboardMobile from './images/dashboard-mobile.png';
-import dashboard from './images/dashboard-preview.png';
+// import dashboard from './images/dashboard-preview.png';
+import dashboard from './images/scarletnav-showcase.mp4';
 import CustomToolTip from './components/CustomToolTip';
 
 function InfoPiece(props: { title: string, description: string, wide?: boolean, icon?: string }) {
@@ -95,7 +97,7 @@ function LandingPage(props: { auth: Auth, error: boolean }) {
         >
           A modern solution to course planning at Rutgers&nbsp;University
         </div>
-        <div className="mb-20 w-full flex flex-col justify-center items-center">
+        <div className="mb-14 w-full flex flex-col justify-center items-center">
           <button
             type="button"
             className="h-fit rounded-md py-2 px-6
@@ -128,9 +130,24 @@ function LandingPage(props: { auth: Auth, error: boolean }) {
               borderRadius: '10px',
             }}
           />
-          <img
+          {/* <img
             alt="User Dashboard"
             src={dashboard}
+            className="drop-shadow-lg hidden
+            md:block
+            lg:max-w-screen-lg
+            md:max-w-screen-md
+            "
+            style={{
+              borderRadius: '20px'
+            }}
+          /> */}
+          <video
+            src={dashboard}
+            autoPlay
+            controls={false}
+            muted
+            loop
             className="drop-shadow-lg hidden
             md:block
             lg:max-w-screen-lg
