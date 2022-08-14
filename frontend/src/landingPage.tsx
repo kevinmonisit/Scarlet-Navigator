@@ -97,10 +97,10 @@ function LandingPage(props: { auth: Auth, error: boolean }) {
         >
           A modern solution to course planning at Rutgers&nbsp;University
         </div>
-        <div className="mb-14 w-full flex flex-col justify-center items-center">
+        <div className="mb-20 w-full flex flex-col justify-center items-center">
           <button
             type="button"
-            className="h-fit rounded-md py-2 px-6
+            className="h-fit rounded-md mt-1 py-2 px-6
             text-white bg-red-500 hover:bg-red-700
             duration-300
             transition-all"
