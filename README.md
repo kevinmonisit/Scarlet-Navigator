@@ -1,13 +1,16 @@
 # <h1 align="center">Scarlet Navigator</h1>
+
+<div align="center">
+  
+ <a href="">[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)</a>
+ <a href="">[![GitHub issues](https://img.shields.io/github/issues/kevinmonisit/Scarlet-Navigator)](https://github.com/kevinmonisit/Scarlet-Navigator/issues)</a>
+  
+</div>
+
 ![Jul-24-2022 23-25-51](https://user-images.githubusercontent.com/7038712/183774963-b091457b-9010-4d57-8a66-e46ace5b7c76.gif)
 
 ## About
 Scarlet Navigator is a free and open source project designed to make planning your courses less confusing and more intuitive. By looking at the bigger picture, you'll be more confident about your path towards graduation. This project is not managed nor sponsored by Rutgers University, so any feedback or bug reports should either be posted here or emailed.
-
-
-
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
-[![GitHub issues](https://img.shields.io/github/issues/kevinmonisit/Scarlet-Navigator)](https://github.com/kevinmonisit/Scarlet-Navigator/issues)
 
 
 ## Roadmap
