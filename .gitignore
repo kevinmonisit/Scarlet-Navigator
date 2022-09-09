@@ -71,3 +71,5 @@ backend/dist/.DS_Store
 **/*/lib
 **/*/.env
 courses/
+
+**/*/.DS_Store
