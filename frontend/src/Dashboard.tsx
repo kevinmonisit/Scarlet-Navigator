@@ -14,7 +14,7 @@ import { selectCurrentPlan, selectCurrentTransferCourses, setPlan, setTransferAr
 import { Course, PlanContainer } from './interfaces/Course';
 import collectCoreFulfillmentInfo from './logic/handleCoreFulfillment';
 import { selectCoreState, setCoreState } from './redux/slices/coreFulfillmentSlice';
-import MainColumnContainer from './columns/MainColumnContainer';
+import ViewControl from './columns/ViewController';
 import { getTransferCreditCount } from './logic/handleCredits';
 import ErrorPage from './ErrorPage';
 
@@ -278,7 +278,7 @@ function Dashboard(props: {
           showCourseCredits={settings.showCourseCredits}
           numberOfCardsToQuery={settings.maxSearchQuery}
         />
-        <MainColumnContainer
+        <ViewControl
           currentPlan={currentPlan}
           settings={settings}
         />

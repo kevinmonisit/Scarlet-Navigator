@@ -15,6 +15,11 @@ interface CourseCardInSearch {
   credits: number;
 }
 
+/**
+ * The code that is commented out was for a search feature that had to be scrapped,
+ * but will be implemented again in the near future.
+ */
+
 // enum SEARCH_BY {
 //   TITLE = 0,
 //   NUMBER = 1,

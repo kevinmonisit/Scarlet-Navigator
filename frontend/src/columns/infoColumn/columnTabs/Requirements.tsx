@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars */
 import TreeItem from '@mui/lab/TreeItem';
-import { fontWeight } from '@mui/system';
 import TreeView from '@mui/lab/TreeView';
-import { ExpandMore, ChevronRight, CheckCircleOutlineSharp, CheckCircleSharp } from '@mui/icons-material';
+import { ExpandMore, ChevronRight, CheckCircleSharp } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
 import CustomToolTip from '../../../components/CustomToolTip';
 import { CoreStateInterface, SAS_CORES } from '../../../interfaces/CoreFulfillment';

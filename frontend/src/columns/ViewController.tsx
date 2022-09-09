@@ -60,9 +60,7 @@ function BackButtonBar(props: { setCurrentTab: () => void }) {
   );
 }
 
-// TODO: Refactor MainColumnContainer
-
-function MainColumnContainer(props: Props) {
+function ViewControl(props: Props) {
   const { currentPlan, settings } = props;
 
   const [currentTab, setCurrentTab] = useState<DisplayTab>(getLastUsedPage());
@@ -137,4 +135,4 @@ function MainColumnContainer(props: Props) {
   );
 }
 
-export default MainColumnContainer;
+export default ViewControl;

@@ -4,7 +4,6 @@
 import { styled } from '@mui/material/styles';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
 import React, { useEffect, useState } from 'react';
 import MENU_PAGE from '../../interfaces/InfoColumn';
 import Settings from './columnTabs/Settings';
