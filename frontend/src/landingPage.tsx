@@ -187,7 +187,7 @@ function LandingPage(props: { auth: Auth, error: boolean }) {
         />
         <InfoPiece
           title="Open source and built with modern technologies."
-          description="Written in Typescript, React, Redux, and tailwindcss.
+          description="Written in Typescript, React, Redux, and Tailwind CSS.
           Hosted on Firebase. (with a MongoDB alternative!)"
           icon="fa-solid fa-book-open fa-lg"
         />

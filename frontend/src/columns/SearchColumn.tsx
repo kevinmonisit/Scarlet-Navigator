@@ -1,12 +1,10 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-underscore-dangle */
-import { Chip, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import Input from '@mui/material/Input';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { CollectionReference } from 'firebase/firestore';
 import CircularProgress from '@mui/material/CircularProgress';
 import React, { useEffect, useState } from 'react';
-import { httpsCallable } from 'firebase/functions';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { getApp } from 'firebase/app';
 import CourseSearchCard from '../components/CourseSearchCard';
 import { Course } from '../interfaces/Course';
 
@@ -17,37 +15,20 @@ interface CourseCardInSearch {
   credits: number;
 }
 
-// eslint-disable-next-line no-shadow
-enum SEARCH_BY {
-  TITLE = 0,
-  NUMBER = 1,
-  EXPANDED_TITLE = 2,
-}
-
-const getSearchByString = (type: SEARCH_BY) => {
-  if (type === SEARCH_BY.TITLE) {
-    return 'title';
-  }
-
-  if (type === SEARCH_BY.NUMBER) {
-    return 'course #';
-  }
-
-  return 'full titles';
-};
-
-const BASE_URL = process.env.REACT_APP_ENV === 'Production' ? process.env.REACT_APP_API_URL : '';
+// enum SEARCH_BY {
+//   TITLE = 0,
+//   NUMBER = 1,
+//   EXPANDED_TITLE = 2,
+// }
 
 interface SearchColumnProps {
   showCourseCredits: boolean;
   numberOfCardsToQuery: number;
-  courseCollectionRef: CollectionReference;
-  functionReference: any,
-  // eslint-disable-next-line no-unused-vars
   checkIfCourseAlreadyInPlan(id: string): boolean | undefined,
-  // eslint-disable-next-line no-unused-vars
   upstreamQuery(queryList: any);
 }
+
+const searchCourses = httpsCallable(getFunctions(getApp()), 'search');
 
 function SearchColumn(props: SearchColumnProps) {
   const {
@@ -55,28 +36,26 @@ function SearchColumn(props: SearchColumnProps) {
     upstreamQuery,
     showCourseCredits,
     numberOfCardsToQuery,
-    functionReference,
-    courseCollectionRef,
+
   } = props;
   const [queriedCards, setQueriedCards] = useState<CourseCardInSearch[] | any>([]);
-  const [searchType, setSearchType] = useState<SEARCH_BY>(SEARCH_BY.EXPANDED_TITLE);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  // const [searchType, setSearchType] = useState<SEARCH_BY>(SEARCH_BY.EXPANDED_TITLE);
+  // const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [searching, setSearching] = React.useState<boolean>(false);
-  const open = Boolean(anchorEl);
+  // const open = Boolean(anchorEl);
   const [value, setValue] = useState('');
-  const searchCourses = httpsCallable(functionReference, 'search');
 
   const onChange = (event) => {
     setValue(event.target.value);
   };
 
-  const handleSearchMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  // const handleSearchMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
 
-  const handleSearchMenuClose = () => {
-    setAnchorEl(null);
-  };
+  // const handleSearchMenuClose = () => {
+  //   setAnchorEl(null);
+  // };
 
   const queryCourses = async () => {
     searchCourses({ query: !value ? '' : value, amountToQuery: numberOfCardsToQuery })
@@ -141,7 +120,7 @@ function SearchColumn(props: SearchColumnProps) {
         />
         <IconButton
           aria-label="show search options"
-          onClick={handleSearchMenuClick}
+          // onClick={handleSearchMenuClick}
           disableRipple
         >
           <KeyboardArrowDownIcon />

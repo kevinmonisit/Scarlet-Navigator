@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
-import { CollectionReference, DocumentReference } from 'firebase/firestore';
+import { DocumentReference } from 'firebase/firestore';
 import { SemesterColumnInfo } from './components/SemesterColumn';
 import SearchColumn from './columns/SearchColumn';
 import useWindowDimensions from './tools/WindowDimensions';
@@ -36,10 +36,8 @@ interface ColumnContainer {
 }
 
 function Dashboard(props: {
-  courseCollectionRef: CollectionReference,
   userDocReference: DocumentReference,
   dbReference: any,
-  functionReference: any,
 }) {
   const useDispatch = useAppDispatch();
   const settings = useAppSelector(selectCurrentSettings);
@@ -51,8 +49,9 @@ function Dashboard(props: {
 
   const [errorOccurredDuringFetch, setErrorOccurredDuringFetch] = useState<boolean>(false);
 
-  const { courseCollectionRef, userDocReference, dbReference, functionReference } = props;
-  // eslint-disable-next-line no-unused-vars
+  const { userDocReference, dbReference, } = props;
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [userDoc, loading, error, snapshot, reload] = useDocumentDataOnce<any>(userDocReference);
 
   const [searchQueryList, setSearchQueryList] = useState<any[] | null>(null);
@@ -87,7 +86,6 @@ function Dashboard(props: {
     if (!searchQueryList) return null;
     // eslint-disable-next-line no-restricted-syntax
     for (const queriedCourse of searchQueryList) {
-      // eslint-disable-next-line no-underscore-dangle
       if (queriedCourse._id === id) {
         return queriedCourse;
       }
@@ -118,17 +116,19 @@ function Dashboard(props: {
   };
 
   /*
-    =========== Initialization to changes ===========
-
-    TOOD: Improve the flow of data change
+    =========== Initialization of Data =================
   */
 
+  /**
+   * We first get the plan index from local storage. If it is not set, we set it to 1.
+   */
   useEffect(() => {
     useDispatch(setPlanIndex(getLocalPlanIndex() as 1 | 2 | 3));
   }, []);
 
   /**
-   * Student Plan is first accessed here
+   * We then get the user's plan from firebase. If it is not set, we set it to an empty plan.
+   * We then process the plan and update the redux store.
    */
   useEffect(() => {
     if (loading || !userDoc) return;
@@ -156,6 +156,14 @@ function Dashboard(props: {
       });
   }, [userDoc]);
 
+  /**
+   * This function has potential to delete a plan. When we retrieve user data, we store a document
+   * reference. This is never modified. Plan is processed FROM the document when first loaded,
+   * and never again. When we switch plan index, we are causing a change in user plan by changing
+   * plan to another plan, but using an older plan which is then UPLOADED (erasing any changes).
+   *
+   * All in all, always reload when changing planIndex.
+   */
   useEffect(() => {
     reload();
     setLocalPlanIndex(planIndex);
@@ -165,8 +173,11 @@ function Dashboard(props: {
     =========== Response to changes ===========
   */
 
+  /**
+   * Handle changes to the plan and uploading it to the database
+   */
   useEffect(() => {
-    // if an error occurred, don't send back and ratify a blank plan
+    // if an error occurred, don't send back and ratify a blank plan!!
     if (userDoc && settings && !errorOccurredDuringFetch && !loading) {
       uploadNewStudentPlanFirestore(
         currentPlan,
@@ -184,25 +195,32 @@ function Dashboard(props: {
     }
   }, [currentPlan, currentTransferCourseArray, settings]);
 
+  /**
+     * Reset starting credits to transfer credit count
+     * ONLY when transfer course array is modified. A UX thing yk?
+     */
   useEffect(() => {
     const transferCredits = getTransferCreditCount(currentTransferCourseArray);
     useDispatch(setTransferCredits(transferCredits));
-    /**
-     * Reset starting credits to transfer credit count
-     * ONLY when transfer course array is modified
-     */
+
     useDispatch(changeSetting({
       key: 'startingCredits',
       newValue: transferCredits
     }));
   }, [currentTransferCourseArray.length]);
 
+  /**
+   * Handle changes to credit numbers
+   */
   useEffect(() => {
     useDispatch(updateRunningCreditArray({
       startingCredits: settings.startingCredits
     }));
   }, [settings.startingCredits, semesterCreditArray]);
 
+  /**
+   * Handle course fulfillment.
+   */
   useEffect(() => {
     const newCoreState = collectCoreFulfillmentInfo(
       currentPlan,
@@ -259,8 +277,6 @@ function Dashboard(props: {
           upstreamQuery={upstreamQuery}
           showCourseCredits={settings.showCourseCredits}
           numberOfCardsToQuery={settings.maxSearchQuery}
-          courseCollectionRef={courseCollectionRef}
-          functionReference={functionReference}
         />
         <MainColumnContainer
           currentPlan={currentPlan}

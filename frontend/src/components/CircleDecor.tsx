@@ -1,6 +1,4 @@
-/* eslint-disable no-unused-vars */
-import React, { useCallback, useEffect, useState } from 'react';
-import DisplayTab from '../interfaces/MainColumn';
+import React from 'react';
 
 interface CircleProps {
   size: number;
@@ -28,8 +26,8 @@ function Circle(props: CircleProps) {
   );
 }
 
-function CircleDecor(props: { expand: boolean, currentTab: DisplayTab; }) {
-  const { expand, currentTab } = props;
+function CircleDecor(props: { expand: boolean }) {
+  const { expand } = props;
 
   return (
     <div
@@ -41,26 +39,23 @@ function CircleDecor(props: { expand: boolean, currentTab: DisplayTab; }) {
     >
       <div
         className="relative w-full h-full"
-        style={{
-          display: currentTab === DisplayTab.Home ? 'block' : 'none'
-        }}
       >
         <Circle
-          size={currentTab === DisplayTab.Home ? 85 : 0}
+          size={85}
           expand={expand}
           zIndex={30}
           speed="duration-[2500ms]"
           color={400}
         />
         <Circle
-          size={currentTab === DisplayTab.Home ? 75 : 0}
+          size={75}
           expand={expand}
           zIndex={20}
           speed="duration-[2000ms]"
           color={500}
         />
         <Circle
-          size={currentTab === DisplayTab.Home ? 65 : 0}
+          size={65}
           expand={expand}
           zIndex={10}
           speed="duration-[1800ms]"

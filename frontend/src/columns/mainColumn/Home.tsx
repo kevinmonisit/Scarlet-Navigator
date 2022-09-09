@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect, useState } from 'react';
+import CircleDecor from '../../components/CircleDecor';
 import DisplayTab from '../../interfaces/MainColumn';
 
 function MainColumnItem(props: {
@@ -67,12 +68,11 @@ function MainColumnItem(props: {
 interface Props {
   // eslint-disable-next-line no-unused-vars
   setCurrentTab: (tab: DisplayTab) => void;
-  // eslint-disable-next-line no-unused-vars
-  setMouseHover: (bool: boolean) => void;
 }
 
 function HomePage(props: Props) {
-  const { setCurrentTab, setMouseHover } = props;
+  const { setCurrentTab } = props;
+  const [mouseHover, setMouseHover] = useState<boolean>(false);
 
   return (
     <div className="w-full grow mt-3 ml-2 select-text pt-8 pl-10">
@@ -100,6 +100,8 @@ function HomePage(props: Props) {
         setCurrentTab={setCurrentTab}
         setMouseHover={setMouseHover}
       />
+      <CircleDecor expand={mouseHover} />
+
       {/* <MainColumnItem
         title="Import from Degree Navigator"
         description="Learn how to get quickly set up with Scarlet Navigator"
@@ -114,6 +116,7 @@ function HomePage(props: Props) {
         setCurrentTab={setCurrentTab}
         setMouseHover={setMouseHover}
       /> */}
+
     </div>
   );
 }

@@ -2,7 +2,6 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import React, { Suspense, useEffect, useState } from 'react';
 import 'normalize.css';
 import { initializeApp } from 'firebase/app';
-import { getFunctions } from 'firebase/functions';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -16,11 +15,7 @@ import NavBar from './components/Navbar';
 import { defaultSettings } from './interfaces/Settings';
 
 const Dashboard = React.lazy(() => import('./Dashboard'));
-/**
- * Later update:
- * When you use getApp() throughout the project,
- * you can eliminate needing to import dotenv
- */
+
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -39,12 +34,7 @@ const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
 const db = getFirestore(app);
-const functions = getFunctions(app);
 // connectFunctionsEmulator(functions, 'localhost', 5001);
-const coursesRef = collection(db, 'courses');
-
-// const analytics = getAnalytics(app);
-
 // connectFirestoreEmulator(db, 'localhost', 8080);
 
 function CreateBlankPlan() {
@@ -58,7 +48,7 @@ function CreateBlankPlan() {
   };
 }
 
-async function createUser(uid: string, displayName) {
+async function createUser(uid: string, displayName: string | null) {
   const userCollectionRef = collection(db, 'users');
   await setDoc(doc(userCollectionRef, uid), {
     uid,
@@ -78,6 +68,7 @@ function App() {
   const [userDataExists, setUserDataExists] = useState<boolean>(false);
 
   useEffect(() => {
+    // if user state has not been defined yet, do nothing
     if (!user) return;
     if (!isRutgersDomain(user.email)) {
       setError(true);
@@ -86,6 +77,10 @@ function App() {
 
     setError(false);
 
+    /**
+     * If user is logged in, check if user data exists in database. If not, create user data.
+     * Then, we can set the userDocRef to the user's document reference.
+     */
     const docRef = doc(db, 'users', user.uid);
     getDoc(docRef).then(async (userDocTemp) => {
       if (!userDocTemp.exists()) {
@@ -93,10 +88,16 @@ function App() {
       }
       setUserDataExists(true);
     });
+
     setUserDocRef(docRef);
   }, [user]);
 
   if (!app || !auth.app) { return <div />; }
+
+  /**
+   * If user is not logged in, show the landing page. Once, user is logged in, user's data
+   * has loaded, and user's data has been set, show the dashboard.
+   */
 
   return (
     <div className="h-screen w-screen flex flex-col">
@@ -110,10 +111,8 @@ function App() {
               />
               <Suspense fallback={<CircularProgress />}>
                 <Dashboard
-                  courseCollectionRef={coursesRef}
                   userDocReference={userDocRef}
                   dbReference={db}
-                  functionReference={functions}
                 />
               </Suspense>
             </>

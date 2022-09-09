@@ -1,17 +1,16 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import SemesterColumn from '../../components/SemesterColumn';
-import { PlanContainer } from '../../interfaces/Course';
-import InfoColumn from '../infoColumn/InfoColumn';
+import { useAppSelector } from '../../redux/hooks';
+import { selectCurrentPlan } from '../../redux/slices/planSlice';
 
 interface PlanDisplayProps {
-  currentPlan: PlanContainer;
   numberOfSemesters: number;
 }
 
 function PlanDisplay(props: PlanDisplayProps) {
+  const currentPlan = useAppSelector(selectCurrentPlan);
   const {
-    currentPlan,
     numberOfSemesters,
   } = props;
 
