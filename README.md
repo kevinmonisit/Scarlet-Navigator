@@ -1,4 +1,4 @@
-# <h1 align="center">Scarlet-Navigator</h1>
+# <h1 align="center">Scarlet Navigator</h1>
 ![Jul-24-2022 23-25-51](https://user-images.githubusercontent.com/7038712/183774963-b091457b-9010-4d57-8a66-e46ace5b7c76.gif)
 
 ## About
