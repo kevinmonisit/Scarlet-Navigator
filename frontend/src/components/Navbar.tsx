@@ -7,7 +7,7 @@ import Button, { ButtonProps } from '@mui/material/Button';
 import { red } from '@mui/material/colors';
 
 // eslint-disable-next-line no-unused-vars
-const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
+const ColorButton = styled(Button)<ButtonProps>(() => ({
   color: '#fff',
   // backgroundColor: 'rgb(220 38 38)',
   height: '100%',

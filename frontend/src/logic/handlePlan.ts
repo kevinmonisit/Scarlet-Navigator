@@ -2,7 +2,7 @@
 import { doc, DocumentReference, updateDoc } from 'firebase/firestore';
 import { DropResult } from 'react-beautiful-dnd';
 import { v4 as uuid } from 'uuid';
-import { COLUMN_ID_OF_TRANSFER_COLUMN } from '../columns/mainColumn/TransferCoursesDisplay';
+import { COLUMN_ID_OF_TRANSFER_COLUMN } from '../columns/mainView/TransferCoursesDisplay';
 import { Course, PlanContainer, SemesterColumnInfo } from '../interfaces/Course';
 import { Settings } from '../interfaces/Settings';
 

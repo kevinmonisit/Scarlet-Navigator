@@ -6,9 +6,9 @@ import { PlanContainer } from '../interfaces/Course';
 import DisplayTab from '../interfaces/MainColumn';
 import { Settings } from '../interfaces/Settings';
 import InfoColumn from './infoColumn/InfoColumn';
-import HomePage from './mainColumn/Home';
-import PlanDisplay from './mainColumn/PlanDisplay';
-import TransferCoursesDisplay from './mainColumn/TransferCoursesDisplay';
+import HomePage from './mainView/Home';
+import PlanDisplay from './mainView/PlanDisplay';
+import TransferCoursesDisplay from './mainView/TransferCoursesDisplay';
 
 interface Props {
   currentPlan: PlanContainer;
