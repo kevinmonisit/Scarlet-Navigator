@@ -34,35 +34,8 @@ Setup an Aloglia account here: https://www.algolia.com/
 
 ### Setup
 
-```bash
-  git clone https://link-to-project
-```
-
-Go to the project directory
-
-```bash
-  cd my-project
-```
-
-Install dependencies
-
-```bashƒ
-  npm install
-```
-
-Start the server
-
-```bash
-  npm run start
-```
-
 
 ## Features
-
-- Light/dark mode toggle
-- Live previews
-- Fullscreen mode
-- Cross platform
 
 
 ## Feedback
