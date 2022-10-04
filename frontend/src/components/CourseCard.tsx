@@ -4,12 +4,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-closing-tag-location */
-import React, { useRef } from 'react';
+import React from 'react';
 import ClearIcon from '@mui/icons-material/Clear';
 import { Draggable } from 'react-beautiful-dnd';
-import Badge, { BadgeProps } from '@mui/material/Badge';
-import { useAppDispatch, useAppSelector } from '../redux/store';
-import { changeCourseDisplay, selectCurrentCourseDisplay } from '../redux/slices/courseDisplaySlice';
+import { useAppDispatch } from '../redux/store';
+import { changeCourseDisplay } from '../redux/slices/courseDisplaySlice';
 import { Course } from '../interfaces/Course';
 import { deleteCourse, deleteTransferCourse } from '../redux/slices/planSlice';
 
@@ -34,7 +33,6 @@ interface CourseCardProps {
 
 function CourseCard(props: CourseCardProps) {
   const dispatch = useAppDispatch();
-  const currentDisplayCourse = useAppSelector(selectCurrentCourseDisplay);
 
   // eslint-disable-next-line no-unused-vars
   const {

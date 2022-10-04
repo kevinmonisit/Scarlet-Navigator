@@ -62,8 +62,6 @@ function SemesterColumn(props: SemesterColumnProps) {
     setCurrentMetadata(metaData);
   }, [totalCreditsOfSemester, runningCreditCountArray, currentSettings]);
 
-  const defaultBackgroundColor = '#34495e';
-
   return (
     <div
       className="flex flex-col items-center w-full h-full select-none bg-white grow"
@@ -99,9 +97,9 @@ function SemesterColumn(props: SemesterColumnProps) {
         </span>
       </div>
       <Droppable droppableId={columnId} key={columnId}>
-        {(provided, snapshot) => {
+        {(provided) => {
           // eslint-disable-next-line no-unused-vars
-          const backgroundColor = snapshot.isDraggingOver ? '#273340' : defaultBackgroundColor;
+          // const backgroundColor = snapshot.isDraggingOver ? '#273340' : defaultBackgroundColor;
           return (
             <div
               // eslint-disable-next-line react/jsx-props-no-spreading

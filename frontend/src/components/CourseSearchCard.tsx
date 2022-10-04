@@ -5,7 +5,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-props-no-spreading */
 import { Tooltip } from '@mui/material';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import { selectCurrentCourseDisplay, changeCourseDisplay } from '../redux/slices/courseDisplaySlice';
@@ -116,7 +116,6 @@ function CourseSearchCard(props: CourseSearchCardProps) {
 
   const currentCourseDisplayed = useAppSelector(selectCurrentCourseDisplay);
   const [isCurrentlySelected, setIsCurrentlySelected] = useState<boolean>(false);
-  const widthToUse = '100px';
 
   useEffect(() => {
     if (currentCourseDisplayed && currentCourseDisplayed._id === _id) {
