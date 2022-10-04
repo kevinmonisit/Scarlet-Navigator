@@ -54,7 +54,7 @@ function LandingPage(props: { auth: Auth, error: boolean }) {
 
   return (
     <div
-      className="flex flex-col w-screen"
+      className="flex flex-col w-screen overflow-x-hidden"
       style={{
         minWidth: '348px'
       }}
