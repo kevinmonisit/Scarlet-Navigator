@@ -14,9 +14,31 @@ Scarlet Navigator is a free and open source project designed to make planning yo
 
 Check out the reddit post! @ [go.rutgers.edu/scarletnav](https://go.rutgers.edu/scarletnav)
 
+## Tech Stack
+
+**Frontend**
+- [React 17](https://react.dev/), a popular JavaScript framework for frontend development
+- [React Beautiful DnD](https://github.com/atlassian/react-beautiful-dnd), a React library that acts as a wrapper to [React DnD](https://react-dnd.github.io/react-dnd/about)
+- [Redux](https://redux.js.org/), a state manager for managing complex React state throughout Scarlet Navigator
+- [Tailwind CSS](https://tailwindcss.com/), an opinionated in-line CSS framework for quickly styling elements 
+- [TypeScript](https://www.typescriptlang.org/) adds types to enforce type-safe JavaScript practices
+- [MUI](https://mui.com/) used for a few components (would like to move away from this and focus on Tailwind CSS)
+
+**Backend**
+
+- [Firebase](https://firebase.google.com/) handles hosting, serverless functions, Algolia search integration, and providing a [NoSQL](https://en.wikipedia.org/wiki/NoSQL) database called [Cloud Firestore](https://firebase.google.com/docs/firestore)
+- [Algolia](https://www.algolia.com/) allows for fuzzy search of courses because Cloud Firestore doesn't allow users to search courses unless there is an exact match
+- [Python](https://www.python.org/) was used to create scripts that parse course data and uploads them to Cloud Firestore via Firebase Python SDKs
+
 ## Roadmap
 
-- Adding all
+- Add all courses
+
+- Adding a linter and enforcing prettier
+
+- Adding Github CI/CD
+
+- Restructure Scarlet Navigator to be developer-friendly
 
 - Decouple frontend from Firebase integration and instead opt for as much utilization of REST
 
@@ -42,14 +64,6 @@ Setup an Aloglia account here: https://www.algolia.com/
 ## Feedback
 
 If you have any feedback, please click the "Feedback" button on the top right of Scarlet Navigator.
-
-
-## Tech Stack
-
-**Client:** React, Redux, Tailwind CSS, TypeScript
-
-**Hosting and Scripts:** Firebase, Firestore, Algolia, Python
-
 
 ## License
 
