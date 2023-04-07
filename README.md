@@ -26,7 +26,7 @@ Check out the reddit post! @ [go.rutgers.edu/scarletnav](https://go.rutgers.edu/
 
 **Backend**
 
-- [Firebase](https://firebase.google.com/) handles hosting, serverless functions, Algolia search integration, and providing a [NoSQL](https://en.wikipedia.org/wiki/NoSQL) database called [Cloud Firestore](https://firebase.google.com/docs/firestore)
+- [Firebase](https://firebase.google.com/) handles hosting, serverless functions, Algolia search integration, and provides a [NoSQL](https://en.wikipedia.org/wiki/NoSQL) database called [Cloud Firestore](https://firebase.google.com/docs/firestore)
 - [Algolia](https://www.algolia.com/) allows for fuzzy search of courses because Cloud Firestore doesn't allow users to search courses unless there is an exact match
 - [Python](https://www.python.org/) was used to create scripts that parse course data and uploads them to Cloud Firestore via Firebase Python SDKs
 
@@ -38,7 +38,9 @@ Check out the reddit post! @ [go.rutgers.edu/scarletnav](https://go.rutgers.edu/
 
 - Adding Github CI/CD
 
-- Restructure Scarlet Navigator to be developer-friendly
+- Restructure Scarlet Navigator to be developer-friendly (adding a Getting Started section)
+
+- Create a wiki??
 
 - Decouple frontend from Firebase integration and instead opt for as much utilization of REST
 
