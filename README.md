@@ -12,7 +12,10 @@
 ## About
 Scarlet Navigator is a free and open source project designed to make planning your courses less confusing and more intuitive. By looking at the bigger picture, you'll be more confident about your path towards graduation. This project is not managed nor sponsored by Rutgers University, so any feedback or bug reports should either be posted here or emailed.
 
-Check out the reddit post! @ [go.rutgers.edu/scarletnav](https://go.rutgers.edu/scarletnav)
+Check out the reddit post! @ [go.rutgers.edu/scarletnav](https://go.rutgers.edu/scarletnav).
+
+Awarded [Best Fullstack Project](https://github.com/kevinmonisit/Scarlet-Navigator/assets/7038712/f52cd55d-d7ec-4096-ae14-19067639d780) by the [Rutgers Computer Science Department](https://www.cs.rutgers.edu/)!
+
 
 ## Tech Stack
 
