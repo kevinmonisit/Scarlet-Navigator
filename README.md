@@ -16,6 +16,14 @@ Check out the reddit post! @ [go.rutgers.edu/scarletnav](https://go.rutgers.edu/
 
 Awarded [Best Fullstack Project](https://github.com/kevinmonisit/Scarlet-Navigator/assets/7038712/f52cd55d-d7ec-4096-ae14-19067639d780) by the [Rutgers Computer Science Department](https://www.cs.rutgers.edu/)!
 
+### Testimonies
+
+<img width="713" alt="image" src="https://github.com/kevinmonisit/Scarlet-Navigator/assets/7038712/99fad683-e1ae-432e-b553-ac6aaad78c3f">
+<img width="693" alt="image" src="https://github.com/kevinmonisit/Scarlet-Navigator/assets/7038712/a3d1311e-9d7d-452a-8fa7-6fbf38717cae">
+<img width="605" alt="image" src="https://github.com/kevinmonisit/Scarlet-Navigator/assets/7038712/1eb711be-ef4f-47eb-bd83-c1a51379815b">
+
+
+[and more...](https://go.rutgers.edu/scarletnav)
 
 ## Tech Stack
 
