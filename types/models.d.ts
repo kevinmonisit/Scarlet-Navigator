@@ -31,14 +31,19 @@ export interface ScheduleState {
   semesterByID: SemestersByID;
   courses: CourseByID;
   globalCores: Set<string>;
+  past: Array<Omit<ScheduleState, 'past' | 'future'>>;
+  future: Array<Omit<ScheduleState, 'past' | 'future'>>;
 }
 
 export interface ScheduleActions {
   setSemesterOrder: (semOrder: SemesterOrder) => void;
-  setCoursesBySemesterID: (semesters: CoursesBySemesterID) => void;
+  setCoursesBySemesterID: (semesters: CoursesBySemesterID, skipHistory?: boolean) => void;
   setCourses: (courses: CourseByID) => void;
   addCourse: (name: string, credits: number, cores: string[]) => CourseID;
   addGlobalCores: (cores: string[]) => void;
+  handleDragOperation: (semesters: CoursesBySemesterID, isNewContainerMove?: boolean) => void;
+  undo: () => void;
+  redo: () => void;
   ___TEMP___populate: () => void;
   ______reset______(): void;
 }

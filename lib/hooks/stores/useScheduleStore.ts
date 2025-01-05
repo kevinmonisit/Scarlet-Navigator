@@ -4,90 +4,130 @@ import { StateCreator, create } from 'zustand';
 import { persist, PersistOptions } from 'zustand/middleware';
 import { Course, CourseByID, CoursesBySemesterID, ScheduleActions, ScheduleState, Semester, SemesterOrder } from '@/types/models';
 import { COURSE_CREATION_CONTAINER_ID, COURSE_CREATION_COURSE_ID } from '@/app/features/leftPanel/courseCreation/CourseCreation';
+import useHistoryStore from './useHistoryStore';
 
-type ScheduleStore = ScheduleActions & ScheduleState;
+type ScheduleStore = ScheduleActions & Omit<ScheduleState, 'past' | 'future'>;
 type SchedulePersist = (
   config: StateCreator<ScheduleStore>,
   options: PersistOptions<ScheduleStore>
 ) => StateCreator<ScheduleStore>;
 
 export const useScheduleStore = create<ScheduleStore>()(
-  (persist as SchedulePersist)(
-    (set: (state: Partial<ScheduleStore>) => void, get: () => ScheduleStore) => ({
-      semesterOrder: [],
-      coursesBySemesterID: {},
-      semesterByID: {},
-      courses: {},
-      globalCores: new Set<string>(),
+  (persist as unknown as SchedulePersist)(
+    (set: (state: Partial<ScheduleStore>) => void, get: () => ScheduleStore) => {
+      const saveToHistory = (currentState: ScheduleStore) => {
+        useHistoryStore.getState().addToHistory(currentState);
+      };
 
-      setSemesterOrder: (semOrder: SemesterOrder) => set({
-        "semesterOrder": semOrder
-      }),
-      setCoursesBySemesterID: (semesters: CoursesBySemesterID) => set({
-        "coursesBySemesterID": semesters
-      }),
-      setCourses: (courses: CourseByID) => set({
-        "courses": courses
-      }),
-      addGlobalCores: (cores: string[]) => {
-        const state = get();
-        const updatedCores = new Set(state.globalCores);
-        cores.forEach(core => updatedCores.add(core));
-        set({ globalCores: updatedCores });
-      },
-      addCourse: (name: string, credits: number, cores: string[] = []) => {
-        const state = get();
-        const newCourseId = `course_${Date.now()}`;
-        const newCourse: Course = {
-          id: newCourseId,
-          name: name.trim(),
-          credits: credits,
-          cores: cores
-        };
+      return {
+        semesterOrder: [],
+        coursesBySemesterID: {},
+        semesterByID: {},
+        courses: {},
+        globalCores: new Set<string>(),
 
-        // Add new cores to global set
-        const updatedCores = new Set(state.globalCores);
-        cores.forEach(core => updatedCores.add(core));
+        setSemesterOrder: (semOrder: SemesterOrder) => {
+          const currentState = get();
+          saveToHistory(currentState);
+          set({ semesterOrder: semOrder });
+        },
 
-        // Update courses
-        const updatedCourses = {
-          ...state.courses,
-          [newCourseId]: newCourse
-        };
+        setCoursesBySemesterID: (semesters: CoursesBySemesterID, skipHistory: boolean = false) => {
+          const currentState = get();
+          if (!skipHistory) {
+            saveToHistory(currentState);
+          }
+          set({ coursesBySemesterID: semesters });
+        },
 
-        // Update coursesBySemesterID
-        const updatedCoursesBySemesterID = {
-          ...state.coursesBySemesterID,
-          [COURSE_CREATION_CONTAINER_ID]: [
-            ...(state.coursesBySemesterID[COURSE_CREATION_CONTAINER_ID] || []),
-            newCourseId
-          ]
-        };
+        setCourses: (courses: CourseByID) => {
+          const currentState = get();
+          saveToHistory(currentState);
+          set({ courses });
+        },
 
-        set({
-          courses: updatedCourses,
-          coursesBySemesterID: updatedCoursesBySemesterID,
-          globalCores: updatedCores
-        });
+        addGlobalCores: (cores: string[]) => {
+          const currentState = get();
+          saveToHistory(currentState);
+          const updatedCores = new Set(currentState.globalCores);
+          cores.forEach(core => updatedCores.add(core));
+          set({ globalCores: updatedCores });
+        },
 
-        return newCourseId;
-      },
-      ___TEMP___populate: () => {
-        set(createDummySchedule());
-      },
-      ______reset______: () => {
-        set({
-          semesterOrder: [],
-          coursesBySemesterID: {},
-          semesterByID: {},
-          courses: {},
-        })
-      },
-    }),
+        addCourse: (name: string, credits: number, cores: string[] = []) => {
+          const state = get();
+          saveToHistory(state);
+          const newCourseId = `course_${Date.now()}`;
+          const newCourse: Course = {
+            id: newCourseId,
+            name: name.trim(),
+            credits: credits,
+            cores: cores
+          };
+
+          const updatedCores = new Set(state.globalCores);
+          cores.forEach(core => updatedCores.add(core));
+
+          const updatedCourses = {
+            ...state.courses,
+            [newCourseId]: newCourse
+          };
+
+          const updatedCoursesBySemesterID = {
+            ...state.coursesBySemesterID,
+            [COURSE_CREATION_CONTAINER_ID]: [
+              ...(state.coursesBySemesterID[COURSE_CREATION_CONTAINER_ID] || []),
+              newCourseId
+            ]
+          };
+
+          set({
+            courses: updatedCourses,
+            coursesBySemesterID: updatedCoursesBySemesterID,
+            globalCores: updatedCores
+          });
+
+          return newCourseId;
+        },
+
+        handleDragOperation: (semesters: CoursesBySemesterID, isNewContainerMove: boolean = false) => {
+          const currentState = get();
+          if (isNewContainerMove) {
+            saveToHistory(currentState);
+          }
+          set({ coursesBySemesterID: semesters });
+        },
+
+        undo: () => {
+          useHistoryStore.getState().undo();
+        },
+
+        redo: () => {
+          useHistoryStore.getState().redo();
+        },
+
+        ___TEMP___populate: () => {
+          const state = createDummySchedule();
+          useHistoryStore.getState().clear();
+          set(state);
+        },
+
+        ______reset______: () => {
+          useHistoryStore.getState().clear();
+          set({
+            semesterOrder: [],
+            coursesBySemesterID: {},
+            semesterByID: {},
+            courses: {},
+            globalCores: new Set()
+          });
+        },
+      };
+    },
     {
       name: 'schedule-storage',
       storage: {
-        getItem: (name) => {
+        getItem: (name: string) => {
           const str = localStorage.getItem(name) || '';
           try {
             const parsed = JSON.parse(str);
@@ -102,7 +142,7 @@ export const useScheduleStore = create<ScheduleStore>()(
             return str;
           }
         },
-        setItem: (name, value) => {
+        setItem: (name: string, value: any) => {
           const toStore = {
             ...value,
             state: {
@@ -112,7 +152,7 @@ export const useScheduleStore = create<ScheduleStore>()(
           };
           localStorage.setItem(name, JSON.stringify(toStore));
         },
-        removeItem: (name) => localStorage.removeItem(name)
+        removeItem: (name: string) => localStorage.removeItem(name)
       }
     }
   )
@@ -142,7 +182,7 @@ const semesterArray: Semester[] = Array.from({ length: NUM_SEMESTERS}, (_, i) =>
 
 const semesterOrder = semesterArray.map(semester => semester.id);
 
-export const createDummySchedule = (): ScheduleState => {
+export const createDummySchedule = (): Omit<ScheduleState, 'past' | 'future'> => {
   const courses: CourseByID = {};
 
   allCourses.forEach(semester => {

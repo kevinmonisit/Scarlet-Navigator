@@ -11,8 +11,10 @@ import { CollisionDetection, DndContext, KeyboardSensor, MeasuringStrategy, Mous
 import { useCallback, useEffect, useRef, useState } from 'react';
 import LeftPanel from '@/app/features/leftPanel/LeftPanel';
 import RightPanel from '@/app/features/rightPanel/RightPanel';
+import { useKeyboardShortcuts } from '@/lib/hooks/useKeyboardShortcuts';
 
 const Page: React.FC = () => {
+  useKeyboardShortcuts();
 
   const scheduleState = useScheduleStore();
   const {

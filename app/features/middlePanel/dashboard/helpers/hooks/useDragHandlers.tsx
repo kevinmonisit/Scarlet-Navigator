@@ -20,6 +20,7 @@ export default function useDragHandlers(
     setSemesterOrder,
     coursesBySemesterID,
     setCoursesBySemesterID,
+    handleDragOperation
   } = state;
 
   const recentlyMovedToNewContainer = useAuxiliaryStore((state) => state.recentlyMovedToNewContainer);
@@ -30,7 +31,12 @@ export default function useDragHandlers(
   const containers = semesterOrder;
 
   const setItemsWrapper = (items: CoursesBySemesterID) => {
-    setCoursesBySemesterID(items);
+    if (recentlyMovedToNewContainer?.current) {
+      handleDragOperation(items, true);
+      recentlyMovedToNewContainer.current = false;
+    } else {
+      handleDragOperation(items, false);
+    }
   }
 
   const setSemesterOrderWrapper = (containers: SemesterOrder) => {
