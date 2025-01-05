@@ -175,6 +175,9 @@ export default function useDragHandlers(
         ),
       };
 
+      if (activeContainer === overContainer && recentlyMovedToNewContainer) {
+        recentlyMovedToNewContainer.current = true;
+      }
       setItemsWrapper(newItemState);
     }
     setActiveId("");
