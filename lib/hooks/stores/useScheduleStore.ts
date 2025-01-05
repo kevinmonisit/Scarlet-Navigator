@@ -86,6 +86,34 @@ export const useScheduleStore = create<ScheduleStore>()(
     }),
     {
       name: 'schedule-storage',
+      storage: {
+        getItem: (name) => {
+          const str = localStorage.getItem(name) || '';
+          try {
+            const parsed = JSON.parse(str);
+            return {
+              ...parsed,
+              state: {
+                ...parsed.state,
+                globalCores: new Set(parsed.state.globalCores || [])
+              }
+            };
+          } catch {
+            return str;
+          }
+        },
+        setItem: (name, value) => {
+          const toStore = {
+            ...value,
+            state: {
+              ...value.state,
+              globalCores: Array.from(value.state.globalCores)
+            }
+          };
+          localStorage.setItem(name, JSON.stringify(toStore));
+        },
+        removeItem: (name) => localStorage.removeItem(name)
+      }
     }
   )
 );
