@@ -22,6 +22,7 @@ export interface Course {
   id: CourseID;
   name: string;
   credits: number;
+  cores: string[];
 }
 
 export interface ScheduleState {
@@ -29,12 +30,15 @@ export interface ScheduleState {
   coursesBySemesterID: CoursesBySemesterID;
   semesterByID: SemestersByID;
   courses: CourseByID;
+  globalCores: Set<string>;
 }
 
 export interface ScheduleActions {
   setSemesterOrder: (semOrder: SemesterOrder) => void;
   setCoursesBySemesterID: (semesters: CoursesBySemesterID) => void;
   setCourses: (courses: CourseByID) => void;
+  addCourse: (name: string, credits: number, cores: string[]) => CourseID;
+  addGlobalCores: (cores: string[]) => void;
   ___TEMP___populate: () => void;
   ______reset______(): void;
 }

@@ -169,9 +169,6 @@ export default function useDragHandlers(
         ),
       };
 
-      //course creation container is empty, so replenish it
-      newItemState[COURSE_CREATION_CONTAINER_ID] = [Math.random().toString(36).substring(7)];
-
       setItemsWrapper(newItemState);
     }
     setActiveId("");

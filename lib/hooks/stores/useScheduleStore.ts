@@ -18,6 +18,8 @@ export const useScheduleStore = create<ScheduleStore>()(
       coursesBySemesterID: {},
       semesterByID: {},
       courses: {},
+      globalCores: new Set<string>(),
+
       setSemesterOrder: (semOrder: SemesterOrder) => set({
         "semesterOrder": semOrder
       }),
@@ -27,6 +29,49 @@ export const useScheduleStore = create<ScheduleStore>()(
       setCourses: (courses: CourseByID) => set({
         "courses": courses
       }),
+      addGlobalCores: (cores: string[]) => {
+        const state = get();
+        const updatedCores = new Set(state.globalCores);
+        cores.forEach(core => updatedCores.add(core));
+        set({ globalCores: updatedCores });
+      },
+      addCourse: (name: string, credits: number, cores: string[] = []) => {
+        const state = get();
+        const newCourseId = `course_${Date.now()}`;
+        const newCourse: Course = {
+          id: newCourseId,
+          name: name.trim(),
+          credits: credits,
+          cores: cores
+        };
+
+        // Add new cores to global set
+        const updatedCores = new Set(state.globalCores);
+        cores.forEach(core => updatedCores.add(core));
+
+        // Update courses
+        const updatedCourses = {
+          ...state.courses,
+          [newCourseId]: newCourse
+        };
+
+        // Update coursesBySemesterID
+        const updatedCoursesBySemesterID = {
+          ...state.coursesBySemesterID,
+          [COURSE_CREATION_CONTAINER_ID]: [
+            ...(state.coursesBySemesterID[COURSE_CREATION_CONTAINER_ID] || []),
+            newCourseId
+          ]
+        };
+
+        set({
+          courses: updatedCourses,
+          coursesBySemesterID: updatedCoursesBySemesterID,
+          globalCores: updatedCores
+        });
+
+        return newCourseId;
+      },
       ___TEMP___populate: () => {
         set(createDummySchedule());
       },
@@ -54,6 +99,7 @@ function createCourseArray() {
       id,
       name: `Course ${++counter}`,
       credits: Math.floor(Math.random() * 4) + 1,
+      cores: [`CORE${i + 1}`],
     };
   });
 }
@@ -87,10 +133,19 @@ export const createDummySchedule = (): ScheduleState => {
 
   coursesBySemesterID[COURSE_CREATION_CONTAINER_ID] = [COURSE_CREATION_COURSE_ID];
 
+  // Create initial global cores set
+  const globalCores = new Set<string>();
+  allCourses.forEach(semester => {
+    semester.forEach(course => {
+      course.cores.forEach(core => globalCores.add(core));
+    });
+  });
+
   return {
     semesterOrder,
     coursesBySemesterID,
     courses,
     semesterByID,
+    globalCores,
   };
 }
