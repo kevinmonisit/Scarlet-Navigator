@@ -7,7 +7,6 @@ const ScheduleBoard = dynamic<{
   ssr: false
 });
 
-
 export function MiddlePanel() {
   return (
     <div>

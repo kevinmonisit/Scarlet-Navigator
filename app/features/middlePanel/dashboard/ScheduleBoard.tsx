@@ -22,9 +22,32 @@ import useOverlayComponents from "./helpers/hooks/useOverlayComponents";
 import DroppableContainer from "./components/DroppableContainer";
 import { useScheduleStore } from "@/lib/hooks/stores/useScheduleStore";
 import useAuxiliaryStore from "@/lib/hooks/stores/useAuxiliaryStore";
+import useHistoryStore from "@/lib/hooks/stores/useHistoryStore";
 import useScheduleHandlers from "./helpers/hooks/useScheduleHandlers";
 import { EMPTY, PLACEHOLDER_ID } from "@/lib/constants";
 import { CoursesBySemesterID } from "@/types/models";
+import { Button } from "./components/ui";
+
+function UndoRedoControls() {
+  const { undo, redo, past, future } = useHistoryStore();
+
+  return (
+    <div className="flex justify-center gap-2 mb-4">
+      <Button
+        onClick={undo}
+        disabled={past.length === 0}
+      >
+        ↩ Undo
+      </Button>
+      <Button
+        onClick={redo}
+        disabled={future.length === 0}
+      >
+        ↪ Redo
+      </Button>
+    </div>
+  );
+}
 
 interface Props {
   adjustScale?: boolean;
@@ -125,71 +148,67 @@ export function ScheduleBoard({
           items={[...semesterOrder, PLACEHOLDER_ID]}
           strategy={rectSortingStrategy}
         >
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              maxWidth: "900px",
-              margin: "100px auto",
-            }}
-          >
-            {semesterOrder.map((containerId) => (
-              <DroppableContainer
-                key={containerId}
-                id={containerId}
-                label={minimal ? undefined : `Column ${containerId}`}
-                columns={columns}
-                items={coursesBySemesterID[containerId]}
-                scrollable={scrollable}
-                style={containerStyle}
-                unstyled={minimal}
-                onRemove={() => handleRemove(containerId)}
-              >
-                <SortableContext items={coursesBySemesterID[containerId]} strategy={strategy}>
-                  {coursesBySemesterID[containerId].map((value, index) => {
+          <div className="flex flex-col items-center max-w-[900px] mx-auto mt-[100px]">
+            <UndoRedoControls />
+            <div className="flex flex-wrap w-full">
+              {semesterOrder.map((containerId) => (
+                <DroppableContainer
+                  key={containerId}
+                  id={containerId}
+                  label={minimal ? undefined : `Column ${containerId}`}
+                  columns={columns}
+                  items={coursesBySemesterID[containerId]}
+                  scrollable={scrollable}
+                  style={containerStyle}
+                  unstyled={minimal}
+                  onRemove={() => handleRemove(containerId)}
+                >
+                  <SortableContext items={coursesBySemesterID[containerId]} strategy={strategy}>
+                    {coursesBySemesterID[containerId].map((value, index) => {
 
-                    return (
-                      <SortableItem
-                        disabled={isSortingContainer}
-                        key={value}
-                        id={value}
-                        index={index}
-                        handle={handle}
-                        style={getItemStyles}
-                        wrapperStyle={wrapperStyle}
-                        renderItem={renderItem}
-                        containerId={containerId}
-                        getIndex={(id) => {
-                          return 0;
-                        }}
-                      />
-                    );
-                  })}
-                </SortableContext>
-              </DroppableContainer>
-            ))}
-            {minimal ? undefined : (
-              <>
-                <DroppableContainer
-                  id={PLACEHOLDER_ID}
-                  disabled={isSortingContainer}
-                  items={EMPTY}
-                  onClick={handleAddColumn}
-                  placeholder
-                >
-                  + Add column
+                      return (
+                        <SortableItem
+                          disabled={isSortingContainer}
+                          key={value}
+                          id={value}
+                          index={index}
+                          handle={handle}
+                          style={getItemStyles}
+                          wrapperStyle={wrapperStyle}
+                          renderItem={renderItem}
+                          containerId={containerId}
+                          getIndex={(id) => {
+                            return 0;
+                          }}
+                        />
+                      );
+                    })}
+                  </SortableContext>
                 </DroppableContainer>
-                <DroppableContainer
-                  id="populate-placeholder"
-                  disabled={isSortingContainer}
-                  items={EMPTY}
-                  onClick={handlePopulateSchedule}
-                  placeholder
-                >
-                  Populate with dummy data
-                </DroppableContainer>
-              </>
-            )}
+              ))}
+              {minimal ? undefined : (
+                <>
+                  <DroppableContainer
+                    id={PLACEHOLDER_ID}
+                    disabled={isSortingContainer}
+                    items={EMPTY}
+                    onClick={handleAddColumn}
+                    placeholder
+                  >
+                    + Add column
+                  </DroppableContainer>
+                  <DroppableContainer
+                    id="populate-placeholder"
+                    disabled={isSortingContainer}
+                    items={EMPTY}
+                    onClick={handlePopulateSchedule}
+                    placeholder
+                  >
+                    Populate with dummy data
+                  </DroppableContainer>
+                </>
+              )}
+            </div>
           </div>
         </SortableContext>
       </div>
