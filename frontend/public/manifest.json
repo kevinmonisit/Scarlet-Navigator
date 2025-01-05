@@ -1,8 +1,0 @@
-{
-  "short_name": "Scarlet Navigator",
-  "name": "Rutgers University Scarlet Navigator",
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
-}
