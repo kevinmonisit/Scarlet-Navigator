@@ -95,6 +95,7 @@ export function ScheduleBoard({
   const {
     handleAddColumn,
     handleRemove,
+    handlePopulateSchedule,
   } = useScheduleHandlers();
 
   useEffect(() => {
@@ -168,15 +169,26 @@ export function ScheduleBoard({
               </DroppableContainer>
             ))}
             {minimal ? undefined : (
-              <DroppableContainer
-                id={PLACEHOLDER_ID}
-                disabled={isSortingContainer}
-                items={EMPTY}
-                onClick={handleAddColumn}
-                placeholder
-              >
-                + Add column
-              </DroppableContainer>
+              <>
+                <DroppableContainer
+                  id={PLACEHOLDER_ID}
+                  disabled={isSortingContainer}
+                  items={EMPTY}
+                  onClick={handleAddColumn}
+                  placeholder
+                >
+                  + Add column
+                </DroppableContainer>
+                <DroppableContainer
+                  id="populate-placeholder"
+                  disabled={isSortingContainer}
+                  items={EMPTY}
+                  onClick={handlePopulateSchedule}
+                  placeholder
+                >
+                  Populate with dummy data
+                </DroppableContainer>
+              </>
             )}
           </div>
         </SortableContext>

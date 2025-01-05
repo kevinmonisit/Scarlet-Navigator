@@ -12,17 +12,20 @@ export default function useScheduleHandlers() {
   const _reset_ = useScheduleStore((state) => state.______reset______);
 
   const handleAddColumn = () => {
-    // indexDB.setSchedule(createDummySchedule());
-    // const newContainerId = getNextContainerId(items);
-    console.log('handleAddColumn');
+    const newContainerId = `semester${containers.length}`;
+    unstable_batchedUpdates(() => {
+      setSemesterOrder([...containers, newContainerId]);
+      setCoursesBySemesterID({
+        ...items,
+        [newContainerId]: [],
+      });
+    });
+  }
+
+  const handlePopulateSchedule = () => {
     unstable_batchedUpdates(() => {
       _reset_();
       ___TEMP___populate();
-      // setSemesterOrder([...containers, newContainerId]);
-      // setCoursesBySemesterID({
-      //   ...items,
-      //   [newContainerId]: [],
-      // });
     });
   }
 
@@ -49,5 +52,6 @@ export default function useScheduleHandlers() {
     handleRemove,
     handleRemoveCourse,
     handleAddColumn,
+    handlePopulateSchedule,
   }
 }

@@ -1,11 +1,12 @@
 import { CourseID, SemesterID } from '@/types/models';
 import { create } from 'zustand';
+import { RefObject } from 'react';
 
 type AuxiliaryStore = {
-  recentlyMovedToNewContainer: React.MutableRefObject<boolean> | null;
+  recentlyMovedToNewContainer: RefObject<boolean> | null;
   activeID: SemesterID;
   currentInfoCourseID: CourseID;
-  setRecentlyMovedToNewContainer: (flag: React.MutableRefObject<boolean>) => void;
+  setRecentlyMovedToNewContainer: (flag: RefObject<boolean>) => void;
   setActiveID: (id: SemesterID) => void;
   setCurrentInfoCourseID: (id: CourseID) => void;
 };
@@ -17,7 +18,7 @@ const useAuxiliaryStore = create<AuxiliaryStore>()((set) => ({
   recentlyMovedToNewContainer: null,
   activeID: "",
   currentInfoCourseID: "",
-  setRecentlyMovedToNewContainer: (flag: React.MutableRefObject<boolean>) =>
+  setRecentlyMovedToNewContainer: (flag: RefObject<boolean>) =>
     set({ recentlyMovedToNewContainer: flag }),
   setActiveID: (id: SemesterID) => {
     console.log('new active id', id);
