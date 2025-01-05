@@ -100,7 +100,6 @@ export default function useDragHandlers(
 
 
   const handleDragEnd = (event: DragOverEvent) => {
-    console.log('drag end 0');
     const { active, over } = event;
 
     if (active.id in items && over?.id) {
@@ -158,6 +157,7 @@ export default function useDragHandlers(
     const overContainer = findContainer(items, overId);
 
     if (overContainer) {
+      console.log("overContainer", overContainer);
       const activeIndex = items[activeContainer].indexOf(active.id);
       const overIndex = items[overContainer].indexOf(overId);
       const newItemState = {
@@ -170,14 +170,9 @@ export default function useDragHandlers(
       };
 
       //course creation container is empty, so replenish it
-      const newCourseAdded = items[COURSE_CREATION_CONTAINER_ID].length == 0;
-      if (newCourseAdded) {
-        newItemState[COURSE_CREATION_CONTAINER_ID] = [Math.random().toString(36).substring(7)];
-      }
+      newItemState[COURSE_CREATION_CONTAINER_ID] = [Math.random().toString(36).substring(7)];
 
-      if (activeIndex !== overIndex) {
-        setItemsWrapper(newItemState);
-      }
+      setItemsWrapper(newItemState);
     }
     setActiveId("");
   }
