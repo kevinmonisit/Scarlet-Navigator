@@ -4,6 +4,7 @@ import { Container, Item } from '../../components/ui';
 import { findContainer, getIndex } from '../../utils/dnd';
 import { CoursesBySemesterID } from '@/types/models';
 import { useScheduleStore } from '@/lib/hooks/stores/useScheduleStore';
+import { calculateSemesterCredits, calculateRunningCredits } from '../../utils/credits';
 
 export const COLUMNS_DEPRECATED_DO_NOT_USE = 5;
 
@@ -16,6 +17,7 @@ export default function useOverlayComponents(
   wrapperStyle: (args: any) => React.CSSProperties,
 ) {
   const courses = useScheduleStore((state) => state.courses);
+  const semesterOrder = useScheduleStore((state) => state.semesterOrder);
 
   function renderSortableItemDragOverlay(id: UniqueIdentifier) {
     const courseName = courses[id]?.name ?? "Loading...";
@@ -44,9 +46,12 @@ export default function useOverlayComponents(
   function renderContainerDragOverlay(
     containerId: UniqueIdentifier,
   ) {
+    const semesterCredits = calculateSemesterCredits(items[containerId] || [], courses);
+    const totalCredits = calculateRunningCredits(semesterOrder, items, courses, containerId);
+
     return (
       <Container
-        label={`Column ${containerId}`}
+        label={`${containerId} (${semesterCredits} credits, Total: ${totalCredits})`}
         columns={1}
         style={{
           height: "100%",

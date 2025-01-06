@@ -37,7 +37,7 @@ export default function RightPanel() {
   };
 
   return (
-    <div className="w-1/4 h-full bg-white border-l border-gray-200">
+    <div className="h-full w-full bg-white border-l border-gray-200">
       {/* Tab Headers */}
       <div className="flex border-b border-gray-200">
         <TabButton

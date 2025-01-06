@@ -24,6 +24,10 @@ const Page: React.FC = () => {
   } = useAuxiliaryStore.getState();
 
   const recentlyMovedToNewContainerInstance = useRef(false);
+  const [leftWidth, setLeftWidth] = useState(250); // minimum width for left panel
+  const [rightWidth, setRightWidth] = useState(300); // minimum width for right panel
+  const [isDraggingLeft, setIsDraggingLeft] = useState(false);
+  const [isDraggingRight, setIsDraggingRight] = useState(false);
 
   useEffect(() => {
     setRecentlyMovedToNewContainer(recentlyMovedToNewContainerInstance);
@@ -72,6 +76,33 @@ const Page: React.FC = () => {
     [activeID, coursesBySemesterID, recentlyMovedToNewContainer]
   );
 
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (isDraggingLeft) {
+      const newWidth = Math.max(200, e.clientX);
+      setLeftWidth(newWidth);
+    }
+    if (isDraggingRight) {
+      const newWidth = Math.max(250, window.innerWidth - e.clientX);
+      setRightWidth(newWidth);
+    }
+  }, [isDraggingLeft, isDraggingRight]);
+
+  const handleMouseUp = useCallback(() => {
+    setIsDraggingLeft(false);
+    setIsDraggingRight(false);
+  }, []);
+
+  useEffect(() => {
+    if (isDraggingLeft || isDraggingRight) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    }
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDraggingLeft, isDraggingRight, handleMouseMove, handleMouseUp]);
+
   return (
     <DndContext
       sensors={sensors}
@@ -87,10 +118,37 @@ const Page: React.FC = () => {
       onDragCancel={handleDragCancel}
     >
       <h1>Dashboard Page Test</h1>
-      <div className="bg-gray-100 w-full h-screen flex flex-row">
-        <LeftPanel />
-        <MiddlePanel />
-        <RightPanel />
+      <div className="w-full h-screen flex flex-row relative">
+        {/* Left Panel */}
+        <div style={{ width: leftWidth, minWidth: 200 }} className="flex-shrink-0 h-full overflow-hidden">
+          <LeftPanel />
+        </div>
+
+        {/* Left Resize Handle */}
+        <div
+          className="w-1 hover:bg-blue-400 cursor-col-resize relative group"
+          onMouseDown={() => setIsDraggingLeft(true)}
+        >
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-8 bg-gray-300 rounded group-hover:bg-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+        </div>
+
+        {/* Middle Panel */}
+        <div className="flex-grow h-full overflow-hidden">
+          <MiddlePanel />
+        </div>
+
+        {/* Right Resize Handle */}
+        <div
+          className="w-1 hover:bg-blue-400 cursor-col-resize relative group"
+          onMouseDown={() => setIsDraggingRight(true)}
+        >
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-8 bg-gray-300 rounded group-hover:bg-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+        </div>
+
+        {/* Right Panel */}
+        <div style={{ width: rightWidth, minWidth: 250 }} className="flex-shrink-0 h-full overflow-hidden">
+          <RightPanel />
+        </div>
       </div>
     </DndContext>
   );

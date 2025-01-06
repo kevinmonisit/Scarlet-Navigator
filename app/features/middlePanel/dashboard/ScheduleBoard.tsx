@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import {
   CancelDrop,
@@ -103,6 +103,26 @@ export function ScheduleBoard({
   const courses = useScheduleStore((state) => state.courses);
 
   const { recentlyMovedToNewContainer, activeID } = useAuxiliaryStore.getState();
+  const setRecentlyMovedToNewContainer = useAuxiliaryStore((state) => state.setRecentlyMovedToNewContainer);
+  const moveRef = useRef(false);
+
+  useEffect(() => {
+    if (!moveRef.current) {
+      moveRef.current = true;
+      setRecentlyMovedToNewContainer(moveRef);
+    }
+  }, [setRecentlyMovedToNewContainer]);
+
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      if (recentlyMovedToNewContainer == null) {
+        console.error('recentlyMovedToNewContainer is null! Was it set correctly with useRef?');
+        return;
+      }
+
+      moveRef.current = false;
+    });
+  }, [coursesBySemesterID]);
 
   const isSortingContainer = activeID ? semesterOrder.includes(activeID) : false;
   const {
@@ -123,75 +143,60 @@ export function ScheduleBoard({
     handlePopulateSchedule,
   } = useScheduleHandlers();
 
-  useEffect(() => {
-    requestAnimationFrame(() => {
-      if (recentlyMovedToNewContainer == null) {
-        console.error('recentlyMovedToNewContainer is null! Was it set correctly with useRef?');
-        return;
-      }
-
-      console.log('recentlyMovedToNewContainer.current', recentlyMovedToNewContainer.current);
-
-      recentlyMovedToNewContainer.current = false;
-    });
-  }, [coursesBySemesterID, recentlyMovedToNewContainer]);
-
   return (
     <>
       <div
         style={{
-          display: "inline-grid",
+          display: "flex",
+          flexDirection: "column",
           boxSizing: "border-box",
           padding: 20,
-          gridAutoFlow: vertical ? "row" : "column",
+          width: "100%",
+          height: "100%",
+          overflow: "auto"
         }}
       >
         <SortableContext
           items={[...semesterOrder, PLACEHOLDER_ID]}
           strategy={rectSortingStrategy}
         >
-          <div className="flex flex-col items-center max-w-[900px] mx-auto mt-[100px]">
+          <div className="flex flex-col w-full h-full">
             <UndoRedoControls />
-            <div className="flex flex-wrap w-full">
-              {semesterOrder.map((containerId) => {
-                const semesterCredits = calculateSemesterCredits(coursesBySemesterID[containerId] || [], courses);
-                const runningCredits = calculateRunningCredits(semesterOrder, coursesBySemesterID, courses, containerId);
-
-                return (
-                  <DroppableContainer
-                    key={containerId}
-                    id={containerId}
-                    label={minimal ? undefined : `${containerId} (${semesterCredits} credits, Total: ${runningCredits})`}
-                    columns={columns}
-                    items={coursesBySemesterID[containerId]}
-                    scrollable={scrollable}
-                    style={containerStyle}
-                    unstyled={minimal}
-                    onRemove={() => handleRemove(containerId)}
-                  >
-                    <SortableContext items={coursesBySemesterID[containerId]} strategy={strategy}>
-                      {coursesBySemesterID[containerId].map((value, index) => {
-                        return (
-                          <SortableItem
-                            disabled={isSortingContainer}
-                            key={value}
-                            id={value}
-                            index={index}
-                            handle={handle}
-                            style={getItemStyles}
-                            wrapperStyle={wrapperStyle}
-                            renderItem={renderItem}
-                            containerId={containerId}
-                            getIndex={(id) => {
-                              return 0;
-                            }}
-                          />
-                        );
-                      })}
-                    </SortableContext>
-                  </DroppableContainer>
-                );
-              })}
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(330px,1fr))] gap-x-8 gap-y-4 w-full px-4">
+              {semesterOrder.map((containerId) => (
+                <DroppableContainer
+                  key={containerId}
+                  id={containerId}
+                  label={minimal ? undefined : `${containerId} (${calculateSemesterCredits(coursesBySemesterID[containerId] || [], courses)} credits, Total: ${calculateRunningCredits(semesterOrder, coursesBySemesterID, courses, containerId)})`}
+                  columns={columns}
+                  items={coursesBySemesterID[containerId]}
+                  scrollable={scrollable}
+                  style={containerStyle}
+                  unstyled={minimal}
+                  onRemove={() => handleRemove(containerId)}
+                >
+                  <SortableContext items={coursesBySemesterID[containerId]} strategy={strategy}>
+                    {coursesBySemesterID[containerId].map((value, index) => {
+                      return (
+                        <SortableItem
+                          disabled={isSortingContainer}
+                          key={value}
+                          id={value}
+                          index={index}
+                          handle={handle}
+                          style={getItemStyles}
+                          wrapperStyle={wrapperStyle}
+                          renderItem={renderItem}
+                          containerId={containerId}
+                          getIndex={(id) => {
+                            return 0;
+                          }}
+                        />
+                      );
+                    })}
+                  </SortableContext>
+                </DroppableContainer>
+              ))}
               {minimal ? undefined : (
                 <>
                   <DroppableContainer
