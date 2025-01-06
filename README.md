@@ -32,7 +32,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ### UI
 - [NextUI]()
 - [Tailwind CSS]()
-
+- [DaisyUI]
 
 
 ### Code Quality

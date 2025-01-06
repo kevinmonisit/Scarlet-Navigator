@@ -1,6 +1,7 @@
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { unstable_batchedUpdates } from "react-dom";
 import { useScheduleStore } from "@/lib/hooks/stores/useScheduleStore";
+import useHistoryStore from "@/lib/hooks/stores/useHistoryStore";
 
 export default function useScheduleHandlers() {
 
@@ -13,12 +14,19 @@ export default function useScheduleHandlers() {
 
   const handleAddColumn = () => {
     const newContainerId = `semester${containers.length}`;
+    const newItems = {
+      ...items,
+      [newContainerId]: [],
+    };
+
+    // Save current state to history before making changes
+    const currentState = useScheduleStore.getState();
+    useHistoryStore.getState().addToHistory(currentState);
+
+    // Update both states atomically
     unstable_batchedUpdates(() => {
       setSemesterOrder([...containers, newContainerId]);
-      setCoursesBySemesterID({
-        ...items,
-        [newContainerId]: [],
-      });
+      setCoursesBySemesterID(newItems, true); // Skip history for this call since we already saved it
     });
   }
 
