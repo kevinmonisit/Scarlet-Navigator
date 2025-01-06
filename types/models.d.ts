@@ -47,3 +47,29 @@ export interface ScheduleActions {
   ___TEMP___populate: () => void;
   ______reset______(): void;
 }
+
+export interface CoreRequirement {
+  id: string;
+  name: string;
+  requiredCredits: number;
+}
+
+export interface CoreCategory {
+  id: string;
+  name: string;
+  cores: CoreRequirement[];
+  requiredCores: number;  // Number of cores that need to be satisfied in this category
+}
+
+export interface CoreRequirementsState {
+  categories: Record<string, CoreCategory>;
+}
+
+export interface CoreRequirementsActions {
+  addCategory: (name: string, requiredCores: number) => void;
+  removeCategory: (id: string) => void;
+  addCoreToCategory: (categoryId: string, coreName: string, requiredCredits: number) => void;
+  removeCoreFromCategory: (categoryId: string, coreId: string) => void;
+  updateCategory: (categoryId: string, updates: Partial<CoreCategory>) => void;
+  updateCoreRequirement: (categoryId: string, coreId: string, updates: Partial<CoreRequirement>) => void;
+}

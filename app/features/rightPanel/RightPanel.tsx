@@ -1,5 +1,6 @@
 import useAuxiliaryStore from "@/lib/hooks/stores/useAuxiliaryStore";
 import CourseInfoDisplay from "./courseInfoDisplay/CourseInfoDisplay";
+import CoreManagement from "./coreManagement/CoreManagement";
 
 type Tab = "info" | "core" | "settings";
 
@@ -54,9 +55,7 @@ export default function RightPanel() {
       {/* Tab Content */}
       <div className="h-[calc(100%-41px)] overflow-y-auto">
         {activeTab === "info" && <CourseInfoDisplay />}
-        {activeTab === "core" && (
-          <div className="p-4 text-gray-500">Core management coming soon...</div>
-        )}
+        {activeTab === "core" && <CoreManagement />}
         {activeTab === "settings" && (
           <div className="p-4 text-gray-500">Settings panel coming soon...</div>
         )}
