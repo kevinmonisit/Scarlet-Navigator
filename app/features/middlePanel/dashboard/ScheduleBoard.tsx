@@ -17,7 +17,6 @@ import {
 } from "@dnd-kit/sortable";
 import { coordinateGetter as multipleContainersCoordinateGetter } from "./components/multipleContainersKeyboardCoordinates";
 import SortableItem from "./components/SortableItem";
-import { getColor, dropAnimation } from "./helpers/utilities";
 import useOverlayComponents from "./helpers/hooks/useOverlayComponents";
 import DroppableContainer from "./components/DroppableContainer";
 import { useScheduleStore } from "@/lib/hooks/stores/useScheduleStore";
@@ -27,6 +26,8 @@ import useScheduleHandlers from "./helpers/hooks/useScheduleHandlers";
 import { EMPTY, PLACEHOLDER_ID } from "@/lib/constants";
 import { CoursesBySemesterID } from "@/types/models";
 import { Button } from "./components/ui";
+import { calculateSemesterCredits, calculateRunningCredits } from "./utils/credits";
+import { getColor, dropAnimation } from "./utils/dnd";
 
 function UndoRedoControls() {
   const { undo, redo, past, future } = useHistoryStore();
@@ -99,6 +100,7 @@ export function ScheduleBoard({
 
   const semesterOrder = useScheduleStore((state) => state.semesterOrder);
   const coursesBySemesterID = useScheduleStore((state) => state.coursesBySemesterID);
+  const courses = useScheduleStore((state) => state.courses);
 
   const { recentlyMovedToNewContainer, activeID } = useAuxiliaryStore.getState();
 
@@ -151,41 +153,45 @@ export function ScheduleBoard({
           <div className="flex flex-col items-center max-w-[900px] mx-auto mt-[100px]">
             <UndoRedoControls />
             <div className="flex flex-wrap w-full">
-              {semesterOrder.map((containerId) => (
-                <DroppableContainer
-                  key={containerId}
-                  id={containerId}
-                  label={minimal ? undefined : `Column ${containerId}`}
-                  columns={columns}
-                  items={coursesBySemesterID[containerId]}
-                  scrollable={scrollable}
-                  style={containerStyle}
-                  unstyled={minimal}
-                  onRemove={() => handleRemove(containerId)}
-                >
-                  <SortableContext items={coursesBySemesterID[containerId]} strategy={strategy}>
-                    {coursesBySemesterID[containerId].map((value, index) => {
+              {semesterOrder.map((containerId) => {
+                const semesterCredits = calculateSemesterCredits(coursesBySemesterID[containerId] || [], courses);
+                const runningCredits = calculateRunningCredits(semesterOrder, coursesBySemesterID, courses, containerId);
 
-                      return (
-                        <SortableItem
-                          disabled={isSortingContainer}
-                          key={value}
-                          id={value}
-                          index={index}
-                          handle={handle}
-                          style={getItemStyles}
-                          wrapperStyle={wrapperStyle}
-                          renderItem={renderItem}
-                          containerId={containerId}
-                          getIndex={(id) => {
-                            return 0;
-                          }}
-                        />
-                      );
-                    })}
-                  </SortableContext>
-                </DroppableContainer>
-              ))}
+                return (
+                  <DroppableContainer
+                    key={containerId}
+                    id={containerId}
+                    label={minimal ? undefined : `${containerId} (${semesterCredits} credits, Total: ${runningCredits})`}
+                    columns={columns}
+                    items={coursesBySemesterID[containerId]}
+                    scrollable={scrollable}
+                    style={containerStyle}
+                    unstyled={minimal}
+                    onRemove={() => handleRemove(containerId)}
+                  >
+                    <SortableContext items={coursesBySemesterID[containerId]} strategy={strategy}>
+                      {coursesBySemesterID[containerId].map((value, index) => {
+                        return (
+                          <SortableItem
+                            disabled={isSortingContainer}
+                            key={value}
+                            id={value}
+                            index={index}
+                            handle={handle}
+                            style={getItemStyles}
+                            wrapperStyle={wrapperStyle}
+                            renderItem={renderItem}
+                            containerId={containerId}
+                            getIndex={(id) => {
+                              return 0;
+                            }}
+                          />
+                        );
+                      })}
+                    </SortableContext>
+                  </DroppableContainer>
+                );
+              })}
               {minimal ? undefined : (
                 <>
                   <DroppableContainer

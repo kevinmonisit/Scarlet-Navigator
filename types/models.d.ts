@@ -57,8 +57,7 @@ export interface CoreRequirement {
 export interface CoreCategory {
   id: string;
   name: string;
-  cores: CoreRequirement[];
-  requiredCores: number;  // Number of cores that need to be satisfied in this category
+  cores: CoreRequirement[];  // The number of cores in this array determines the required cores
 }
 
 export interface CoreRequirementsState {
@@ -66,7 +65,7 @@ export interface CoreRequirementsState {
 }
 
 export interface CoreRequirementsActions {
-  addCategory: (name: string, requiredCores: number) => void;
+  addCategory: (name: string) => void;
   removeCategory: (id: string) => void;
   addCoreToCategory: (categoryId: string, coreName: string, requiredCredits: number) => void;
   removeCoreFromCategory: (categoryId: string, coreId: string) => void;

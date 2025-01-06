@@ -1,16 +1,16 @@
 'use client';
 
+import RightPanel from '@/app/features/rightPanel/RightPanel';
+import LeftPanel from '@/app/features/leftPanel/LeftPanel';
 import { MiddlePanel } from '@/app/features/middlePanel/MiddlePanel';
 import { coordinateGetter } from '@/app/features/middlePanel/dashboard/components/multipleContainersKeyboardCoordinates';
-import { collisionDetectionStrategy as detectionStrategy } from '@/app/features/middlePanel/dashboard/helpers/logic';
+import { collisionDetectionStrategy as detectionStrategy } from '@/app/features/middlePanel/dashboard/utils/dnd';
 import useDragHandlers from '@/app/features/middlePanel/dashboard/helpers/hooks/useDragHandlers';
 import useAuxiliaryStore from '@/lib/hooks/stores/useAuxiliaryStore';
 import { useScheduleStore } from '@/lib/hooks/stores/useScheduleStore';
 import { CoursesBySemesterID } from '@/types/models';
 import { CollisionDetection, DndContext, KeyboardSensor, MeasuringStrategy, MouseSensor, TouchSensor, UniqueIdentifier, useSensor, useSensors } from '@dnd-kit/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import LeftPanel from '@/app/features/leftPanel/LeftPanel';
-import RightPanel from '@/app/features/rightPanel/RightPanel';
 import { useKeyboardShortcuts } from '@/lib/hooks/useKeyboardShortcuts';
 
 const Page: React.FC = () => {

@@ -1,6 +1,6 @@
 import { DragOverEvent } from '@dnd-kit/core';
 import React from 'react';
-import { findContainer, getNextContainerId } from '../utilities';
+import { findContainer, getNextContainerId } from '../../utils/dnd';
 import { arrayMove } from '@dnd-kit/sortable';
 import { unstable_batchedUpdates } from 'react-dom';
 import { CoursesBySemesterID, SemesterOrder } from '@/types/models';

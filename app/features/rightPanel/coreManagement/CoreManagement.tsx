@@ -6,30 +6,27 @@ import { useCoreRequirements } from '@/lib/hooks/useCoreRequirements';
 import { CoreCategory } from '@/types/models';
 
 interface AddCategoryFormProps {
-  onSubmit: (name: string, requiredCores: number) => void;
+  onSubmit: (name: string) => void;
 }
 
 function AddCategoryForm({ onSubmit }: AddCategoryFormProps) {
   const [name, setName] = useState('');
-  const [requiredCores, setRequiredCores] = useState(1);
   const [showTooltip, setShowTooltip] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormValid()) return;
-    onSubmit(name, requiredCores);
+    onSubmit(name);
     setName('');
-    setRequiredCores(1);
   };
 
   const isFormValid = () => {
-    return name.trim() !== '' && requiredCores > 0;
+    return name.trim() !== '';
   };
 
   const getMissingFields = () => {
     const missing = [];
     if (!name.trim()) missing.push('Category Name');
-    if (!(requiredCores > 0)) missing.push('Required Cores');
     return missing;
   };
 
@@ -47,17 +44,6 @@ function AddCategoryForm({ onSubmit }: AddCategoryFormProps) {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Required Cores</label>
-        <input
-          type="number"
-          min="1"
-          value={requiredCores}
-          onChange={(e) => setRequiredCores(parseInt(e.target.value))}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
           required
         />
@@ -309,9 +295,13 @@ export default function CoreManagement() {
   const { calculateAllProgress } = useCoreRequirements();
   const progress = calculateAllProgress();
 
+  const handleAddCategory = (name: string) => {
+    addCategory(name);
+  };
+
   return (
     <div className="h-full overflow-y-auto">
-      <AddCategoryForm onSubmit={addCategory} />
+      <AddCategoryForm onSubmit={handleAddCategory} />
       <div className="p-4 space-y-4">
         {Object.values(categories).map((category) => (
           <CategoryItem

@@ -1,7 +1,7 @@
 import { UniqueIdentifier } from '@dnd-kit/core';
 import React from 'react';
 import { Container, Item } from '../../components/ui';
-import { findContainer, getIndex } from '../utilities';
+import { findContainer, getIndex } from '../../utils/dnd';
 import { CoursesBySemesterID } from '@/types/models';
 import { useScheduleStore } from '@/lib/hooks/stores/useScheduleStore';
 

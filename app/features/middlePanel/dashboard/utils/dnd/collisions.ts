@@ -1,6 +1,8 @@
 import { closestCenter, pointerWithin, rectIntersection, getFirstCollision, CollisionDetection, UniqueIdentifier } from "@dnd-kit/core";
-import { Items } from "../types";
 import { TRASH_ID } from "@/lib/constants";
+import { RefObject } from "react";
+
+type Items = Record<UniqueIdentifier, UniqueIdentifier[]>;
 
 /**
  * Custom collision detection strategy optimized for multiple containers
@@ -13,11 +15,10 @@ import { TRASH_ID } from "@/lib/constants";
 export const collisionDetectionStrategy = (
   args: Parameters<CollisionDetection>[0],
   activeId: UniqueIdentifier | null,
-  lastOverId: React.MutableRefObject<UniqueIdentifier | null>,
+  lastOverId: RefObject<UniqueIdentifier | null>,
   items: Items,
-  recentlyMovedToNewContainer: React.MutableRefObject<boolean> | null
+  recentlyMovedToNewContainer: RefObject<boolean> | null
 ) => {
-
   if (recentlyMovedToNewContainer == null) {
     console.error('recentlyMovedToNewContainer is null! Was it set correctly with useRef?');
     return [];
@@ -44,7 +45,6 @@ export const collisionDetectionStrategy = (
   if (overId != null) {
     if (overId === TRASH_ID) {
       // If the intersecting droppable is the trash, return early
-      // Remove this if you're not using trashable functionality in your app
       return intersections;
     }
 

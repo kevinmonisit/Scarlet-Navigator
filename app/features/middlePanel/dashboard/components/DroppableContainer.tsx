@@ -1,6 +1,6 @@
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
-import { animateLayoutChanges } from "../helpers/utilities";
+import { animateLayoutChanges } from "../utils/dnd";
 import { ContainerProps, Container } from "./ui";
 import { CSS } from "@dnd-kit/utilities";
 

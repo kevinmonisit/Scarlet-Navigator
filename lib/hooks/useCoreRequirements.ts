@@ -52,8 +52,8 @@ export function useCoreRequirements() {
 
     return {
       satisfiedCores,
-      requiredCores: category.requiredCores,
-      isSatisfied: satisfiedCores >= category.requiredCores,
+      requiredCores: category.cores.length,
+      isSatisfied: satisfiedCores >= category.cores.length,
       cores: coreProgress
     };
   };

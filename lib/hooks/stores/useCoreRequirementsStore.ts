@@ -39,11 +39,10 @@ const createCore = (name: string, requiredCredits: number): CoreRequirement => (
   requiredCredits
 });
 
-const createCategory = (name: string, requiredCores: number): CoreCategory => ({
+const createCategory = (name: string): CoreCategory => ({
   id: `category_${Date.now()}`,
   name,
-  cores: [],
-  requiredCores
+  cores: []
 });
 
 const updateCoreInList = (
@@ -63,8 +62,8 @@ export const useCoreRequirementsStore = create<CoreRequirementsStore>()(
       const store: CoreRequirementsStore = {
         categories: {},
 
-        addCategory: (name: string, requiredCores: number) => {
-          const newCategory = createCategory(name, requiredCores);
+        addCategory: (name: string) => {
+          const newCategory = createCategory(name);
           set((state) => ({
             ...state,
             categories: {
