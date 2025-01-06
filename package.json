@@ -17,6 +17,7 @@
     "@dnd-kit/sortable": "^8.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "classnames": "^2.5.1",
+    "daisyui": "^4.12.23",
     "dexie": "^3.2.7",
     "dexie-react-hooks": "^1.1.7",
     "idb": "^8.0.1",

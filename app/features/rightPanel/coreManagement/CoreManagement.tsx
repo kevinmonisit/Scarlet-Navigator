@@ -172,6 +172,11 @@ function EditableText({ value, onSave, className = "" }: EditableTextProps) {
     }
   };
 
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsEditing(true);
+  };
+
   const handleBlur = () => {
     if (editValue.trim()) {
       onSave(editValue);
@@ -189,6 +194,7 @@ function EditableText({ value, onSave, className = "" }: EditableTextProps) {
         onChange={(e) => setEditValue(e.target.value)}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
+        onClick={(e) => e.stopPropagation()}
         className={`bg-white border border-blue-500 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-24 ${className}`}
         autoFocus
         size={6}
@@ -198,7 +204,7 @@ function EditableText({ value, onSave, className = "" }: EditableTextProps) {
 
   return (
     <span
-      onClick={() => setIsEditing(true)}
+      onClick={handleClick}
       className={`cursor-pointer hover:bg-gray-100 rounded px-2 py-1 inline-block w-14 truncate ${className}`}
     >
       {value}
@@ -219,63 +225,74 @@ function CategoryItem({ category, progress, onAddCore, onRemoveCategory, onRemov
     updateCoreRequirement(category.id, coreId, { name: newName.trim().toUpperCase() });
   };
 
+  const handleRemoveClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onRemoveCategory(category.id);
+  };
+
   return (
-    <div className="mb-4 p-4 border border-gray-200 rounded-md">
-      <div className="flex justify-between items-center mb-2">
-        <h3 className="text-lg font-medium flex items-center">
-          <EditableText
-            value={category.name}
-            onSave={handleCategoryNameChange}
-            className="text-lg font-medium"
-          />
-          <span className="ml-2">
-            ({progress.satisfiedCores}/{progress.requiredCores} satisfied)
-          </span>
-        </h3>
+    <div className="collapse collapse-arrow bg-base-200 mb-4">
+      <input type="checkbox" className="w-auto h-auto" defaultChecked />
+      <div className="collapse-title relative">
+        <div className="flex justify-between items-center" onClick={(e) => e.stopPropagation()}>
+          <h3 className="text-lg font-medium flex items-center">
+            <EditableText
+              value={category.name}
+              onSave={handleCategoryNameChange}
+              className="text-lg font-medium"
+            />
+            <span className="ml-2">
+              ({progress.satisfiedCores}/{progress.requiredCores} satisfied)
+            </span>
+          </h3>
+        </div>
         <button
-          onClick={() => onRemoveCategory(category.id)}
-          className="text-red-500 hover:text-red-700"
+          onClick={handleRemoveClick}
+          className="btn btn-ghost btn-sm text-error absolute right-8 top-1/2 -translate-y-1/2 z-10"
         >
           Remove
         </button>
       </div>
-      <div className="space-y-2">
-        {category.cores.map((core) => (
-          <div key={core.id} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-            <span className="flex-1">
-              <EditableText
-                value={core.name}
-                onSave={(newName) => handleCoreNameChange(core.id, newName)}
-              />
-              <span className="ml-2">
-                ({progress.cores[core.id]?.currentCredits ?? 0}/{core.requiredCredits} credits)
+      <div className="collapse-content">
+        <div className="space-y-2 pt-2">
+          {category.cores.map((core) => (
+            <div key={core.id} className="flex justify-between items-center p-2 bg-base-100 rounded-lg">
+              <span className="flex-1">
+                <EditableText
+                  value={core.name}
+                  onSave={(newName) => handleCoreNameChange(core.id, newName)}
+                />
+                <span className="ml-2">
+                  ({progress.cores[core.id]?.currentCredits ?? 0}/{core.requiredCredits} credits)
+                </span>
               </span>
-            </span>
-            <button
-              onClick={() => onRemoveCore(category.id, core.id)}
-              className="text-red-500 hover:text-red-700 ml-2"
-            >
-              Remove
-            </button>
-          </div>
-        ))}
+              <button
+                onClick={() => onRemoveCore(category.id, core.id)}
+                className="btn btn-ghost btn-sm text-error"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
+        {isAddingCore ? (
+          <AddCoreForm
+            categoryId={category.id}
+            onSubmit={(categoryId, name, credits) => {
+              onAddCore(categoryId, name, credits);
+              setIsAddingCore(false);
+            }}
+          />
+        ) : (
+          <button
+            onClick={() => setIsAddingCore(true)}
+            className="btn btn-ghost btn-block mt-4"
+          >
+            Add Core
+          </button>
+        )}
       </div>
-      {isAddingCore ? (
-        <AddCoreForm
-          categoryId={category.id}
-          onSubmit={(categoryId, name, credits) => {
-            onAddCore(categoryId, name, credits);
-            setIsAddingCore(false);
-          }}
-        />
-      ) : (
-        <button
-          onClick={() => setIsAddingCore(true)}
-          className="mt-2 w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-        >
-          Add Core
-        </button>
-      )}
     </div>
   );
 }
