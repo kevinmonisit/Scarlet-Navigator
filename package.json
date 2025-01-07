@@ -11,7 +11,9 @@
     "format:fix": "prettier --write --ignore-path .gitignore . --max-warnings=0",
     "eslint": "eslint --fix . --ext .ts,.tsx",
     "tsc": "tsc -p tsconfig.json --noEmit",
-    "prepare": "husky"
+    "prepare": "husky",
+    "security:audit": "pnpm audit",
+    "security:outdated": "pnpm outdated"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
