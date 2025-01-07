@@ -18,7 +18,7 @@ export default function useScheduleHandlers() {
   const setCurrentInfo = useAuxiliaryStore((state) => state.setCurrentInfo);
 
   const handleAddColumn = () => {
-    const newContainerId = `semester${containers.length}`;
+    const newContainerId = `semester${new Date().getTime()}`;
     const newItems = {
       ...items,
       [newContainerId]: [],
