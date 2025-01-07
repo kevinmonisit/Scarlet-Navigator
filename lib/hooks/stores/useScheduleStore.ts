@@ -183,6 +183,31 @@ export const useScheduleStore = create<ScheduleStore>()(
             globalCores: new Set(),
           });
         },
+
+        removeSemester: (id: SemesterID) => {
+          const state = get();
+          saveToHistory(state);
+
+          // Remove semester from order
+          const updatedSemesterOrder = state.semesterOrder.filter(semId => semId !== id);
+
+          // Remove semester from semesterByID
+          const { [id]: _, ...updatedSemesterByID } = state.semesterByID;
+
+          // Remove courses associated with this semester
+          const { [id]: coursesToRemove, ...updatedCoursesBySemesterID } = state.coursesBySemesterID;
+          const updatedCourses = { ...state.courses };
+          coursesToRemove?.forEach(courseId => {
+            delete updatedCourses[courseId];
+          });
+
+          set({
+            semesterOrder: updatedSemesterOrder,
+            semesterByID: updatedSemesterByID,
+            coursesBySemesterID: updatedCoursesBySemesterID,
+            courses: updatedCourses,
+          });
+        },
       };
     },
     {

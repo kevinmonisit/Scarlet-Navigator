@@ -51,6 +51,7 @@ export interface ScheduleActions {
   ) => void;
   updateCourse: (id: CourseID, updates: Partial<Course>) => void;
   updateSemester: (id: SemesterID, updates: Partial<Semester>) => void;
+  removeSemester: (id: SemesterID) => void;
   undo: () => void;
   redo: () => void;
   ___TEMP___populate: () => void;
