@@ -1,5 +1,5 @@
 import { DragOverEvent } from '@dnd-kit/core';
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { findContainer, getNextContainerId } from '../../utils/dnd';
 import { arrayMove } from '@dnd-kit/sortable';
 import { unstable_batchedUpdates } from 'react-dom';
@@ -13,7 +13,7 @@ export default function useDragHandlers(
   clonedItems: CoursesBySemesterID | null,
   setClonedItems: React.Dispatch<React.SetStateAction<CoursesBySemesterID | null>>,
 ) {
-
+  const moveRef = useRef(false);
   const state = useScheduleStore();
   const {
     semesterOrder,
@@ -23,17 +23,21 @@ export default function useDragHandlers(
     handleDragOperation
   } = state;
 
-  const recentlyMovedToNewContainer = useAuxiliaryStore((state) => state.recentlyMovedToNewContainer);
+  const setRecentlyMovedToNewContainer = useAuxiliaryStore((state) => state.setRecentlyMovedToNewContainer);
   const activeId = useAuxiliaryStore((state) => state.activeID);
   const setActiveId = useAuxiliaryStore((state) => state.setActiveID);
+
+  useEffect(() => {
+    setRecentlyMovedToNewContainer(moveRef);
+  }, []);
 
   const items = coursesBySemesterID;
   const containers = semesterOrder;
 
   const setItemsWrapper = (items: CoursesBySemesterID) => {
-    if (recentlyMovedToNewContainer?.current) {
+    if (moveRef.current) {
       handleDragOperation(items, true);
-      recentlyMovedToNewContainer.current = false;
+      moveRef.current = false;
     } else {
       handleDragOperation(items, false);
     }
@@ -81,12 +85,12 @@ export default function useDragHandlers(
           overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
       }
 
-      if (recentlyMovedToNewContainer === null) {
-        console.error("recentlyMovedToNewContainer is null! Was it set correctly with useRef?");
+      if (moveRef.current === null) {
+        console.error("moveRef is null! Was it set correctly with useRef?");
         return;
       }
 
-      recentlyMovedToNewContainer.current = true;
+      moveRef.current = true;
       setItemsWrapper({
         ...items,
         [activeContainer]: items[activeContainer].filter(
@@ -175,8 +179,8 @@ export default function useDragHandlers(
         ),
       };
 
-      if (activeContainer === overContainer && recentlyMovedToNewContainer) {
-        recentlyMovedToNewContainer.current = true;
+      if (activeContainer === overContainer && moveRef.current) {
+        moveRef.current = true;
       }
       setItemsWrapper(newItemState);
     }

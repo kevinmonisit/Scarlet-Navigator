@@ -71,7 +71,11 @@ export const Container = forwardRef<HTMLDivElement, Props>(
             {label}
             <div className={styles.Actions}>
               {onRemove ? <Remove onClick={onRemove} /> : undefined}
-              <Handle {...handleProps} />
+              {/*
+                Removing the drag handle for the semesters for now since there
+                is a bug that causes some of the courses to become undefined.
+              */}
+              {/* <Handle {...handleProps} /> */}
             </div>
           </div>
         ) : null}
