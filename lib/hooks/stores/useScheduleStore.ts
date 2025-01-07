@@ -2,7 +2,7 @@
 
 import { StateCreator, create } from 'zustand';
 import { persist, PersistOptions } from 'zustand/middleware';
-import { Course, CourseByID, CoursesBySemesterID, ScheduleActions, ScheduleState, Semester, SemesterOrder } from '@/types/models';
+import { Course, CourseByID, CourseID, CoursesBySemesterID, ScheduleActions, ScheduleState, Semester, SemesterOrder } from '@/types/models';
 import { COURSE_CREATION_CONTAINER_ID, COURSE_CREATION_COURSE_ID } from '@/app/features/leftPanel/courseCreation/CourseCreation';
 import useHistoryStore from './useHistoryStore';
 
@@ -88,6 +88,27 @@ export const useScheduleStore = create<ScheduleStore>()(
           });
 
           return newCourseId;
+        },
+
+        updateCourse: (id: CourseID, updates: Partial<Course>) => {
+          const state = get();
+          saveToHistory(state);
+
+          const updatedCourse = {
+            ...state.courses[id],
+            ...updates
+          };
+
+          const updatedCores = new Set(state.globalCores);
+          updatedCourse.cores.forEach(core => updatedCores.add(core));
+
+          set({
+            courses: {
+              ...state.courses,
+              [id]: updatedCourse
+            },
+            globalCores: updatedCores
+          });
         },
 
         handleDragOperation: (semesters: CoursesBySemesterID, isNewContainerMove: boolean = false) => {

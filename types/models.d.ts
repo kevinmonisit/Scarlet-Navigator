@@ -42,6 +42,7 @@ export interface ScheduleActions {
   addCourse: (name: string, credits: number, cores: string[]) => CourseID;
   addGlobalCores: (cores: string[]) => void;
   handleDragOperation: (semesters: CoursesBySemesterID, isNewContainerMove?: boolean) => void;
+  updateCourse: (id: CourseID, updates: Partial<Course>) => void;
   undo: () => void;
   redo: () => void;
   ___TEMP___populate: () => void;
