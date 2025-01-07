@@ -2,7 +2,7 @@
 
 import { StateCreator, create } from 'zustand';
 import { persist, PersistOptions } from 'zustand/middleware';
-import { Course, CourseByID, CourseID, CoursesBySemesterID, ScheduleActions, ScheduleState, Semester, SemesterOrder } from '@/types/models';
+import { Course, CourseByID, CourseID, CoursesBySemesterID, ScheduleActions, ScheduleState, Semester, SemesterID, SemesterOrder } from '@/types/models';
 import { COURSE_CREATION_CONTAINER_ID, COURSE_CREATION_COURSE_ID } from '@/app/features/leftPanel/courseCreation/CourseCreation';
 import useHistoryStore from './useHistoryStore';
 
@@ -111,6 +111,23 @@ export const useScheduleStore = create<ScheduleStore>()(
           });
         },
 
+        updateSemester: (id: SemesterID, updates: Partial<Semester>) => {
+          const state = get();
+          saveToHistory(state);
+
+          const updatedSemester = {
+            ...state.semesterByID[id],
+            ...updates
+          };
+
+          set({
+            semesterByID: {
+              ...state.semesterByID,
+              [id]: updatedSemester
+            }
+          });
+        },
+
         handleDragOperation: (semesters: CoursesBySemesterID, isNewContainerMove: boolean = false) => {
           const currentState = get();
           if (isNewContainerMove) {
@@ -199,6 +216,7 @@ const allCourses: Course[][] = Array.from({ length: NUM_SEMESTERS}, (_, i) => cr
 const semesterArray: Semester[] = Array.from({ length: NUM_SEMESTERS}, (_, i) => ({
   id: `semester${i}`,
   courses: allCourses[i].map(course => course.id),
+  title: `Semester ${i + 1}`
 }));
 
 const semesterOrder = semesterArray.map(semester => semester.id);

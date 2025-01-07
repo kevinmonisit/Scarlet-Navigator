@@ -82,7 +82,7 @@ export const Item = React.memo(
         };
       }, [dragOverlay]);
 
-      const setCurrentInfoCourseID = useAuxiliaryStore(state => state.setCurrentInfoCourseID);
+      const setCurrentInfo = useAuxiliaryStore(state => state.setCurrentInfo);
 
       return (
         <li
@@ -131,7 +131,7 @@ export const Item = React.memo(
             {...props}
             tabIndex={!handle ? 0 : undefined}
             onClick={() => {
-              if (value) setCurrentInfoCourseID(id as CourseID);
+              if (value) setCurrentInfo(id as string, 'course');
             }}
           >
             {value}

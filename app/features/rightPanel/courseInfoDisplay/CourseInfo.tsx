@@ -2,9 +2,13 @@ import useAuxiliaryStore from "@/lib/hooks/stores/useAuxiliaryStore";
 import { useScheduleStore } from "@/lib/hooks/stores/useScheduleStore";
 import { useState } from "react";
 import CoreInput from "@/app/components/CoreInput";
+import { Course } from "@/types/models";
 
-export default function CourseInfoDisplay() {
-  const id = useAuxiliaryStore((state) => state.currentInfoCourseID);
+interface CourseInfoProps {
+  id: string;
+}
+
+export default function CourseInfo({ id }: CourseInfoProps) {
   const currentCourse = useScheduleStore((state) => state.courses[id]);
   const globalCores = useScheduleStore((state) => state.globalCores);
   const updateCourse = useScheduleStore((state) => state.updateCourse);
@@ -12,15 +16,12 @@ export default function CourseInfoDisplay() {
   const [editForm, setEditForm] = useState({
     name: "",
     credits: 0,
-    cores: [] as string[]
+    cores: [] as string[],
   });
   const [currentCore, setCurrentCore] = useState("");
 
-  if (!id)
-    return <div className="p-4 text-gray-500">No course selected</div>
-
   if (!currentCourse) {
-    return <div className="p-4 text-gray-500">Loading... {id}</div>
+    return <div className="p-4 text-gray-500">Loading course... {id}</div>
   }
 
   const { name, credits, cores } = currentCourse;
@@ -30,14 +31,18 @@ export default function CourseInfoDisplay() {
       setEditForm({
         name,
         credits,
-        cores: cores || []
+        cores: cores || [],
       });
     }
     setIsEditing(!isEditing);
   };
 
   const handleSubmit = () => {
-    updateCourse(id, editForm);
+    updateCourse(id, {
+      name: editForm.name,
+      credits: editForm.credits,
+      cores: editForm.cores
+    });
     setIsEditing(false);
   };
 

@@ -137,7 +137,7 @@ export function ScheduleBoard({
 
   const {
     handleAddColumn,
-    handleRemove,
+    handleEditSemester,
     handlePopulateSchedule,
   } = useScheduleHandlers();
 
@@ -165,13 +165,13 @@ export function ScheduleBoard({
                 <DroppableContainer
                   key={containerId}
                   id={containerId}
-                  label={minimal ? undefined : `${containerId} (${calculateSemesterCredits(coursesBySemesterID[containerId] || [], courses)} credits, Total: ${calculateRunningCredits(semesterOrder, coursesBySemesterID, courses, containerId)})`}
+                  label={minimal ? undefined : `${useScheduleStore.getState().semesterByID[containerId]?.title || containerId} (${calculateSemesterCredits(coursesBySemesterID[containerId] || [], courses)} credits, Total: ${calculateRunningCredits(semesterOrder, coursesBySemesterID, courses, containerId)})`}
                   columns={columns}
                   items={coursesBySemesterID[containerId]}
                   scrollable={scrollable}
                   style={containerStyle}
                   unstyled={minimal}
-                  onRemove={() => handleRemove(containerId)}
+                  onRemove={() => handleEditSemester(containerId)}
                 >
                   <SortableContext items={coursesBySemesterID[containerId]} strategy={strategy}>
                     {coursesBySemesterID[containerId].map((value, index) => {

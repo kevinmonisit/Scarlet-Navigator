@@ -5,11 +5,12 @@ import { RefObject } from 'react';
 type AuxiliaryStore = {
   recentlyMovedToNewContainer: RefObject<boolean> | null;
   activeID: SemesterID;
-  currentInfoCourseID: CourseID;
+  currentInfoID: string;
+  currentInfoType: 'course' | 'semester';
   activeTab: 'info' | 'core' | 'settings';
   setRecentlyMovedToNewContainer: (flag: RefObject<boolean>) => void;
   setActiveID: (id: SemesterID) => void;
-  setCurrentInfoCourseID: (id: CourseID) => void;
+  setCurrentInfo: (id: string, type: 'course' | 'semester') => void;
   setActiveTab: (tab: 'info' | 'core' | 'settings') => void;
 };
 
@@ -19,7 +20,8 @@ type AuxiliaryStore = {
 const useAuxiliaryStore = create<AuxiliaryStore>()((set) => ({
   recentlyMovedToNewContainer: null,
   activeID: "",
-  currentInfoCourseID: "",
+  currentInfoID: "",
+  currentInfoType: 'course',
   activeTab: "info",
   setRecentlyMovedToNewContainer: (flag: RefObject<boolean>) =>
     set({ recentlyMovedToNewContainer: flag }),
@@ -27,10 +29,11 @@ const useAuxiliaryStore = create<AuxiliaryStore>()((set) => ({
     console.log('new active id', id);
     set({ activeID: id })
   },
-  setCurrentInfoCourseID: (id: CourseID) => {
+  setCurrentInfo: (id: string, type: 'course' | 'semester') => {
     set({
-      currentInfoCourseID: id,
-      activeTab: "info" // Switch to info tab when course changes
+      currentInfoID: id,
+      currentInfoType: type,
+      activeTab: "info" // Switch to info tab when selection changes
     })
   },
   setActiveTab: (tab: 'info' | 'core' | 'settings') => set({ activeTab: tab })

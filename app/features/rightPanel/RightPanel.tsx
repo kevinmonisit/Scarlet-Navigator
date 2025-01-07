@@ -1,6 +1,6 @@
 import { useTransition } from "react";
 import useAuxiliaryStore from "@/lib/hooks/stores/useAuxiliaryStore";
-import CourseInfoDisplay from "./courseInfoDisplay/CourseInfoDisplay";
+import InfoDisplay from "./courseInfoDisplay/InfoDisplay";
 import CoreManagement from "./coreManagement/CoreManagement";
 
 type Tab = "info" | "core" | "settings";
@@ -44,7 +44,7 @@ export default function RightPanel() {
           isActive={activeTab === "info"}
           onClick={() => handleTabChange("info")}
         >
-          Course Info
+          Info
         </TabButton>
         <TabButton
           isActive={activeTab === "core"}
@@ -63,7 +63,7 @@ export default function RightPanel() {
       {/* Tab Content */}
       <div className="h-[calc(100%-41px)] overflow-y-auto">
         <div className={`transition-opacity duration-200 ${isPending ? 'opacity-50' : 'opacity-100'}`}>
-          {activeTab === "info" && <CourseInfoDisplay />}
+          {activeTab === "info" && <InfoDisplay />}
           {activeTab === "core" && <CoreManagement />}
           {activeTab === "settings" && (
             <div className="p-4 text-gray-500">Settings panel coming soon...</div>

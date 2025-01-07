@@ -48,10 +48,11 @@ export default function useOverlayComponents(
   ) {
     const semesterCredits = calculateSemesterCredits(items[containerId] || [], courses);
     const totalCredits = calculateRunningCredits(semesterOrder, items, courses, containerId);
+    const semesterTitle = useScheduleStore.getState().semesterByID[containerId]?.title || containerId;
 
     return (
       <Container
-        label={`${containerId} (${semesterCredits} credits, Total: ${totalCredits})`}
+        label={`${semesterTitle} (${semesterCredits} credits, Total: ${totalCredits})`}
         columns={1}
         style={{
           height: "100%",

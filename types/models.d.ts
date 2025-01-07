@@ -16,6 +16,7 @@ type SemesterOrder = SemesterID[];
 export interface Semester {
   id: SemesterID;
   courses: CourseID[]; //ordered
+  title: string;
 }
 
 export interface Course {
@@ -43,6 +44,7 @@ export interface ScheduleActions {
   addGlobalCores: (cores: string[]) => void;
   handleDragOperation: (semesters: CoursesBySemesterID, isNewContainerMove?: boolean) => void;
   updateCourse: (id: CourseID, updates: Partial<Course>) => void;
+  updateSemester: (id: SemesterID, updates: Partial<Semester>) => void;
   undo: () => void;
   redo: () => void;
   ___TEMP___populate: () => void;

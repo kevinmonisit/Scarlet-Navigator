@@ -2,8 +2,6 @@
 import React, { forwardRef } from "react";
 import classNames from "classnames";
 
-import { Remove } from "../Item";
-
 import styles from "./Container.module.scss";
 
 type BaseProps = {
@@ -80,12 +78,18 @@ export const Container = forwardRef(
         {label ? (
           <div className={styles.Header}>
             {label}
-            {onRemove ? <Remove onClick={onRemove} /> : null}
-            {/*
-              Removing the drag handle for the semesters for now since there
-              is a bug that causes some of the courses to become undefined.
-            */}
-            {/* {handleProps ? <Handle {...handleProps} /> : null} */}
+            {onRemove ? (
+              <button
+                onClick={onRemove}
+                className="p-1 hover:bg-gray-100 rounded"
+                title="Edit semester"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 20h9"></path>
+                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                </svg>
+              </button>
+            ) : null}
           </div>
         ) : null}
         {children}
