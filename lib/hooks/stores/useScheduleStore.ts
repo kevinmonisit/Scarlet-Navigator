@@ -2,8 +2,21 @@
 
 import { StateCreator, create } from 'zustand';
 import { persist, PersistOptions } from 'zustand/middleware';
-import { Course, CourseByID, CourseID, CoursesBySemesterID, ScheduleActions, ScheduleState, Semester, SemesterID, SemesterOrder } from '@/types/models';
-import { COURSE_CREATION_CONTAINER_ID, COURSE_CREATION_COURSE_ID } from '@/app/features/leftPanel/courseCreation/CourseCreation';
+import {
+  Course,
+  CourseByID,
+  CourseID,
+  CoursesBySemesterID,
+  ScheduleActions,
+  ScheduleState,
+  Semester,
+  SemesterID,
+  SemesterOrder,
+} from '@/types/models';
+import {
+  COURSE_CREATION_CONTAINER_ID,
+  COURSE_CREATION_COURSE_ID,
+} from '@/app/features/leftPanel/courseCreation/CourseCreation';
 import useHistoryStore from './useHistoryStore';
 
 type ScheduleStore = ScheduleActions & Omit<ScheduleState, 'past' | 'future'>;
@@ -14,7 +27,10 @@ type SchedulePersist = (
 
 export const useScheduleStore = create<ScheduleStore>()(
   (persist as unknown as SchedulePersist)(
-    (set: (state: Partial<ScheduleStore>) => void, get: () => ScheduleStore) => {
+    (
+      set: (state: Partial<ScheduleStore>) => void,
+      get: () => ScheduleStore
+    ) => {
       const saveToHistory = (currentState: ScheduleStore) => {
         useHistoryStore.getState().addToHistory(currentState);
       };
@@ -32,7 +48,10 @@ export const useScheduleStore = create<ScheduleStore>()(
           set({ semesterOrder: semOrder });
         },
 
-        setCoursesBySemesterID: (semesters: CoursesBySemesterID, skipHistory: boolean = false) => {
+        setCoursesBySemesterID: (
+          semesters: CoursesBySemesterID,
+          skipHistory: boolean = false
+        ) => {
           const currentState = get();
           if (!skipHistory) {
             saveToHistory(currentState);
@@ -50,7 +69,7 @@ export const useScheduleStore = create<ScheduleStore>()(
           const currentState = get();
           saveToHistory(currentState);
           const updatedCores = new Set(currentState.globalCores);
-          cores.forEach(core => updatedCores.add(core));
+          cores.forEach((core) => updatedCores.add(core));
           set({ globalCores: updatedCores });
         },
 
@@ -62,29 +81,30 @@ export const useScheduleStore = create<ScheduleStore>()(
             id: newCourseId,
             name: name.trim(),
             credits: credits,
-            cores: cores
+            cores: cores,
           };
 
           const updatedCores = new Set(state.globalCores);
-          cores.forEach(core => updatedCores.add(core));
+          cores.forEach((core) => updatedCores.add(core));
 
           const updatedCourses = {
             ...state.courses,
-            [newCourseId]: newCourse
+            [newCourseId]: newCourse,
           };
 
           const updatedCoursesBySemesterID = {
             ...state.coursesBySemesterID,
             [COURSE_CREATION_CONTAINER_ID]: [
-              ...(state.coursesBySemesterID[COURSE_CREATION_CONTAINER_ID] || []),
-              newCourseId
-            ]
+              ...(state.coursesBySemesterID[COURSE_CREATION_CONTAINER_ID] ||
+                []),
+              newCourseId,
+            ],
           };
 
           set({
             courses: updatedCourses,
             coursesBySemesterID: updatedCoursesBySemesterID,
-            globalCores: updatedCores
+            globalCores: updatedCores,
           });
 
           return newCourseId;
@@ -96,18 +116,18 @@ export const useScheduleStore = create<ScheduleStore>()(
 
           const updatedCourse = {
             ...state.courses[id],
-            ...updates
+            ...updates,
           };
 
           const updatedCores = new Set(state.globalCores);
-          updatedCourse.cores.forEach(core => updatedCores.add(core));
+          updatedCourse.cores.forEach((core) => updatedCores.add(core));
 
           set({
             courses: {
               ...state.courses,
-              [id]: updatedCourse
+              [id]: updatedCourse,
             },
-            globalCores: updatedCores
+            globalCores: updatedCores,
           });
         },
 
@@ -117,18 +137,21 @@ export const useScheduleStore = create<ScheduleStore>()(
 
           const updatedSemester = {
             ...state.semesterByID[id],
-            ...updates
+            ...updates,
           };
 
           set({
             semesterByID: {
               ...state.semesterByID,
-              [id]: updatedSemester
-            }
+              [id]: updatedSemester,
+            },
           });
         },
 
-        handleDragOperation: (semesters: CoursesBySemesterID, isNewContainerMove: boolean = false) => {
+        handleDragOperation: (
+          semesters: CoursesBySemesterID,
+          isNewContainerMove: boolean = false
+        ) => {
           const currentState = get();
           if (isNewContainerMove) {
             saveToHistory(currentState);
@@ -157,7 +180,7 @@ export const useScheduleStore = create<ScheduleStore>()(
             coursesBySemesterID: {},
             semesterByID: {},
             courses: {},
-            globalCores: new Set()
+            globalCores: new Set(),
           });
         },
       };
@@ -173,8 +196,8 @@ export const useScheduleStore = create<ScheduleStore>()(
               ...parsed,
               state: {
                 ...parsed.state,
-                globalCores: new Set(parsed.state.globalCores || [])
-              }
+                globalCores: new Set(parsed.state.globalCores || []),
+              },
             };
           } catch {
             return str;
@@ -185,20 +208,20 @@ export const useScheduleStore = create<ScheduleStore>()(
             ...value,
             state: {
               ...value.state,
-              globalCores: Array.from(value.state.globalCores)
-            }
+              globalCores: Array.from(value.state.globalCores),
+            },
           };
           localStorage.setItem(name, JSON.stringify(toStore));
         },
-        removeItem: (name: string) => localStorage.removeItem(name)
-      }
+        removeItem: (name: string) => localStorage.removeItem(name),
+      },
     }
   )
 );
 
 let counter = 0;
 function createCourseArray() {
-  return Array.from({ length: 5}, (_, i) => {
+  return Array.from({ length: 5 }, (_, i) => {
     const id = Math.random().toString(36).substring(2, 9);
 
     return {
@@ -212,20 +235,28 @@ function createCourseArray() {
 
 const NUM_SEMESTERS = 3;
 
-const allCourses: Course[][] = Array.from({ length: NUM_SEMESTERS}, (_, i) => createCourseArray());
-const semesterArray: Semester[] = Array.from({ length: NUM_SEMESTERS}, (_, i) => ({
-  id: `semester${i}`,
-  courses: allCourses[i].map(course => course.id),
-  title: `Semester ${i + 1}`
-}));
+const allCourses: Course[][] = Array.from({ length: NUM_SEMESTERS }, (_, i) =>
+  createCourseArray()
+);
+const semesterArray: Semester[] = Array.from(
+  { length: NUM_SEMESTERS },
+  (_, i) => ({
+    id: `semester${i}`,
+    courses: allCourses[i].map((course) => course.id),
+    title: `Semester ${i + 1}`,
+  })
+);
 
-const semesterOrder = semesterArray.map(semester => semester.id);
+const semesterOrder = semesterArray.map((semester) => semester.id);
 
-export const createDummySchedule = (): Omit<ScheduleState, 'past' | 'future'> => {
+export const createDummySchedule = (): Omit<
+  ScheduleState,
+  'past' | 'future'
+> => {
   const courses: CourseByID = {};
 
-  allCourses.forEach(semester => {
-    semester.forEach(course => {
+  allCourses.forEach((semester) => {
+    semester.forEach((course) => {
       courses[course.id] = course;
     });
   });
@@ -233,18 +264,20 @@ export const createDummySchedule = (): Omit<ScheduleState, 'past' | 'future'> =>
   const coursesBySemesterID: CoursesBySemesterID = {};
   const semesterByID: Record<string, Semester> = {};
 
-  semesterArray.forEach(semester => {
+  semesterArray.forEach((semester) => {
     coursesBySemesterID[semester.id] = semester.courses;
     semesterByID[semester.id] = semester;
   });
 
-  coursesBySemesterID[COURSE_CREATION_CONTAINER_ID] = [COURSE_CREATION_COURSE_ID];
+  coursesBySemesterID[COURSE_CREATION_CONTAINER_ID] = [
+    COURSE_CREATION_COURSE_ID,
+  ];
 
   // Create initial global cores set
   const globalCores = new Set<string>();
-  allCourses.forEach(semester => {
-    semester.forEach(course => {
-      course.cores.forEach(core => globalCores.add(core));
+  allCourses.forEach((semester) => {
+    semester.forEach((course) => {
+      course.cores.forEach((core) => globalCores.add(core));
     });
   });
 
@@ -255,4 +288,4 @@ export const createDummySchedule = (): Omit<ScheduleState, 'past' | 'future'> =>
     semesterByID,
     globalCores,
   };
-}
+};

@@ -4,6 +4,7 @@
 </center>
 
 ## Attention
+
 Currently in active development. Nothing works yet.
 
 ## Getting Started
@@ -19,7 +20,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Tech Stack and Features
 
-
 ### Tech
 
 - [Next.js](Next.js)
@@ -30,10 +30,10 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - [MongoDB Atlas]() - Serverless instance
 
 ### UI
+
 - [NextUI]()
 - [Tailwind CSS]()
 - [DaisyUI]
-
 
 ### Code Quality
 

@@ -1,4 +1,4 @@
-import { UniqueIdentifier } from "@dnd-kit/core";
+import { UniqueIdentifier } from '@dnd-kit/core';
 
 const defaultInitializer = (index: number) => index;
 
@@ -11,14 +11,14 @@ export function createRange<T = number>(
 
 export function getColor(id: UniqueIdentifier) {
   switch (String(id)[0]) {
-    case "A":
-      return "#7193f1";
-    case "B":
-      return "#ffda6c";
-    case "C":
-      return "#00bcd4";
-    case "D":
-      return "#ef769f";
+    case 'A':
+      return '#7193f1';
+    case 'B':
+      return '#ffda6c';
+    case 'C':
+      return '#00bcd4';
+    case 'D':
+      return '#ef769f';
   }
 
   return undefined;

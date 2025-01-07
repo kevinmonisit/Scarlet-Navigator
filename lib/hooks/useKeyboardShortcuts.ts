@@ -7,13 +7,21 @@ export const useKeyboardShortcuts = () => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Check for Ctrl+Z (Undo)
-      if ((event.ctrlKey || event.metaKey) && event.key === 'z' && !event.shiftKey) {
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        event.key === 'z' &&
+        !event.shiftKey
+      ) {
         event.preventDefault();
         undo();
       }
       // Check for Ctrl+Shift+Z or Ctrl+Y (Redo)
-      if (((event.ctrlKey || event.metaKey) && event.key === 'z' && event.shiftKey) ||
-          ((event.ctrlKey || event.metaKey) && event.key === 'y')) {
+      if (
+        ((event.ctrlKey || event.metaKey) &&
+          event.key === 'z' &&
+          event.shiftKey) ||
+        ((event.ctrlKey || event.metaKey) && event.key === 'y')
+      ) {
         event.preventDefault();
         redo();
       }

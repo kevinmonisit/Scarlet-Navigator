@@ -9,7 +9,17 @@ import useDragHandlers from '@/app/features/middlePanel/dashboard/helpers/hooks/
 import useAuxiliaryStore from '@/lib/hooks/stores/useAuxiliaryStore';
 import { useScheduleStore } from '@/lib/hooks/stores/useScheduleStore';
 import { CoursesBySemesterID } from '@/types/models';
-import { CollisionDetection, DndContext, KeyboardSensor, MeasuringStrategy, MouseSensor, TouchSensor, UniqueIdentifier, useSensor, useSensors } from '@dnd-kit/core';
+import {
+  CollisionDetection,
+  DndContext,
+  KeyboardSensor,
+  MeasuringStrategy,
+  MouseSensor,
+  TouchSensor,
+  UniqueIdentifier,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useKeyboardShortcuts } from '@/lib/hooks/useKeyboardShortcuts';
 
@@ -35,27 +45,20 @@ const Page: React.FC = () => {
   }, []);
 
   const lastOverId = useRef<UniqueIdentifier | null>(null);
-  const [clonedItems, setClonedItems] = useState<CoursesBySemesterID | null>(null);
-
-  const {
-    coursesBySemesterID,
-  } = scheduleState;
-
-  const {
-    handleDragStart,
-    handleDragOver,
-    handleDragEnd,
-    handleDragCancel,
-  } = useDragHandlers(
-    clonedItems,
-    setClonedItems,
+  const [clonedItems, setClonedItems] = useState<CoursesBySemesterID | null>(
+    null
   );
+
+  const { coursesBySemesterID } = scheduleState;
+
+  const { handleDragStart, handleDragOver, handleDragEnd, handleDragCancel } =
+    useDragHandlers(clonedItems, setClonedItems);
 
   const sensorOptions = {
     activationConstraint: {
       distance: 5,
     },
-  }
+  };
 
   const sensors = useSensors(
     useSensor(MouseSensor, sensorOptions),
@@ -66,26 +69,30 @@ const Page: React.FC = () => {
   );
 
   const collisionDetectionStrategy: CollisionDetection = useCallback(
-    (args) => detectionStrategy(
-      args,
-      activeID,
-      lastOverId,
-      coursesBySemesterID,
-      recentlyMovedToNewContainer
-    ),
+    (args) =>
+      detectionStrategy(
+        args,
+        activeID,
+        lastOverId,
+        coursesBySemesterID,
+        recentlyMovedToNewContainer
+      ),
     [activeID, coursesBySemesterID, recentlyMovedToNewContainer]
   );
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (isDraggingLeft) {
-      const newWidth = Math.max(200, e.clientX);
-      setLeftWidth(newWidth);
-    }
-    if (isDraggingRight) {
-      const newWidth = Math.max(250, window.innerWidth - e.clientX);
-      setRightWidth(newWidth);
-    }
-  }, [isDraggingLeft, isDraggingRight]);
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (isDraggingLeft) {
+        const newWidth = Math.max(200, e.clientX);
+        setLeftWidth(newWidth);
+      }
+      if (isDraggingRight) {
+        const newWidth = Math.max(250, window.innerWidth - e.clientX);
+        setRightWidth(newWidth);
+      }
+    },
+    [isDraggingLeft, isDraggingRight]
+  );
 
   const handleMouseUp = useCallback(() => {
     setIsDraggingLeft(false);
@@ -117,35 +124,41 @@ const Page: React.FC = () => {
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <div className="w-full h-screen flex flex-row relative">
+      <div className='relative flex h-screen w-full flex-row'>
         {/* Left Panel */}
-        <div style={{ width: leftWidth, minWidth: 200 }} className="flex-shrink-0 h-full overflow-y-scroll transition-[overflow] duration-300">
+        <div
+          style={{ width: leftWidth, minWidth: 200 }}
+          className='h-full flex-shrink-0 overflow-y-scroll transition-[overflow] duration-300'
+        >
           <LeftPanel />
         </div>
 
         {/* Left Resize Handle */}
         <div
-          className="w-1 hover:bg-blue-400 cursor-col-resize relative group"
+          className='group relative w-1 cursor-col-resize hover:bg-blue-400'
           onMouseDown={() => setIsDraggingLeft(true)}
         >
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-8 bg-gray-300 rounded group-hover:bg-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className='absolute left-1/2 top-1/2 h-8 w-4 -translate-x-1/2 -translate-y-1/2 transform rounded bg-gray-300 opacity-0 transition-opacity group-hover:bg-blue-400 group-hover:opacity-100' />
         </div>
 
         {/* Middle Panel */}
-        <div className="flex-grow h-full overflow-y-scroll transition-[overflow] duration-300">
+        <div className='h-full flex-grow overflow-y-scroll transition-[overflow] duration-300'>
           <MiddlePanel />
         </div>
 
         {/* Right Resize Handle */}
         <div
-          className="w-1 hover:bg-blue-400 cursor-col-resize relative group"
+          className='group relative w-1 cursor-col-resize hover:bg-blue-400'
           onMouseDown={() => setIsDraggingRight(true)}
         >
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-8 bg-gray-300 rounded group-hover:bg-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className='absolute left-1/2 top-1/2 h-8 w-4 -translate-x-1/2 -translate-y-1/2 transform rounded bg-gray-300 opacity-0 transition-opacity group-hover:bg-blue-400 group-hover:opacity-100' />
         </div>
 
         {/* Right Panel */}
-        <div style={{ width: rightWidth, minWidth: 250 }} className="flex-shrink-0 h-full overflow-y-scroll transition-[overflow] duration-300">
+        <div
+          style={{ width: rightWidth, minWidth: 250 }}
+          className='h-full flex-shrink-0 overflow-y-scroll transition-[overflow] duration-300'
+        >
           <RightPanel />
         </div>
       </div>

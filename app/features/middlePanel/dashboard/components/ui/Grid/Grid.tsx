@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import styles from "./Grid.module.scss";
+import styles from './Grid.module.scss';
 
 export interface Props {
   size: number;
@@ -14,7 +14,7 @@ export function Grid({ size }: Props) {
       className={styles.Grid}
       style={
         {
-          "--grid-size": `${size}px`
+          '--grid-size': `${size}px`,
         } as React.CSSProperties
       }
     />

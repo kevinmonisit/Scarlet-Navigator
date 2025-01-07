@@ -1,17 +1,24 @@
-import { closestCenter, pointerWithin, rectIntersection, getFirstCollision, CollisionDetection, UniqueIdentifier } from "@dnd-kit/core";
-import { TRASH_ID } from "@/lib/constants";
-import { RefObject } from "react";
+import {
+  closestCenter,
+  pointerWithin,
+  rectIntersection,
+  getFirstCollision,
+  CollisionDetection,
+  UniqueIdentifier,
+} from '@dnd-kit/core';
+import { TRASH_ID } from '@/lib/constants';
+import { RefObject } from 'react';
 
 type Items = Record<UniqueIdentifier, UniqueIdentifier[]>;
 
 /**
  * Custom collision detection strategy optimized for multiple containers
-  *
-  * - First, find any droppable containers intersecting with the pointer.
-  * - If there are none, find intersecting containers with the active draggable.
-  * - If there are no intersecting containers, return the last matched intersection
-  *
-*/
+ *
+ * - First, find any droppable containers intersecting with the pointer.
+ * - If there are none, find intersecting containers with the active draggable.
+ * - If there are no intersecting containers, return the last matched intersection
+ *
+ */
 export const collisionDetectionStrategy = (
   args: Parameters<CollisionDetection>[0],
   activeId: UniqueIdentifier | null,
@@ -20,7 +27,9 @@ export const collisionDetectionStrategy = (
   recentlyMovedToNewContainer: RefObject<boolean> | null
 ) => {
   if (recentlyMovedToNewContainer == null) {
-    console.error('recentlyMovedToNewContainer is null! Was it set correctly with useRef?');
+    console.error(
+      'recentlyMovedToNewContainer is null! Was it set correctly with useRef?'
+    );
     return [];
   }
 
@@ -38,9 +47,9 @@ export const collisionDetectionStrategy = (
   const intersections =
     pointerIntersections.length > 0
       ? // If there are droppables intersecting with the pointer, return those
-      pointerIntersections
+        pointerIntersections
       : rectIntersection(args);
-  let overId = getFirstCollision(intersections, "id");
+  let overId = getFirstCollision(intersections, 'id');
 
   if (overId != null) {
     if (overId === TRASH_ID) {
@@ -58,8 +67,7 @@ export const collisionDetectionStrategy = (
           ...args,
           droppableContainers: args.droppableContainers.filter(
             (container) =>
-              container.id !== overId &&
-              containerItems.includes(container.id)
+              container.id !== overId && containerItems.includes(container.id)
           ),
         })[0]?.id;
       }

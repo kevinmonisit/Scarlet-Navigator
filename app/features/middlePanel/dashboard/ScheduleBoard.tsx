@@ -1,49 +1,46 @@
 'use client';
 
-import React, { useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
+import React, { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   CancelDrop,
   DragOverlay,
   Modifiers,
   UniqueIdentifier,
   KeyboardCoordinateGetter,
-} from "@dnd-kit/core";
+} from '@dnd-kit/core';
 import {
   SortableContext,
   verticalListSortingStrategy,
   SortingStrategy,
   rectSortingStrategy,
-} from "@dnd-kit/sortable";
-import { coordinateGetter as multipleContainersCoordinateGetter } from "./components/multipleContainersKeyboardCoordinates";
-import SortableItem from "./components/SortableItem";
-import useOverlayComponents from "./helpers/hooks/useOverlayComponents";
-import DroppableContainer from "./components/DroppableContainer";
-import { useScheduleStore } from "@/lib/hooks/stores/useScheduleStore";
-import useAuxiliaryStore from "@/lib/hooks/stores/useAuxiliaryStore";
-import useHistoryStore from "@/lib/hooks/stores/useHistoryStore";
-import useScheduleHandlers from "./helpers/hooks/useScheduleHandlers";
-import { EMPTY, PLACEHOLDER_ID } from "@/lib/constants";
-import { CoursesBySemesterID } from "@/types/models";
-import { Button } from "./components/ui";
-import { calculateSemesterCredits, calculateRunningCredits } from "./utils/credits";
-import { getColor, dropAnimation } from "./utils/dnd";
+} from '@dnd-kit/sortable';
+import { coordinateGetter as multipleContainersCoordinateGetter } from './components/multipleContainersKeyboardCoordinates';
+import SortableItem from './components/SortableItem';
+import useOverlayComponents from './helpers/hooks/useOverlayComponents';
+import DroppableContainer from './components/DroppableContainer';
+import { useScheduleStore } from '@/lib/hooks/stores/useScheduleStore';
+import useAuxiliaryStore from '@/lib/hooks/stores/useAuxiliaryStore';
+import useHistoryStore from '@/lib/hooks/stores/useHistoryStore';
+import useScheduleHandlers from './helpers/hooks/useScheduleHandlers';
+import { EMPTY, PLACEHOLDER_ID } from '@/lib/constants';
+import { CoursesBySemesterID } from '@/types/models';
+import { Button } from './components/ui';
+import {
+  calculateSemesterCredits,
+  calculateRunningCredits,
+} from './utils/credits';
+import { getColor, dropAnimation } from './utils/dnd';
 
 function UndoRedoControls() {
   const { undo, redo, past, future } = useHistoryStore();
 
   return (
-    <div className="flex justify-center gap-2 mb-4">
-      <Button
-        onClick={undo}
-        disabled={past.length === 0}
-      >
+    <div className='mb-4 flex justify-center gap-2'>
+      <Button onClick={undo} disabled={past.length === 0}>
         ↩ Undo
       </Button>
-      <Button
-        onClick={redo}
-        disabled={future.length === 0}
-      >
+      <Button onClick={redo} disabled={future.length === 0}>
         ↪ Redo
       </Button>
     </div>
@@ -97,13 +94,17 @@ export function ScheduleBoard({
   vertical = false,
   scrollable,
 }: Props) {
-
   const semesterOrder = useScheduleStore((state) => state.semesterOrder);
-  const coursesBySemesterID = useScheduleStore((state) => state.coursesBySemesterID);
+  const coursesBySemesterID = useScheduleStore(
+    (state) => state.coursesBySemesterID
+  );
   const courses = useScheduleStore((state) => state.courses);
 
-  const { recentlyMovedToNewContainer, activeID } = useAuxiliaryStore.getState();
-  const setRecentlyMovedToNewContainer = useAuxiliaryStore((state) => state.setRecentlyMovedToNewContainer);
+  const { recentlyMovedToNewContainer, activeID } =
+    useAuxiliaryStore.getState();
+  const setRecentlyMovedToNewContainer = useAuxiliaryStore(
+    (state) => state.setRecentlyMovedToNewContainer
+  );
   const moveRef = useRef(false);
   const resetRef = useRef(false);
 
@@ -122,50 +123,51 @@ export function ScheduleBoard({
     });
   }, [coursesBySemesterID]);
 
-  const isSortingContainer = activeID ? semesterOrder.includes(activeID) : false;
-  const {
-    renderContainerDragOverlay,
-    renderSortableItemDragOverlay
-  } = useOverlayComponents(
-    coursesBySemesterID,
-    handle,
-    renderItem,
-    getColor,
-    getItemStyles,
-    wrapperStyle,
-  );
+  const isSortingContainer = activeID
+    ? semesterOrder.includes(activeID)
+    : false;
+  const { renderContainerDragOverlay, renderSortableItemDragOverlay } =
+    useOverlayComponents(
+      coursesBySemesterID,
+      handle,
+      renderItem,
+      getColor,
+      getItemStyles,
+      wrapperStyle
+    );
 
-  const {
-    handleAddColumn,
-    handleEditSemester,
-    handlePopulateSchedule,
-  } = useScheduleHandlers();
+  const { handleAddColumn, handleEditSemester, handlePopulateSchedule } =
+    useScheduleHandlers();
 
   return (
     <>
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          boxSizing: "border-box",
+          display: 'flex',
+          flexDirection: 'column',
+          boxSizing: 'border-box',
           padding: 20,
-          width: "100%",
-          height: "100%",
-          overflow: "auto"
+          width: '100%',
+          height: '100%',
+          overflow: 'auto',
         }}
       >
         <SortableContext
           items={[...semesterOrder, PLACEHOLDER_ID]}
           strategy={rectSortingStrategy}
         >
-          <div className="flex flex-col w-full h-full">
+          <div className='flex h-full w-full flex-col'>
             <UndoRedoControls />
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(330px,1fr))] gap-x-8 gap-y-4 w-full px-4">
+            <div className='grid w-full grid-cols-[repeat(auto-fit,minmax(330px,1fr))] gap-x-8 gap-y-4 px-4'>
               {semesterOrder.map((containerId) => (
                 <DroppableContainer
                   key={containerId}
                   id={containerId}
-                  label={minimal ? undefined : `${useScheduleStore.getState().semesterByID[containerId]?.title || containerId} (${calculateSemesterCredits(coursesBySemesterID[containerId] || [], courses)} credits, Total: ${calculateRunningCredits(semesterOrder, coursesBySemesterID, courses, containerId)})`}
+                  label={
+                    minimal
+                      ? undefined
+                      : `${useScheduleStore.getState().semesterByID[containerId]?.title || containerId} (${calculateSemesterCredits(coursesBySemesterID[containerId] || [], courses)} credits, Total: ${calculateRunningCredits(semesterOrder, coursesBySemesterID, courses, containerId)})`
+                  }
                   columns={columns}
                   items={coursesBySemesterID[containerId]}
                   scrollable={scrollable}
@@ -173,7 +175,10 @@ export function ScheduleBoard({
                   unstyled={minimal}
                   onRemove={() => handleEditSemester(containerId)}
                 >
-                  <SortableContext items={coursesBySemesterID[containerId]} strategy={strategy}>
+                  <SortableContext
+                    items={coursesBySemesterID[containerId]}
+                    strategy={strategy}
+                  >
                     {coursesBySemesterID[containerId].map((value, index) => {
                       return (
                         <SortableItem
@@ -203,17 +208,17 @@ export function ScheduleBoard({
                     items={EMPTY}
                     onClick={handleAddColumn}
                     placeholder
-                    as="button"
+                    as='button'
                   >
                     + Add column
                   </DroppableContainer>
                   <DroppableContainer
-                    id="populate-placeholder"
+                    id='populate-placeholder'
                     disabled={isSortingContainer}
                     items={EMPTY}
                     onClick={handlePopulateSchedule}
                     placeholder
-                    as="button"
+                    as='button'
                   >
                     Populate with dummy data
                   </DroppableContainer>

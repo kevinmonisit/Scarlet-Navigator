@@ -1,7 +1,7 @@
-import React from "react";
-import classNames from "classnames";
+import React from 'react';
+import classNames from 'classnames';
 
-import styles from "./FloatingControls.module.scss";
+import styles from './FloatingControls.module.scss';
 
 export interface Props {
   children: React.ReactNode;

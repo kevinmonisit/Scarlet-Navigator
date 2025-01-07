@@ -1,10 +1,10 @@
-import useMountStatus from "@/lib/hooks/useMountStatus";
-import { UniqueIdentifier } from "@dnd-kit/core";
-import { useSortable } from "@dnd-kit/sortable";
-import { Item } from "./ui";
-import { getColor } from "../utils/dnd";
-import useScheduleHandlers from "../helpers/hooks/useScheduleHandlers";
-import { useScheduleStore } from "@/lib/hooks/stores/useScheduleStore";
+import useMountStatus from '@/lib/hooks/useMountStatus';
+import { UniqueIdentifier } from '@dnd-kit/core';
+import { useSortable } from '@dnd-kit/sortable';
+import { Item } from './ui';
+import { getColor } from '../utils/dnd';
+import useScheduleHandlers from '../helpers/hooks/useScheduleHandlers';
+import { useScheduleStore } from '@/lib/hooks/stores/useScheduleStore';
 
 interface SortableItemProps {
   containerId: UniqueIdentifier;
@@ -47,7 +47,7 @@ export default function SortableItem({
   const { handleRemoveCourse } = useScheduleHandlers();
 
   const courseName = useScheduleStore((state) => {
-    if (!state.courses[id]) return "Loading...";
+    if (!state.courses[id]) return 'Loading...';
 
     return state.courses[id].name;
   });

@@ -1,4 +1,4 @@
-import { DragOverEvent } from "@dnd-kit/core";
+import { DragOverEvent } from '@dnd-kit/core';
 import React, { useRef, useEffect } from 'react';
 import { findContainer, getNextContainerId } from '../../utils/dnd';
 import { arrayMove } from '@dnd-kit/sortable';
@@ -10,7 +10,9 @@ import { PLACEHOLDER_ID, TRASH_ID } from '@/lib/constants';
 
 export default function useDragHandlers(
   clonedItems: CoursesBySemesterID | null,
-  setClonedItems: React.Dispatch<React.SetStateAction<CoursesBySemesterID | null>>,
+  setClonedItems: React.Dispatch<
+    React.SetStateAction<CoursesBySemesterID | null>
+  >
 ) {
   // whether or not a drag operation was recently performed
   // and the list of items needs to be updated
@@ -21,10 +23,12 @@ export default function useDragHandlers(
     setSemesterOrder,
     coursesBySemesterID,
     setCoursesBySemesterID,
-    handleDragOperation
+    handleDragOperation,
   } = state;
 
-  const setRecentlyMovedToNewContainer = useAuxiliaryStore((state) => state.setRecentlyMovedToNewContainer);
+  const setRecentlyMovedToNewContainer = useAuxiliaryStore(
+    (state) => state.setRecentlyMovedToNewContainer
+  );
   const activeId = useAuxiliaryStore((state) => state.activeID);
   const setActiveId = useAuxiliaryStore((state) => state.setActiveID);
 
@@ -44,11 +48,11 @@ export default function useDragHandlers(
     } else {
       handleDragOperation(items, false);
     }
-  }
+  };
 
   const setSemesterOrderWrapper = (containers: SemesterOrder) => {
     setSemesterOrder(containers);
-  }
+  };
 
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
@@ -79,17 +83,15 @@ export default function useDragHandlers(
         const isBelowOverItem =
           over &&
           active.rect.current.translated &&
-          active.rect.current.translated.top >
-          over.rect.top + over.rect.height;
+          active.rect.current.translated.top > over.rect.top + over.rect.height;
 
         const modifier = isBelowOverItem ? 1 : 0;
 
-        newIndex =
-          overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
+        newIndex = overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
       }
 
       if (moveRef.current === null) {
-        console.error("moveRef is null! Was it set correctly with useRef?");
+        console.error('moveRef is null! Was it set correctly with useRef?');
         return;
       }
 
@@ -102,21 +104,16 @@ export default function useDragHandlers(
         [overContainer]: [
           ...items[overContainer].slice(0, newIndex),
           items[activeContainer][activeIndex],
-          ...items[overContainer].slice(
-            newIndex,
-            items[overContainer].length
-          ),
+          ...items[overContainer].slice(newIndex, items[overContainer].length),
         ],
       });
     }
-  }
-
+  };
 
   const handleDragEnd = (event: DragOverEvent) => {
     const { active, over } = event;
 
     if (active.id in items && over?.id) {
-
       const activeIndex = containers.indexOf(active.id);
       const overIndex = containers.indexOf(over.id);
 
@@ -126,14 +123,14 @@ export default function useDragHandlers(
     const activeContainer = findContainer(items, active.id);
 
     if (!activeContainer) {
-      setActiveId("");
+      setActiveId('');
       return;
     }
 
     const overId = over?.id;
 
     if (overId == null) {
-      setActiveId("");
+      setActiveId('');
       return;
     }
 
@@ -149,9 +146,7 @@ export default function useDragHandlers(
     // }
 
     if (overId === PLACEHOLDER_ID) {
-      const newContainerId = getNextContainerId(
-        items
-      );
+      const newContainerId = getNextContainerId(items);
 
       unstable_batchedUpdates(() => {
         setSemesterOrderWrapper([...containers, newContainerId]);
@@ -162,7 +157,7 @@ export default function useDragHandlers(
           ),
           [newContainerId]: [active.id],
         });
-        setActiveId("");
+        setActiveId('');
       });
       return;
     }
@@ -170,7 +165,7 @@ export default function useDragHandlers(
     const overContainer = findContainer(items, overId);
 
     if (overContainer) {
-      console.log("overContainer", overContainer);
+      console.log('overContainer', overContainer);
       const activeIndex = items[activeContainer].indexOf(active.id);
       const overIndex = items[overContainer].indexOf(overId);
       const newItemState = {
@@ -187,15 +182,15 @@ export default function useDragHandlers(
       }
       setItemsWrapper(newItemState);
     }
-    setActiveId("");
-  }
+    setActiveId('');
+  };
 
   const handleDragStart = (event: DragOverEvent) => {
     console.log('test');
     const { active } = event;
     setActiveId(active.id);
     setClonedItems(items);
-  }
+  };
 
   const handleDragCancel = () => {
     if (clonedItems) {
@@ -204,7 +199,7 @@ export default function useDragHandlers(
       setItemsWrapper(clonedItems);
     }
 
-    setActiveId("");
+    setActiveId('');
     setClonedItems(null);
   };
   return {
@@ -212,5 +207,5 @@ export default function useDragHandlers(
     handleDragEnd,
     handleDragCancel,
     handleDragStart,
-  }
+  };
 }

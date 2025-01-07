@@ -1,8 +1,8 @@
 'use client';
 
-import { useScheduleStore } from "./stores/useScheduleStore";
-import { useCoreRequirementsStore } from "./stores/useCoreRequirementsStore";
-import { Course, CoreCategory, CoreRequirement } from "@/types/models";
+import { useScheduleStore } from './stores/useScheduleStore';
+import { useCoreRequirementsStore } from './stores/useCoreRequirementsStore';
+import { Course, CoreCategory, CoreRequirement } from '@/types/models';
 
 interface CoreProgress {
   currentCredits: number;
@@ -21,7 +21,10 @@ export function useCoreRequirements() {
   const courses = useScheduleStore((state) => state.courses);
   const categories = useCoreRequirementsStore((state) => state.categories);
 
-  const calculateCoreProgress = (core: CoreRequirement, courses: Record<string, Course>): CoreProgress => {
+  const calculateCoreProgress = (
+    core: CoreRequirement,
+    courses: Record<string, Course>
+  ): CoreProgress => {
     let currentCredits = 0;
 
     // Sum up credits from courses that have this core
@@ -34,11 +37,14 @@ export function useCoreRequirements() {
     return {
       currentCredits,
       requiredCredits: core.requiredCredits,
-      isSatisfied: currentCredits >= core.requiredCredits
+      isSatisfied: currentCredits >= core.requiredCredits,
     };
   };
 
-  const calculateCategoryProgress = (category: CoreCategory, courses: Record<string, Course>): CategoryProgress => {
+  const calculateCategoryProgress = (
+    category: CoreCategory,
+    courses: Record<string, Course>
+  ): CategoryProgress => {
     const coreProgress: Record<string, CoreProgress> = {};
     let satisfiedCores = 0;
 
@@ -54,7 +60,7 @@ export function useCoreRequirements() {
       satisfiedCores,
       requiredCores: category.cores.length,
       isSatisfied: satisfiedCores >= category.cores.length,
-      cores: coreProgress
+      cores: coreProgress,
     };
   };
 
@@ -71,6 +77,6 @@ export function useCoreRequirements() {
   return {
     calculateAllProgress,
     calculateCategoryProgress,
-    calculateCoreProgress
+    calculateCoreProgress,
   };
 }

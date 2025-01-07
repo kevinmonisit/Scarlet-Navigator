@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import styles from "./OverflowWrapper.module.scss";
+import styles from './OverflowWrapper.module.scss';
 
 interface Props {
   children: React.ReactNode;

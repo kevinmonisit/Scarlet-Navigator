@@ -17,17 +17,17 @@ export const useNotesStore = create<NotesState>()(
         set((state) => ({
           notes: {
             ...state.notes,
-            [id]: content
-          }
+            [id]: content,
+          },
         })),
       deleteNote: (id: string) =>
         set((state) => {
           const { [id]: _, ...rest } = state.notes;
           return { notes: rest };
-        })
+        }),
     }),
     {
-      name: 'notes-storage'
+      name: 'notes-storage',
     }
   )
 );

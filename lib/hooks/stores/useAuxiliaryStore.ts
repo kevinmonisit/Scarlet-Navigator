@@ -19,24 +19,24 @@ type AuxiliaryStore = {
  */
 const useAuxiliaryStore = create<AuxiliaryStore>()((set) => ({
   recentlyMovedToNewContainer: null,
-  activeID: "",
-  currentInfoID: "",
+  activeID: '',
+  currentInfoID: '',
   currentInfoType: 'course',
-  activeTab: "info",
+  activeTab: 'info',
   setRecentlyMovedToNewContainer: (flag: RefObject<boolean>) =>
     set({ recentlyMovedToNewContainer: flag }),
   setActiveID: (id: SemesterID) => {
     console.log('new active id', id);
-    set({ activeID: id })
+    set({ activeID: id });
   },
   setCurrentInfo: (id: string, type: 'course' | 'semester') => {
     set({
       currentInfoID: id,
       currentInfoType: type,
-      activeTab: "info" // Switch to info tab when selection changes
-    })
+      activeTab: 'info', // Switch to info tab when selection changes
+    });
   },
-  setActiveTab: (tab: 'info' | 'core' | 'settings') => set({ activeTab: tab })
+  setActiveTab: (tab: 'info' | 'core' | 'settings') => set({ activeTab: tab }),
 }));
 
 export default useAuxiliaryStore;

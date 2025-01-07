@@ -68,7 +68,9 @@
 
   &:focus-visible {
     border-color: transparent;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0), 0 0px 0px 2px #4c9ffe;
+    box-shadow:
+      0 0 0 2px rgba(255, 255, 255, 0),
+      0 0px 0px 2px #4c9ffe;
   }
 }
 

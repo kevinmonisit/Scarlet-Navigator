@@ -37,35 +37,38 @@ function AddCategoryForm({ onSubmit }: AddCategoryFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border-b border-gray-200">
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Category Name</label>
+    <form onSubmit={handleSubmit} className='border-b border-gray-200 p-4'>
+      <div className='mb-4'>
+        <label className='block text-sm font-medium text-gray-700'>
+          Category Name
+        </label>
         <input
-          type="text"
+          type='text'
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'
           required
         />
       </div>
-      <div className="relative">
+      <div className='relative'>
         <button
-          type="submit"
+          type='submit'
           disabled={!isFormValid()}
           onMouseEnter={() => !isFormValid() && setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
-          className={`w-full py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${isFormValid()
-            ? "bg-blue-500 text-white hover:bg-blue-600"
-            : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
+          className={`w-full rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+            isFormValid()
+              ? 'bg-blue-500 text-white hover:bg-blue-600'
+              : 'cursor-not-allowed bg-gray-300 text-gray-500'
+          }`}
         >
           Add Category
         </button>
         {showTooltip && !isFormValid() && (
-          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-md whitespace-nowrap">
+          <div className='absolute bottom-full left-1/2 mb-2 -translate-x-1/2 transform whitespace-nowrap rounded-md bg-gray-900 px-3 py-2 text-sm text-white'>
             {getTooltipText()}
-            <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
-              <div className="border-8 border-transparent border-t-gray-900" />
+            <div className='absolute left-1/2 top-full -mt-1 -translate-x-1/2 transform'>
+              <div className='border-8 border-transparent border-t-gray-900' />
             </div>
           </div>
         )}
@@ -91,31 +94,35 @@ function AddCoreForm({ categoryId, onSubmit }: AddCoreFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-2 p-4 bg-gray-50 rounded-md">
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Core Name</label>
+    <form onSubmit={handleSubmit} className='mt-2 rounded-md bg-gray-50 p-4'>
+      <div className='mb-4'>
+        <label className='block text-sm font-medium text-gray-700'>
+          Core Name
+        </label>
         <input
-          type="text"
+          type='text'
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'
           required
         />
       </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Required Credits</label>
+      <div className='mb-4'>
+        <label className='block text-sm font-medium text-gray-700'>
+          Required Credits
+        </label>
         <input
-          type="number"
-          min="1"
+          type='number'
+          min='1'
           value={requiredCredits}
           onChange={(e) => setRequiredCredits(parseInt(e.target.value))}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'
           required
         />
       </div>
       <button
-        type="submit"
-        className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        type='submit'
+        className='w-full rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
       >
         Add Core
       </button>
@@ -130,7 +137,11 @@ interface CategoryItemProps {
     requiredCores: number;
     cores: Record<string, { currentCredits: number; requiredCredits: number }>;
   };
-  onAddCore: (categoryId: string, name: string, requiredCredits: number) => void;
+  onAddCore: (
+    categoryId: string,
+    name: string,
+    requiredCredits: number
+  ) => void;
   onRemoveCategory: (id: string) => void;
   onRemoveCore: (categoryId: string, coreId: string) => void;
 }
@@ -141,7 +152,7 @@ interface EditableTextProps {
   className?: string;
 }
 
-function EditableText({ value, onSave, className = "" }: EditableTextProps) {
+function EditableText({ value, onSave, className = '' }: EditableTextProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(value);
 
@@ -175,13 +186,13 @@ function EditableText({ value, onSave, className = "" }: EditableTextProps) {
   if (isEditing) {
     return (
       <input
-        type="text"
+        type='text'
         value={editValue}
         onChange={(e) => setEditValue(e.target.value)}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
         onClick={(e) => e.stopPropagation()}
-        className={`bg-white border border-blue-500 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 w-24 ${className}`}
+        className={`w-24 rounded border border-blue-500 bg-white px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 ${className}`}
         autoFocus
         size={6}
       />
@@ -191,24 +202,36 @@ function EditableText({ value, onSave, className = "" }: EditableTextProps) {
   return (
     <span
       onClick={handleClick}
-      className={`cursor-pointer hover:bg-gray-100 rounded px-2 py-1 inline-block w-14 truncate ${className}`}
+      className={`inline-block w-14 cursor-pointer truncate rounded px-2 py-1 hover:bg-gray-100 ${className}`}
     >
       {value}
     </span>
   );
 }
 
-function CategoryItem({ category, progress, onAddCore, onRemoveCategory, onRemoveCore }: CategoryItemProps) {
+function CategoryItem({
+  category,
+  progress,
+  onAddCore,
+  onRemoveCategory,
+  onRemoveCore,
+}: CategoryItemProps) {
   const [isAddingCore, setIsAddingCore] = useState(false);
-  const updateCategory = useCoreRequirementsStore((state) => state.updateCategory);
-  const updateCoreRequirement = useCoreRequirementsStore((state) => state.updateCoreRequirement);
+  const updateCategory = useCoreRequirementsStore(
+    (state) => state.updateCategory
+  );
+  const updateCoreRequirement = useCoreRequirementsStore(
+    (state) => state.updateCoreRequirement
+  );
 
   const handleCategoryNameChange = (newName: string) => {
     updateCategory(category.id, { name: newName });
   };
 
   const handleCoreNameChange = (coreId: string, newName: string) => {
-    updateCoreRequirement(category.id, coreId, { name: newName.trim().toUpperCase() });
+    updateCoreRequirement(category.id, coreId, {
+      name: newName.trim().toUpperCase(),
+    });
   };
 
   const handleRemoveClick = (e: React.MouseEvent) => {
@@ -218,44 +241,51 @@ function CategoryItem({ category, progress, onAddCore, onRemoveCategory, onRemov
   };
 
   return (
-    <div className="collapse collapse-arrow bg-base-200 mb-4">
-      <input type="checkbox" className="w-auto h-auto" defaultChecked />
-      <div className="collapse-title relative">
-        <div className="flex justify-between items-center" onClick={(e) => e.stopPropagation()}>
-          <h3 className="text-lg font-medium flex items-center">
+    <div className='collapse collapse-arrow mb-4 bg-base-200'>
+      <input type='checkbox' className='h-auto w-auto' defaultChecked />
+      <div className='collapse-title relative'>
+        <div
+          className='flex items-center justify-between'
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h3 className='flex items-center text-lg font-medium'>
             <EditableText
               value={category.name}
               onSave={handleCategoryNameChange}
-              className="text-lg font-medium"
+              className='text-lg font-medium'
             />
-            <span className="ml-2">
+            <span className='ml-2'>
               ({progress.satisfiedCores}/{progress.requiredCores} satisfied)
             </span>
           </h3>
         </div>
         <button
           onClick={handleRemoveClick}
-          className="btn btn-ghost btn-sm text-error absolute right-8 top-1/2 -translate-y-1/2 z-10"
+          className='btn btn-ghost btn-sm absolute right-8 top-1/2 z-10 -translate-y-1/2 text-error'
         >
           Remove
         </button>
       </div>
-      <div className="collapse-content">
-        <div className="space-y-2 pt-2">
+      <div className='collapse-content'>
+        <div className='space-y-2 pt-2'>
           {category.cores.map((core) => (
-            <div key={core.id} className="flex justify-between items-center p-2 bg-base-100 rounded-lg">
-              <span className="flex-1">
+            <div
+              key={core.id}
+              className='flex items-center justify-between rounded-lg bg-base-100 p-2'
+            >
+              <span className='flex-1'>
                 <EditableText
                   value={core.name}
                   onSave={(newName) => handleCoreNameChange(core.id, newName)}
                 />
-                <span className="ml-2">
-                  ({progress.cores[core.id]?.currentCredits ?? 0}/{core.requiredCredits} credits)
+                <span className='ml-2'>
+                  ({progress.cores[core.id]?.currentCredits ?? 0}/
+                  {core.requiredCredits} credits)
                 </span>
               </span>
               <button
                 onClick={() => onRemoveCore(category.id, core.id)}
-                className="btn btn-ghost btn-sm text-error"
+                className='btn btn-ghost btn-sm text-error'
               >
                 Remove
               </button>
@@ -273,7 +303,7 @@ function CategoryItem({ category, progress, onAddCore, onRemoveCategory, onRemov
         ) : (
           <button
             onClick={() => setIsAddingCore(true)}
-            className="btn btn-ghost btn-block mt-4"
+            className='btn btn-ghost btn-block mt-4'
           >
             Add Core
           </button>
@@ -289,7 +319,7 @@ export default function CoreManagement() {
     addCategory,
     removeCategory,
     addCoreToCategory,
-    removeCoreFromCategory
+    removeCoreFromCategory,
   } = useCoreRequirementsStore();
 
   const { calculateAllProgress } = useCoreRequirements();
@@ -300,9 +330,9 @@ export default function CoreManagement() {
   };
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div className='h-full overflow-y-auto'>
       <AddCategoryForm onSubmit={handleAddCategory} />
-      <div className="p-4 space-y-4">
+      <div className='space-y-4 p-4'>
         {Object.values(categories).map((category) => (
           <CategoryItem
             key={category.id}

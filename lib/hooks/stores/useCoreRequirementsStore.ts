@@ -2,7 +2,12 @@
 
 import { StateCreator, create } from 'zustand';
 import { persist, PersistOptions } from 'zustand/middleware';
-import { CoreRequirementsState, CoreRequirementsActions, CoreCategory, CoreRequirement } from '@/types/models';
+import {
+  CoreRequirementsState,
+  CoreRequirementsActions,
+  CoreCategory,
+  CoreRequirement,
+} from '@/types/models';
 
 type CoreRequirementsStore = CoreRequirementsState & CoreRequirementsActions;
 
@@ -11,7 +16,9 @@ type CoreRequirementsPersist = (
   options: PersistOptions<CoreRequirementsStore>
 ) => StateCreator<CoreRequirementsStore>;
 
-type SetState = (fn: (state: CoreRequirementsStore) => Partial<CoreRequirementsStore>) => void;
+type SetState = (
+  fn: (state: CoreRequirementsStore) => Partial<CoreRequirementsStore>
+) => void;
 
 // Helper functions for immutable state updates
 const updateCategories = (
@@ -24,25 +31,31 @@ const updateCategories = (
 
   return {
     ...categories,
-    [categoryId]: updater(category)
+    [categoryId]: updater(category),
   };
 };
 
-const removeFromRecord = <T>(record: Record<string, T>, keyToRemove: string): Record<string, T> => {
+const removeFromRecord = <T>(
+  record: Record<string, T>,
+  keyToRemove: string
+): Record<string, T> => {
   const { [keyToRemove]: _, ...rest } = record;
   return rest;
 };
 
-const createCore = (name: string, requiredCredits: number): CoreRequirement => ({
+const createCore = (
+  name: string,
+  requiredCredits: number
+): CoreRequirement => ({
   id: `core_${Date.now()}`,
   name,
-  requiredCredits
+  requiredCredits,
 });
 
 const createCategory = (name: string): CoreCategory => ({
   id: `category_${Date.now()}`,
   name,
-  cores: []
+  cores: [],
 });
 
 const updateCoreInList = (
@@ -50,7 +63,7 @@ const updateCoreInList = (
   coreId: string,
   updates: Partial<CoreRequirement>
 ): CoreRequirement[] => {
-  return cores.map(core => {
+  return cores.map((core) => {
     if (core.id !== coreId) return core;
     return { ...core, ...updates };
   });
@@ -68,57 +81,84 @@ export const useCoreRequirementsStore = create<CoreRequirementsStore>()(
             ...state,
             categories: {
               ...state.categories,
-              [newCategory.id]: newCategory
-            }
+              [newCategory.id]: newCategory,
+            },
           }));
         },
 
         removeCategory: (id: string) => {
           set((state) => ({
             ...state,
-            categories: removeFromRecord(state.categories, id)
+            categories: removeFromRecord(state.categories, id),
           }));
         },
 
-        addCoreToCategory: (categoryId: string, coreName: string, requiredCredits: number) => {
+        addCoreToCategory: (
+          categoryId: string,
+          coreName: string,
+          requiredCredits: number
+        ) => {
           const newCore = createCore(coreName, requiredCredits);
 
           set((state) => ({
             ...state,
-            categories: updateCategories(state.categories, categoryId, (category) => ({
-              ...category,
-              cores: [...category.cores, newCore]
-            }))
+            categories: updateCategories(
+              state.categories,
+              categoryId,
+              (category) => ({
+                ...category,
+                cores: [...category.cores, newCore],
+              })
+            ),
           }));
         },
 
         removeCoreFromCategory: (categoryId: string, coreId: string) => {
           set((state) => ({
             ...state,
-            categories: updateCategories(state.categories, categoryId, (category) => ({
-              ...category,
-              cores: category.cores.filter(core => core.id !== coreId)
-            }))
+            categories: updateCategories(
+              state.categories,
+              categoryId,
+              (category) => ({
+                ...category,
+                cores: category.cores.filter((core) => core.id !== coreId),
+              })
+            ),
           }));
         },
 
-        updateCategory: (categoryId: string, updates: Partial<CoreCategory>) => {
+        updateCategory: (
+          categoryId: string,
+          updates: Partial<CoreCategory>
+        ) => {
           set((state) => ({
             ...state,
-            categories: updateCategories(state.categories, categoryId, (category) => ({
-              ...category,
-              ...updates
-            }))
+            categories: updateCategories(
+              state.categories,
+              categoryId,
+              (category) => ({
+                ...category,
+                ...updates,
+              })
+            ),
           }));
         },
 
-        updateCoreRequirement: (categoryId: string, coreId: string, updates: Partial<CoreRequirement>) => {
+        updateCoreRequirement: (
+          categoryId: string,
+          coreId: string,
+          updates: Partial<CoreRequirement>
+        ) => {
           set((state) => ({
             ...state,
-            categories: updateCategories(state.categories, categoryId, (category) => ({
-              ...category,
-              cores: updateCoreInList(category.cores, coreId, updates)
-            }))
+            categories: updateCategories(
+              state.categories,
+              categoryId,
+              (category) => ({
+                ...category,
+                cores: updateCoreInList(category.cores, coreId, updates),
+              })
+            ),
           }));
         },
       };
@@ -126,7 +166,7 @@ export const useCoreRequirementsStore = create<CoreRequirementsStore>()(
       return store;
     },
     {
-      name: 'core-requirements-storage'
+      name: 'core-requirements-storage',
     }
   )
 );

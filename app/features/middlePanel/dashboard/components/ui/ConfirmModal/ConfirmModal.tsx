@@ -1,5 +1,5 @@
-import React, { PropsWithChildren } from "react";
-import styles from "./ConfirmModal.module.scss";
+import React, { PropsWithChildren } from 'react';
+import styles from './ConfirmModal.module.scss';
 
 interface Props {
   onConfirm(): void;
@@ -9,7 +9,7 @@ interface Props {
 export const ConfirmModal = ({
   onConfirm,
   onDeny,
-  children
+  children,
 }: PropsWithChildren<Props>) => (
   <div className={styles.ConfirmModal}>
     <h1>{children}</h1>

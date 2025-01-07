@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-import classNames from "classnames";
-import type { DraggableSyntheticListeners } from "@dnd-kit/core";
-import type { Transform } from "@dnd-kit/utilities";
+import React, { useEffect } from 'react';
+import classNames from 'classnames';
+import type { DraggableSyntheticListeners } from '@dnd-kit/core';
+import type { Transform } from '@dnd-kit/utilities';
 
-import { Handle, Remove } from "./components";
+import { Handle, Remove } from './components';
 
-import styles from "./Item.module.scss";
-import useAuxiliaryStore from "@/lib/hooks/stores/useAuxiliaryStore";
-import { CourseID } from "@/types/models";
+import styles from './Item.module.scss';
+import useAuxiliaryStore from '@/lib/hooks/stores/useAuxiliaryStore';
+import { CourseID } from '@/types/models';
 
 export interface Props {
   id: CourseID;
@@ -37,9 +37,9 @@ export interface Props {
     listeners: DraggableSyntheticListeners;
     ref: React.Ref<HTMLElement>;
     style: React.CSSProperties | undefined;
-    transform: Props["transform"];
-    transition: Props["transition"];
-    value: Props["value"];
+    transform: Props['transform'];
+    transition: Props['transition'];
+    value: Props['value'];
   }): React.ReactElement<any>;
 }
 
@@ -75,14 +75,14 @@ export const Item = React.memo(
           return;
         }
 
-        document.body.style.cursor = "grabbing";
+        document.body.style.cursor = 'grabbing';
 
         return () => {
-          document.body.style.cursor = "";
+          document.body.style.cursor = '';
         };
       }, [dragOverlay]);
 
-      const setCurrentInfo = useAuxiliaryStore(state => state.setCurrentInfo);
+      const setCurrentInfo = useAuxiliaryStore((state) => state.setCurrentInfo);
 
       return (
         <li
@@ -97,21 +97,21 @@ export const Item = React.memo(
               ...wrapperStyle,
               transition: [transition, wrapperStyle?.transition]
                 .filter(Boolean)
-                .join(", "),
-              "--translate-x": transform
+                .join(', '),
+              '--translate-x': transform
                 ? `${Math.round(transform.x)}px`
                 : undefined,
-              "--translate-y": transform
+              '--translate-y': transform
                 ? `${Math.round(transform.y)}px`
                 : undefined,
-              "--scale-x": transform?.scaleX
+              '--scale-x': transform?.scaleX
                 ? `${transform.scaleX}`
                 : undefined,
-              "--scale-y": transform?.scaleY
+              '--scale-y': transform?.scaleY
                 ? `${transform.scaleY}`
                 : undefined,
-              "--index": index,
-              "--color": color
+              '--index': index,
+              '--color': color,
             } as React.CSSProperties
           }
           ref={ref}
@@ -126,7 +126,7 @@ export const Item = React.memo(
               color && styles.color
             )}
             style={style}
-            data-cypress="draggable-item"
+            data-cypress='draggable-item'
             {...(!handle ? listeners : undefined)}
             {...props}
             tabIndex={!handle ? 0 : undefined}

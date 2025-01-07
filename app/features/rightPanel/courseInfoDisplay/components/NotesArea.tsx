@@ -1,5 +1,5 @@
-import { useNotesStore } from "@/lib/hooks/stores/useNotesStore";
-import { useState } from "react";
+import { useNotesStore } from '@/lib/hooks/stores/useNotesStore';
+import { useState } from 'react';
 
 interface NotesAreaProps {
   id: string;
@@ -8,11 +8,11 @@ interface NotesAreaProps {
 export default function NotesArea({ id }: NotesAreaProps) {
   const { notes, setNote } = useNotesStore();
   const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(notes[id] || "");
+  const [editValue, setEditValue] = useState(notes[id] || '');
 
   const handleEditToggle = () => {
     if (!isEditing) {
-      setEditValue(notes[id] || "");
+      setEditValue(notes[id] || '');
     }
     setIsEditing(!isEditing);
   };
@@ -24,26 +24,28 @@ export default function NotesArea({ id }: NotesAreaProps) {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-2">
-        <h3 className="text-sm font-medium">Notes:</h3>
+      <div className='mb-2 flex items-center justify-between'>
+        <h3 className='text-sm font-medium'>Notes:</h3>
         <button
           onClick={isEditing ? handleSave : handleEditToggle}
-          className="text-sm text-blue-600 hover:text-blue-800"
+          className='text-sm text-blue-600 hover:text-blue-800'
         >
-          {isEditing ? "Save" : "Edit"}
+          {isEditing ? 'Save' : 'Edit'}
         </button>
       </div>
       {isEditing ? (
         <textarea
           value={editValue}
           onChange={(e) => setEditValue(e.target.value)}
-          className="w-full h-32 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Add your notes here..."
+          className='h-32 w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
+          placeholder='Add your notes here...'
         />
       ) : (
-        <div className="w-full min-h-[8rem] px-3 py-2 bg-gray-50 rounded-md whitespace-pre-wrap">
-          {notes[id] ? notes[id] : (
-            <span className="text-gray-500">No notes added yet</span>
+        <div className='min-h-[8rem] w-full whitespace-pre-wrap rounded-md bg-gray-50 px-3 py-2'>
+          {notes[id] ? (
+            notes[id]
+          ) : (
+            <span className='text-gray-500'>No notes added yet</span>
           )}
         </div>
       )}

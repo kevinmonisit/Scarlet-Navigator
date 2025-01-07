@@ -1,4 +1,4 @@
-import { UniqueIdentifier } from "@dnd-kit/core";
+import { UniqueIdentifier } from '@dnd-kit/core';
 
 export enum STORE_NAMES {
   schedule = 'schedule',
@@ -38,11 +38,17 @@ export interface ScheduleState {
 
 export interface ScheduleActions {
   setSemesterOrder: (semOrder: SemesterOrder) => void;
-  setCoursesBySemesterID: (semesters: CoursesBySemesterID, skipHistory?: boolean) => void;
+  setCoursesBySemesterID: (
+    semesters: CoursesBySemesterID,
+    skipHistory?: boolean
+  ) => void;
   setCourses: (courses: CourseByID) => void;
   addCourse: (name: string, credits: number, cores: string[]) => CourseID;
   addGlobalCores: (cores: string[]) => void;
-  handleDragOperation: (semesters: CoursesBySemesterID, isNewContainerMove?: boolean) => void;
+  handleDragOperation: (
+    semesters: CoursesBySemesterID,
+    isNewContainerMove?: boolean
+  ) => void;
   updateCourse: (id: CourseID, updates: Partial<Course>) => void;
   updateSemester: (id: SemesterID, updates: Partial<Semester>) => void;
   undo: () => void;
@@ -60,7 +66,7 @@ export interface CoreRequirement {
 export interface CoreCategory {
   id: string;
   name: string;
-  cores: CoreRequirement[];  // The number of cores in this array determines the required cores
+  cores: CoreRequirement[]; // The number of cores in this array determines the required cores
 }
 
 export interface CoreRequirementsState {
@@ -70,8 +76,16 @@ export interface CoreRequirementsState {
 export interface CoreRequirementsActions {
   addCategory: (name: string) => void;
   removeCategory: (id: string) => void;
-  addCoreToCategory: (categoryId: string, coreName: string, requiredCredits: number) => void;
+  addCoreToCategory: (
+    categoryId: string,
+    coreName: string,
+    requiredCredits: number
+  ) => void;
   removeCoreFromCategory: (categoryId: string, coreId: string) => void;
   updateCategory: (categoryId: string, updates: Partial<CoreCategory>) => void;
-  updateCoreRequirement: (categoryId: string, coreId: string, updates: Partial<CoreRequirement>) => void;
+  updateCoreRequirement: (
+    categoryId: string,
+    coreId: string,
+    updates: Partial<CoreRequirement>
+  ) => void;
 }

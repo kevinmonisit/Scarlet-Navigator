@@ -1,7 +1,7 @@
-import React, { forwardRef } from "react";
-import classNames from "classnames";
+import React, { forwardRef } from 'react';
+import classNames from 'classnames';
 
-import styles from "./List.module.scss";
+import styles from './List.module.scss';
 
 export interface Props {
   children: React.ReactNode;
@@ -18,7 +18,7 @@ export const List = forwardRef<HTMLUListElement, Props>(
         style={
           {
             ...style,
-            "--columns": columns
+            '--columns': columns,
           } as React.CSSProperties
         }
         className={classNames(styles.List, horizontal && styles.horizontal)}

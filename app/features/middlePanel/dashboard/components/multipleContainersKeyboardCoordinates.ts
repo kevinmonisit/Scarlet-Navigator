@@ -15,7 +15,7 @@ const directions: string[] = [
 
 export const coordinateGetter: KeyboardCoordinateGetter = (
   event,
-  {context: {active, droppableRects, droppableContainers, collisionRect}}
+  { context: { active, droppableRects, droppableContainers, collisionRect } }
 ) => {
   if (directions.includes(event.code)) {
     event.preventDefault();
@@ -40,7 +40,7 @@ export const coordinateGetter: KeyboardCoordinateGetter = (
       const data = entry.data.current;
 
       if (data) {
-        const {type, children} = data;
+        const { type, children } = data;
 
         if (type === 'container' && children?.length > 0) {
           if (active.data.current?.type !== 'container') {

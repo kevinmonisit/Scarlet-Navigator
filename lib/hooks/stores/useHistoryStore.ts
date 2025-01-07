@@ -19,9 +19,9 @@ const useHistoryStore = create<HistoryState & HistoryActions>((set, get) => ({
   future: [],
 
   addToHistory: (state) => {
-    set(history => ({
+    set((history) => ({
       past: [...history.past, state],
-      future: []
+      future: [],
     }));
   },
 
@@ -37,7 +37,7 @@ const useHistoryStore = create<HistoryState & HistoryActions>((set, get) => ({
     useScheduleStore.setState(previous);
     set({
       past: newPast,
-      future: [scheduleStore, ...future]
+      future: [scheduleStore, ...future],
     });
   },
 
@@ -53,13 +53,13 @@ const useHistoryStore = create<HistoryState & HistoryActions>((set, get) => ({
     useScheduleStore.setState(next);
     set({
       past: [...past, scheduleStore],
-      future: newFuture
+      future: newFuture,
     });
   },
 
   clear: () => {
     set({ past: [], future: [] });
-  }
+  },
 }));
 
 export default useHistoryStore;

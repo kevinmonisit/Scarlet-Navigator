@@ -1,6 +1,6 @@
-import { COURSE_CREATION_CONTAINER_ID } from "@/app/features/leftPanel/courseCreation/CourseCreation";
-import { CoursesBySemesterID } from "@/types/models";
-import { UniqueIdentifier } from "@dnd-kit/core";
+import { COURSE_CREATION_CONTAINER_ID } from '@/app/features/leftPanel/courseCreation/CourseCreation';
+import { CoursesBySemesterID } from '@/types/models';
+import { UniqueIdentifier } from '@dnd-kit/core';
 
 export const findContainer = (
   items: CoursesBySemesterID,
@@ -14,10 +14,7 @@ export const findContainer = (
   return container;
 };
 
-export const getIndex = (
-  items: CoursesBySemesterID,
-  id: UniqueIdentifier
-) => {
+export const getIndex = (items: CoursesBySemesterID, id: UniqueIdentifier) => {
   const container = findContainer(items, id);
 
   if (container === COURSE_CREATION_CONTAINER_ID) {
@@ -31,13 +28,11 @@ export const getIndex = (
   const index = items[container].indexOf(id);
 
   return index;
-}
+};
 
-export const getNextContainerId = (
-  items: CoursesBySemesterID
-) => {
+export const getNextContainerId = (items: CoursesBySemesterID) => {
   const containerIds = Object.keys(items);
   const lastContainerId = containerIds[containerIds.length - 1];
 
   return String.fromCharCode(lastContainerId.charCodeAt(0) + 1);
-}
+};

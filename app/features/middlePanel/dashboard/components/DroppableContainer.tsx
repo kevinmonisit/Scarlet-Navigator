@@ -1,8 +1,8 @@
-import { UniqueIdentifier } from "@dnd-kit/core";
-import { useSortable } from "@dnd-kit/sortable";
-import { animateLayoutChanges } from "../utils/dnd";
-import { ContainerProps, Container } from "./ui";
-import { CSS } from "@dnd-kit/utilities";
+import { UniqueIdentifier } from '@dnd-kit/core';
+import { useSortable } from '@dnd-kit/sortable';
+import { animateLayoutChanges } from '../utils/dnd';
+import { ContainerProps, Container } from './ui';
+import { CSS } from '@dnd-kit/utilities';
 
 export default function DroppableContainer({
   children,
@@ -30,14 +30,14 @@ export default function DroppableContainer({
   } = useSortable({
     id,
     data: {
-      type: "container",
+      type: 'container',
       children: items,
     },
     animateLayoutChanges,
   });
   const isOverContainer = over
-    ? (id === over.id && active?.data.current?.type !== "container") ||
-    items.includes(over.id)
+    ? (id === over.id && active?.data.current?.type !== 'container') ||
+      items.includes(over.id)
     : false;
 
   return (

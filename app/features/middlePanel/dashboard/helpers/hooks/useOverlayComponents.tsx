@@ -4,7 +4,10 @@ import { Container, Item } from '../../components/ui';
 import { findContainer, getIndex } from '../../utils/dnd';
 import { CoursesBySemesterID } from '@/types/models';
 import { useScheduleStore } from '@/lib/hooks/stores/useScheduleStore';
-import { calculateSemesterCredits, calculateRunningCredits } from '../../utils/credits';
+import {
+  calculateSemesterCredits,
+  calculateRunningCredits,
+} from '../../utils/credits';
 
 export const COLUMNS_DEPRECATED_DO_NOT_USE = 5;
 
@@ -14,13 +17,13 @@ export default function useOverlayComponents(
   renderItem: () => React.ReactElement<any>,
   getColor: (id: UniqueIdentifier) => string | undefined,
   getItemStyles: (args: any) => React.CSSProperties,
-  wrapperStyle: (args: any) => React.CSSProperties,
+  wrapperStyle: (args: any) => React.CSSProperties
 ) {
   const courses = useScheduleStore((state) => state.courses);
   const semesterOrder = useScheduleStore((state) => state.semesterOrder);
 
   function renderSortableItemDragOverlay(id: UniqueIdentifier) {
-    const courseName = courses[id]?.name ?? "Loading...";
+    const courseName = courses[id]?.name ?? 'Loading...';
     return (
       <Item
         id={id}
@@ -43,25 +46,33 @@ export default function useOverlayComponents(
     );
   }
 
-  function renderContainerDragOverlay(
-    containerId: UniqueIdentifier,
-  ) {
-    const semesterCredits = calculateSemesterCredits(items[containerId] || [], courses);
-    const totalCredits = calculateRunningCredits(semesterOrder, items, courses, containerId);
-    const semesterTitle = useScheduleStore.getState().semesterByID[containerId]?.title || containerId;
+  function renderContainerDragOverlay(containerId: UniqueIdentifier) {
+    const semesterCredits = calculateSemesterCredits(
+      items[containerId] || [],
+      courses
+    );
+    const totalCredits = calculateRunningCredits(
+      semesterOrder,
+      items,
+      courses,
+      containerId
+    );
+    const semesterTitle =
+      useScheduleStore.getState().semesterByID[containerId]?.title ||
+      containerId;
 
     return (
       <Container
         label={`${semesterTitle} (${semesterCredits} credits, Total: ${totalCredits})`}
         columns={1}
         style={{
-          height: "100%",
+          height: '100%',
         }}
         shadow
         unstyled={false}
       >
         {items[containerId].map((id) => {
-          const courseName = courses[id]?.name ?? "Loading...";
+          const courseName = courses[id]?.name ?? 'Loading...';
           return (
             <Item
               id={id}
@@ -81,19 +92,14 @@ export default function useOverlayComponents(
               wrapperStyle={wrapperStyle({ index: 1 })}
               renderItem={renderItem}
             />
-          )
+          );
         })}
       </Container>
     );
   }
 
-
-
   return {
     renderSortableItemDragOverlay,
     renderContainerDragOverlay,
-  }
+  };
 }
-
-
-

@@ -1,21 +1,21 @@
-import React, { forwardRef } from "react";
-import classNames from "classnames";
-import type { DraggableSyntheticListeners } from "@dnd-kit/core";
-import type { Transform } from "@dnd-kit/utilities";
+import React, { forwardRef } from 'react';
+import classNames from 'classnames';
+import type { DraggableSyntheticListeners } from '@dnd-kit/core';
+import type { Transform } from '@dnd-kit/utilities';
 
-import { Handle } from "../Item/components/Handle";
+import { Handle } from '../Item/components/Handle';
 
 import {
   draggable,
   draggableHorizontal,
-  draggableVertical
-} from "./draggable-svg";
-import styles from "./Draggable.module.scss";
+  draggableVertical,
+} from './draggable-svg';
+import styles from './Draggable.module.scss';
 
 export enum Axis {
   All,
   Vertical,
-  Horizontal
+  Horizontal,
 }
 
 interface Props {
@@ -57,15 +57,15 @@ export const Draggable = forwardRef<HTMLButtonElement, Props>(
         style={
           {
             ...style,
-            "--translate-x": `${transform?.x ?? 0}px`,
-            "--translate-y": `${transform?.y ?? 0}px`
+            '--translate-x': `${transform?.x ?? 0}px`,
+            '--translate-y': `${transform?.y ?? 0}px`,
           } as React.CSSProperties
         }
       >
         <button
           {...props}
-          aria-label="Draggable"
-          data-cypress="draggable-item"
+          aria-label='Draggable'
+          data-cypress='draggable-item'
           {...(handle ? {} : listeners)}
           tabIndex={handle ? -1 : undefined}
           ref={ref}
@@ -74,8 +74,8 @@ export const Draggable = forwardRef<HTMLButtonElement, Props>(
           {axis === Axis.Vertical
             ? draggableVertical
             : axis === Axis.Horizontal
-            ? draggableHorizontal
-            : draggable}
+              ? draggableHorizontal
+              : draggable}
           {handle ? <Handle {...(handle ? listeners : {})} /> : null}
         </button>
         {label ? <label>{label}</label> : null}
