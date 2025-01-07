@@ -41,7 +41,7 @@ jobs:
         run: npm install -g pnpm && pnpm install
 
       - name: Run npm audit
-        run: pnpm audit || true  # Don't fail the build, but report issues
+        run: pnpm audit || true # Don't fail the build, but report issues
 
       # Initialize CodeQL
       - name: Initialize CodeQL
