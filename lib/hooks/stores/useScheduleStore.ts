@@ -189,15 +189,18 @@ export const useScheduleStore = create<ScheduleStore>()(
           saveToHistory(state);
 
           // Remove semester from order
-          const updatedSemesterOrder = state.semesterOrder.filter(semId => semId !== id);
+          const updatedSemesterOrder = state.semesterOrder.filter(
+            (semId) => semId !== id
+          );
 
           // Remove semester from semesterByID
           const { [id]: _, ...updatedSemesterByID } = state.semesterByID;
 
           // Remove courses associated with this semester
-          const { [id]: coursesToRemove, ...updatedCoursesBySemesterID } = state.coursesBySemesterID;
+          const { [id]: coursesToRemove, ...updatedCoursesBySemesterID } =
+            state.coursesBySemesterID;
           const updatedCourses = { ...state.courses };
-          coursesToRemove?.forEach(courseId => {
+          coursesToRemove?.forEach((courseId) => {
             delete updatedCourses[courseId];
           });
 

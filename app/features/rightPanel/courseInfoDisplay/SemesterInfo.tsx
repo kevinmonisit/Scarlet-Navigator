@@ -47,18 +47,23 @@ export default function SemesterInfo({ id }: SemesterInfoProps) {
 
   return (
     <div className='space-y-4 p-4'>
-      <dialog ref={modalRef} className="modal" id="delete_semester_modal">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">Remove Semester</h3>
-          <p className="py-4">Are you sure you want to remove this semester? All courses in this semester will also be deleted.</p>
-          <div className="modal-action">
-            <form method="dialog">
-              <button className="btn btn-ghost mr-2">Cancel</button>
-              <button className="btn btn-error" onClick={handleRemove}>Remove</button>
+      <dialog ref={modalRef} className='modal' id='delete_semester_modal'>
+        <div className='modal-box'>
+          <h3 className='text-lg font-bold'>Remove Semester</h3>
+          <p className='py-4'>
+            Are you sure you want to remove this semester? All courses in this
+            semester will also be deleted.
+          </p>
+          <div className='modal-action'>
+            <form method='dialog'>
+              <button className='btn btn-ghost mr-2'>Cancel</button>
+              <button className='btn btn-error' onClick={handleRemove}>
+                Remove
+              </button>
             </form>
           </div>
         </div>
-        <form method="dialog" className="modal-backdrop">
+        <form method='dialog' className='modal-backdrop'>
           <button>close</button>
         </form>
       </dialog>
@@ -89,10 +94,14 @@ export default function SemesterInfo({ id }: SemesterInfoProps) {
         >
           {isEditing ? 'Save Changes' : 'Edit Semester'}
         </button>
-        <button className="btn btn-error btn-outline" onClick={() => modalRef.current?.showModal()}>Remove Semester</button>
+        <button
+          className='btn btn-outline btn-error'
+          onClick={() => modalRef.current?.showModal()}
+        >
+          Remove Semester
+        </button>
       </div>
       <NotesArea id={id} />
-
     </div>
   );
 }
