@@ -33,10 +33,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 - [NextUI]()
 - [Tailwind CSS]()
-- [DaisyUI]
+- [DaisyUI]()
 
 ### Code Quality
 
 - [TypeScript](Typescript)
 - [Prettier](Prettier)
 - [ESLint](ESLint)
+- [Husky]()
