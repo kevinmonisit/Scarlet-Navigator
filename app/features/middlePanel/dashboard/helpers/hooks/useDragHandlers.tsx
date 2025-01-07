@@ -1,4 +1,4 @@
-import { DragOverEvent } from '@dnd-kit/core';
+import { DragOverEvent } from "@dnd-kit/core";
 import React, { useRef, useEffect } from 'react';
 import { findContainer, getNextContainerId } from '../../utils/dnd';
 import { arrayMove } from '@dnd-kit/sortable';
@@ -7,12 +7,13 @@ import { CoursesBySemesterID, SemesterOrder } from '@/types/models';
 import { useScheduleStore } from '@/lib/hooks/stores/useScheduleStore';
 import useAuxiliaryStore from '@/lib/hooks/stores/useAuxiliaryStore';
 import { PLACEHOLDER_ID, TRASH_ID } from '@/lib/constants';
-import { COURSE_CREATION_CONTAINER_ID } from '@/app/features/leftPanel/courseCreation/CourseCreation';
 
 export default function useDragHandlers(
   clonedItems: CoursesBySemesterID | null,
   setClonedItems: React.Dispatch<React.SetStateAction<CoursesBySemesterID | null>>,
 ) {
+  // whether or not a drag operation was recently performed
+  // and the list of items needs to be updated
   const moveRef = useRef(false);
   const state = useScheduleStore();
   const {
@@ -28,8 +29,10 @@ export default function useDragHandlers(
   const setActiveId = useAuxiliaryStore((state) => state.setActiveID);
 
   useEffect(() => {
-    setRecentlyMovedToNewContainer(moveRef);
-  }, []);
+    if (moveRef.current) {
+      setRecentlyMovedToNewContainer(moveRef);
+    }
+  }, [setRecentlyMovedToNewContainer]);
 
   const items = coursesBySemesterID;
   const containers = semesterOrder;

@@ -105,21 +105,19 @@ export function ScheduleBoard({
   const { recentlyMovedToNewContainer, activeID } = useAuxiliaryStore.getState();
   const setRecentlyMovedToNewContainer = useAuxiliaryStore((state) => state.setRecentlyMovedToNewContainer);
   const moveRef = useRef(false);
+  const resetRef = useRef(false);
 
   useEffect(() => {
-    if (!moveRef.current) {
-      moveRef.current = true;
-      setRecentlyMovedToNewContainer(moveRef);
+    if (recentlyMovedToNewContainer?.current) {
+      requestAnimationFrame(() => {
+        resetRef.current = false;
+        setRecentlyMovedToNewContainer(resetRef);
+      });
     }
-  }, [setRecentlyMovedToNewContainer]);
+  }, [recentlyMovedToNewContainer, setRecentlyMovedToNewContainer]);
 
   useEffect(() => {
     requestAnimationFrame(() => {
-      if (recentlyMovedToNewContainer == null) {
-        console.error('recentlyMovedToNewContainer is null! Was it set correctly with useRef?');
-        return;
-      }
-
       moveRef.current = false;
     });
   }, [coursesBySemesterID]);
@@ -205,6 +203,7 @@ export function ScheduleBoard({
                     items={EMPTY}
                     onClick={handleAddColumn}
                     placeholder
+                    as="button"
                   >
                     + Add column
                   </DroppableContainer>
@@ -214,6 +213,7 @@ export function ScheduleBoard({
                     items={EMPTY}
                     onClick={handlePopulateSchedule}
                     placeholder
+                    as="button"
                   >
                     Populate with dummy data
                   </DroppableContainer>

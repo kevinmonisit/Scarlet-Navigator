@@ -2,11 +2,11 @@
 import React, { forwardRef } from "react";
 import classNames from "classnames";
 
-import { Handle, Remove } from "../Item";
+import { Remove } from "../Item";
 
 import styles from "./Container.module.scss";
 
-export interface Props {
+type BaseProps = {
   children: React.ReactNode;
   columns?: number;
   label?: string;
@@ -18,13 +18,27 @@ export interface Props {
   shadow?: boolean;
   placeholder?: boolean;
   unstyled?: boolean;
-  onClick?(): void;
   onRemove?(): void;
-}
+};
 
-export const Container = forwardRef<HTMLDivElement, Props>(
+type AsButton = BaseProps & {
+  as: 'button';
+  onClick: () => void;
+  ref?: React.Ref<HTMLButtonElement>;
+};
+
+type AsDiv = BaseProps & {
+  as?: 'div';
+  onClick?: never;
+  ref?: React.Ref<HTMLDivElement>;
+};
+
+export type Props = AsButton | AsDiv;
+
+export const Container = forwardRef(
   (
     {
+      as: Tag = 'div',
       children,
       columns = 1,
       handleProps,
@@ -42,12 +56,10 @@ export const Container = forwardRef<HTMLDivElement, Props>(
     }: Props,
     ref
   ) => {
-    const Component = onClick ? "button" : "div";
-
     return (
-      <Component
+      <Tag
         {...props}
-        ref={ref}
+        ref={ref as any}
         style={
           {
             ...style,
@@ -64,23 +76,20 @@ export const Container = forwardRef<HTMLDivElement, Props>(
           shadow && styles.shadow
         )}
         onClick={onClick}
-        tabIndex={onClick ? 0 : undefined}
       >
         {label ? (
           <div className={styles.Header}>
             {label}
-            <div className={styles.Actions}>
-              {onRemove ? <Remove onClick={onRemove} /> : undefined}
-              {/*
-                Removing the drag handle for the semesters for now since there
-                is a bug that causes some of the courses to become undefined.
-              */}
-              {/* <Handle {...handleProps} /> */}
-            </div>
+            {onRemove ? <Remove onClick={onRemove} /> : null}
+            {/*
+              Removing the drag handle for the semesters for now since there
+              is a bug that causes some of the courses to become undefined.
+            */}
+            {/* {handleProps ? <Handle {...handleProps} /> : null} */}
           </div>
         ) : null}
-        {placeholder ? children : <ul>{children}</ul>}
-      </Component>
+        {children}
+      </Tag>
     );
   }
 );

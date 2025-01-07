@@ -65,19 +65,16 @@ export const collisionDetectionStrategy = (
       }
     }
 
-    lastOverId.current = overId;
-
-    return [{ id: overId }];
+    // Instead of modifying the ref directly, we return the new value
+    const newOverId = overId;
+    return [{ id: newOverId }];
   }
 
   // When a draggable item moves to a new container, the layout may shift
-  // and the `overId` may become `null`. We manually set the cached `lastOverId`
-  // to the id of the draggable item that was moved to the new container, otherwise
-  // the previous `overId` will be returned which can cause items to incorrectly shift positions
-  if (recentlyMovedToNewContainer.current) {
-    lastOverId.current = activeId;
+  // and the `overId` may become `null`. We return the activeId as the new overId
+  if (recentlyMovedToNewContainer.current && activeId) {
+    return [{ id: activeId }];
   }
 
-  // If no droppable is matched, return the last match
-  return lastOverId.current ? [{ id: lastOverId.current }] : [];
-}
+  return [];
+};
