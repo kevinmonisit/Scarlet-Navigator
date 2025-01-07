@@ -1,6 +1,7 @@
 import { useScheduleStore } from "@/lib/hooks/stores/useScheduleStore";
 import { useState } from "react";
 import CoreInput from "@/app/components/CoreInput";
+import NotesArea from "./components/NotesArea";
 
 interface CourseInfoProps {
   id: string;
@@ -109,6 +110,7 @@ export default function CourseInfo({ id }: CourseInfoProps) {
         )}
       </div>
 
+
       <div className="flex justify-center">
         <button
           onClick={isEditing ? handleSubmit : handleEditToggle}
@@ -117,6 +119,8 @@ export default function CourseInfo({ id }: CourseInfoProps) {
           {isEditing ? "Save Changes" : "Edit Course"}
         </button>
       </div>
+
+      <NotesArea id={id} />
     </div>
   );
 }
