@@ -117,10 +117,9 @@ const Page: React.FC = () => {
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <h1>Dashboard Page Test</h1>
       <div className="w-full h-screen flex flex-row relative">
         {/* Left Panel */}
-        <div style={{ width: leftWidth, minWidth: 200 }} className="flex-shrink-0 h-full overflow-hidden">
+        <div style={{ width: leftWidth, minWidth: 200 }} className="flex-shrink-0 h-full overflow-y-scroll transition-[overflow] duration-300">
           <LeftPanel />
         </div>
 
@@ -133,7 +132,7 @@ const Page: React.FC = () => {
         </div>
 
         {/* Middle Panel */}
-        <div className="flex-grow h-full overflow-hidden">
+        <div className="flex-grow h-full overflow-y-scroll transition-[overflow] duration-300">
           <MiddlePanel />
         </div>
 
@@ -146,7 +145,7 @@ const Page: React.FC = () => {
         </div>
 
         {/* Right Panel */}
-        <div style={{ width: rightWidth, minWidth: 250 }} className="flex-shrink-0 h-full overflow-hidden">
+        <div style={{ width: rightWidth, minWidth: 250 }} className="flex-shrink-0 h-full overflow-y-scroll transition-[overflow] duration-300">
           <RightPanel />
         </div>
       </div>
