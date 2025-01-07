@@ -15,4 +15,10 @@ pnpm run lint || {
     exit 1
 }
 
+echo "\n📝 Checking TypeScript compilation..."
+pnpm run tsc || {
+    echo "❌ TypeScript check failed. Please fix type errors before committing."
+    false
+}
+
 echo "\n✅ All checks passed successfully!"

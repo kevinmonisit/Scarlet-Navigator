@@ -1,23 +1,5 @@
 echo "🔍 Running pre-commit checks..."
 
-echo "\n📝 Checking TypeScript compilation..."
-pnpm run tsc || {
-    echo "❌ TypeScript check failed. Please fix type errors before committing."
-    false
-}
-
-echo "\n🎨 Checking code formatting..."
-pnpm run format || {
-    echo "❌ Code formatting check failed. Please run 'pnpm run format:fix' to fix formatting issues."
-    false
-}
-
-echo "\n🔬 Running ESLint..."
-pnpm run lint || {
-    echo "❌ Linting failed. Please fix linting errors before committing."
-    false
-}
-
 echo "\n🏗️  Running build check..."
 pnpm run build || {
     echo "❌ Build failed. Please fix build errors before committing."
