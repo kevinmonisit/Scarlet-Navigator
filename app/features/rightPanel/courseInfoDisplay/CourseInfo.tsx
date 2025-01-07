@@ -1,8 +1,6 @@
-import useAuxiliaryStore from "@/lib/hooks/stores/useAuxiliaryStore";
 import { useScheduleStore } from "@/lib/hooks/stores/useScheduleStore";
 import { useState } from "react";
 import CoreInput from "@/app/components/CoreInput";
-import { Course } from "@/types/models";
 
 interface CourseInfoProps {
   id: string;

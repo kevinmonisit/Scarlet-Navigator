@@ -1,4 +1,4 @@
-import { CourseID, SemesterID } from '@/types/models';
+import { SemesterID } from '@/types/models';
 import { create } from 'zustand';
 import { RefObject } from 'react';
 
