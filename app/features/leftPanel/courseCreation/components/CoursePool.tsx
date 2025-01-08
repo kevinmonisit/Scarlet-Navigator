@@ -1,7 +1,10 @@
-import SortableItem from "@/app/features/middlePanel/dashboard/components/SortableItem";
-import { useScheduleStore } from "@/lib/hooks/stores/useScheduleStore";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { COURSE_CREATION_CONTAINER_ID } from "../CourseCreation";
+import SortableItem from '@/app/features/middlePanel/dashboard/components/SortableItem';
+import { useScheduleStore } from '@/lib/hooks/stores/useScheduleStore';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { COURSE_CREATION_CONTAINER_ID } from '../CourseCreation';
 
 function CoursePool() {
   const coursesBySemesterID = useScheduleStore(
@@ -42,7 +45,7 @@ function CoursePool() {
         )}
       </SortableContext>
     </div>
-  )
+  );
 }
 
 export default CoursePool;

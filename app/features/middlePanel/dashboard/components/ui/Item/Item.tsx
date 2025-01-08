@@ -139,11 +139,11 @@ export const Item = React.memo(
               if (value) setCurrentInfo(id as string, 'course');
             }}
           >
-            <div className="flex flex-col gap-2">
+            <div className='flex flex-col gap-2'>
               <div>{value}</div>
               {showCores && course && course.cores.length > 0 && (
                 <div>
-                  <CoreList color="blue" cores={course.cores} />
+                  <CoreList color='blue' cores={course.cores} />
                 </div>
               )}
             </div>

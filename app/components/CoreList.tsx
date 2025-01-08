@@ -45,7 +45,7 @@ function CoreList(props: CoreListProps) {
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 export default CoreList;

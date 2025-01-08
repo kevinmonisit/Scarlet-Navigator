@@ -1,8 +1,3 @@
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import SortableItem from '../../middlePanel/dashboard/components/SortableItem';
 import { useScheduleStore } from '@/lib/hooks/stores/useScheduleStore';
 import { useState } from 'react';
 import CoreInput from '@/app/components/CoreInput';
