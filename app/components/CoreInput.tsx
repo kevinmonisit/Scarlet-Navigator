@@ -1,4 +1,5 @@
 import { KeyboardEvent } from 'react';
+import CoreList from './CoreList';
 
 interface CoreInputProps {
   currentCore: string;
@@ -82,21 +83,11 @@ export default function CoreInput({
         <div>
           <p className='mb-2 text-sm text-gray-600'>Current Cores:</p>
           <div className='flex flex-wrap gap-2'>
-            {selectedCores.map((core) => (
-              <span
-                key={core}
-                className='inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800'
-              >
-                {core}
-                <button
-                  type='button'
-                  onClick={() => removeCore(core)}
-                  className='ml-1 text-blue-400 hover:text-blue-600'
-                >
-                  ×
-                </button>
-              </span>
-            ))}
+            <CoreList
+              color='blue'
+              cores={selectedCores}
+              handleRemoveCore={removeCore}
+            />
           </div>
         </div>
       )}
@@ -107,15 +98,11 @@ export default function CoreInput({
             Other Cores You Could Add:
           </p>
           <div className='flex flex-wrap gap-2'>
-            {availableCores.map((core) => (
-              <button
-                key={core}
-                onClick={() => addCore(core)}
-                className='inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 transition-colors hover:bg-gray-200'
-              >
-                {core}
-              </button>
-            ))}
+            <CoreList
+              color='gray'
+              cores={availableCores}
+              handleOnClick={addCore}
+            />
           </div>
         </div>
       )}
@@ -124,23 +111,11 @@ export default function CoreInput({
         <div>
           <p className='mb-2 text-sm text-gray-600'>New Cores:</p>
           <div className='flex flex-wrap gap-2'>
-            {selectedCores
-              .filter((core) => !globalCores.has(core))
-              .map((core) => (
-                <span
-                  key={core}
-                  className='inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800'
-                >
-                  {core}
-                  <button
-                    type='button'
-                    onClick={() => removeCore(core)}
-                    className='ml-1 text-green-400 hover:text-green-600'
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
+            <CoreList
+              color='green'
+              cores={selectedCores.filter((core) => !globalCores.has(core))}
+              handleRemoveCore={removeCore}
+            />
           </div>
         </div>
       )}

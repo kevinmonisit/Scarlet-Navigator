@@ -73,6 +73,7 @@ export default function SortableItem({
         isSorting,
         overIndex: over ? getIndex(over.id) : overIndex,
         containerId,
+        width: '20px'
       })}
       color={getColor(id)}
       transition={transition}

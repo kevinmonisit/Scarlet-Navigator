@@ -17,10 +17,6 @@ export default function CourseCreation() {
   const [currentCore, setCurrentCore] = useState('');
   const [selectedCores, setSelectedCores] = useState<string[]>([]);
 
-  const coursesBySemesterID = useScheduleStore(
-    (state) => state.coursesBySemesterID
-  );
-  const courses = useScheduleStore((state) => state.courses);
   const addCourse = useScheduleStore((state) => state.addCourse);
   const globalCores = useScheduleStore((state) => state.globalCores);
 
@@ -93,38 +89,6 @@ export default function CourseCreation() {
           Create Course
         </button>
       </form>
-
-      <div className='mt-4'>
-        <SortableContext
-          items={coursesBySemesterID[COURSE_CREATION_CONTAINER_ID] || []}
-          strategy={verticalListSortingStrategy}
-        >
-          {(coursesBySemesterID[COURSE_CREATION_CONTAINER_ID] || []).map(
-            (value) => (
-              <SortableItem
-                containerId={COURSE_CREATION_CONTAINER_ID}
-                key={value}
-                id={value}
-                index={0}
-                handle={false}
-                renderItem={() => (
-                  <div className='p-2'>
-                    {courses[value]?.name || 'Loading...'}
-                  </div>
-                )}
-                style={() => ({
-                  margin: '8px 0',
-                  background: 'white',
-                  borderRadius: '4px',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                })}
-                wrapperStyle={() => ({})}
-                getIndex={() => 0}
-              />
-            )
-          )}
-        </SortableContext>
-      </div>
     </div>
   );
 }

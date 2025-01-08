@@ -8,6 +8,8 @@ import { Handle, Remove } from './components';
 import styles from './Item.module.scss';
 import useAuxiliaryStore from '@/lib/hooks/stores/useAuxiliaryStore';
 import { CourseID } from '@/types/models';
+import { useScheduleStore } from '@/lib/hooks/stores/useScheduleStore';
+import CoreList from '@/app/components/CoreList';
 
 export interface Props {
   id: CourseID;
@@ -27,6 +29,7 @@ export interface Props {
   transition?: string | null;
   wrapperStyle?: React.CSSProperties;
   value: React.ReactNode;
+  showCores?: boolean;
   onRemove?(): void;
   renderItem?(args: {
     dragOverlay: boolean;
@@ -66,6 +69,7 @@ export const Item = React.memo(
         transform,
         value,
         wrapperStyle,
+        showCores = true,
         ...props
       },
       ref
@@ -83,6 +87,7 @@ export const Item = React.memo(
       }, [dragOverlay]);
 
       const setCurrentInfo = useAuxiliaryStore((state) => state.setCurrentInfo);
+      const course = useScheduleStore((state) => state.courses[id as string]);
 
       return (
         <li
@@ -134,7 +139,14 @@ export const Item = React.memo(
               if (value) setCurrentInfo(id as string, 'course');
             }}
           >
-            {value}
+            <div className="flex flex-col gap-2">
+              <div>{value}</div>
+              {showCores && course && course.cores.length > 0 && (
+                <div>
+                  <CoreList color="blue" cores={course.cores} />
+                </div>
+              )}
+            </div>
             <span className={styles.Actions}>
               {onRemove ? (
                 <Remove className={styles.Remove} onClick={onRemove} />
