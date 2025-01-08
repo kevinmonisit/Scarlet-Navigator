@@ -36,6 +36,19 @@ export interface ScheduleState {
   future: Array<Omit<ScheduleState, 'past' | 'future'>>;
 }
 
+/*
+
+TODO:
+Certainly, I think the Schedule store API can be improved greatly. 
+As I code to reach the MVP, I will set aside this task to a later point.
+
+I think the overall engine API can be improved as well. However, the featureset
+of the MVP is not so crazy that it'd be near impossible to refactor. I will have
+some time at the end of the semester to clean this up, and make sure that the 
+foundation of this project is insured for the future 
+(so peeps don't replicate inefficiencies for the sake of consistency)
+
+*/
 export interface ScheduleActions {
   setSemesterOrder: (semOrder: SemesterOrder) => void;
   setCoursesBySemesterID: (
