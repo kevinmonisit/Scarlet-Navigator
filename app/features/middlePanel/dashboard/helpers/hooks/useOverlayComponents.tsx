@@ -9,6 +9,8 @@ import {
   calculateRunningCredits,
 } from '../../utils/credits';
 
+import { COURSE_CREATION_CONTAINER_ID } from '@/app/features/leftPanel/courseCreation/CourseCreation';
+
 export const COLUMNS_DEPRECATED_DO_NOT_USE = 5;
 
 export default function useOverlayComponents(
@@ -24,13 +26,16 @@ export default function useOverlayComponents(
 
   function renderSortableItemDragOverlay(id: UniqueIdentifier) {
     const courseName = courses[id]?.name ?? 'Loading...';
+    const sourceContainer = findContainer(items, id) as string;
+    const isFromCoursePool = sourceContainer === COURSE_CREATION_CONTAINER_ID;
+
     return (
       <Item
         id={id}
         value={courseName}
         handle={handle}
         style={getItemStyles({
-          containerId: findContainer(items, id) as UniqueIdentifier,
+          containerId: sourceContainer,
           overIndex: -1,
           index: getIndex(items, id),
           value: id,
@@ -42,6 +47,7 @@ export default function useOverlayComponents(
         wrapperStyle={wrapperStyle({ index: 0 })}
         renderItem={renderItem}
         dragOverlay
+        showCores={isFromCoursePool}
       />
     );
   }

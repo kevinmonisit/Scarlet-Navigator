@@ -191,6 +191,7 @@ export function ScheduleBoard({
                           wrapperStyle={wrapperStyle}
                           renderItem={renderItem}
                           containerId={containerId}
+                          showCores={false}
                           getIndex={(id) => {
                             return 0;
                           }}

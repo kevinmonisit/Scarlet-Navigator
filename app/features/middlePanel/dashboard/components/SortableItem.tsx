@@ -16,6 +16,7 @@ interface SortableItemProps {
   getIndex(id: UniqueIdentifier): number;
   renderItem(): React.ReactElement<any>;
   wrapperStyle({ index }: { index: number }): React.CSSProperties;
+  showCores?: boolean;
 }
 
 export default function SortableItem({
@@ -28,6 +29,7 @@ export default function SortableItem({
   containerId,
   getIndex,
   wrapperStyle,
+  showCores = true,
 }: SortableItemProps) {
   const {
     setNodeRef,
@@ -81,6 +83,7 @@ export default function SortableItem({
       fadeIn={mountedWhileDragging}
       listeners={listeners}
       renderItem={renderItem}
+      showCores={showCores}
     />
   );
 }
