@@ -10,7 +10,8 @@ import {
   ProgramOfStudy,
 } from '@/types/models';
 
-type ProgramFulfillmentStore = ProgramFulfillmentState & ProgramFulfillmentActions;
+type ProgramFulfillmentStore = ProgramFulfillmentState &
+  ProgramFulfillmentActions;
 
 type ProgramFulfillmentPersist = (
   config: StateCreator<ProgramFulfillmentStore>,
@@ -67,7 +68,9 @@ const removeCategoryFromPrograms = (
       ...acc,
       [programId]: {
         ...program,
-        categoryIds: program.categoryIds.filter((catId) => catId !== categoryId),
+        categoryIds: program.categoryIds.filter(
+          (catId) => catId !== categoryId
+        ),
       },
     }),
     {}
@@ -164,7 +167,10 @@ export const useProgramFulfillment = create<ProgramFulfillmentStore>()(
           }));
         },
 
-        updateCategory: (categoryId: string, updates: Partial<CoreCategory>) => {
+        updateCategory: (
+          categoryId: string,
+          updates: Partial<CoreCategory>
+        ) => {
           set((state) => ({
             categories: updateCategories(
               state.categories,
@@ -224,7 +230,9 @@ export const useProgramFulfillment = create<ProgramFulfillmentStore>()(
           set((state) => ({
             programs: updatePrograms(state.programs, programId, (program) => ({
               ...program,
-              categoryIds: Array.from(new Set([...program.categoryIds, categoryId])),
+              categoryIds: Array.from(
+                new Set([...program.categoryIds, categoryId])
+              ),
             })),
           }));
         },
@@ -233,7 +241,9 @@ export const useProgramFulfillment = create<ProgramFulfillmentStore>()(
           set((state) => ({
             programs: updatePrograms(state.programs, programId, (program) => ({
               ...program,
-              categoryIds: program.categoryIds.filter((id) => id !== categoryId),
+              categoryIds: program.categoryIds.filter(
+                (id) => id !== categoryId
+              ),
             })),
           }));
         },

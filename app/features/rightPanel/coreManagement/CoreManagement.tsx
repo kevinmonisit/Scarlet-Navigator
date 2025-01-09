@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useProgramFulfillment } from '@/lib/hooks/stores/useProgramFulfillment';
 import { useCoreRequirements } from '@/lib/hooks/useCoreRequirements';
-import { CoreCategory, ProgramOfStudy } from '@/types/models';
+import { CoreCategory, ProgramOfStudy, SemesterID } from '@/types/models';
 import ConfirmationModal from '@/app/components/ConfirmationModal';
 
 interface AddProgramFormProps {
@@ -128,7 +128,8 @@ function AddCategoryForm({ programId, onSubmit }: AddCategoryFormProps) {
           Add Category
         </button>
         {showTooltip && !isFormValid() && (
-          <div className='tooltip tooltip-open tooltip-error absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full'>MouseE
+          <div className='tooltip tooltip-open tooltip-error absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full'>
+            MouseE
             {getTooltipText()}
           </div>
         )}
@@ -180,10 +181,7 @@ function AddCoreForm({ categoryId, onSubmit }: AddCoreFormProps) {
           required
         />
       </div>
-      <button
-        type='submit'
-        className='btn btn-primary w-full'
-      >
+      <button type='submit' className='btn btn-primary w-full'>
         Add Core
       </button>
     </form>
@@ -278,11 +276,12 @@ function CategoryItem({
 }: CategoryItemProps) {
   const [isAddingCore, setIsAddingCore] = useState(false);
   const [showRemoveCategoryModal, setShowRemoveCategoryModal] = useState(false);
-  const [coreToRemove, setCoreToRemove] = useState<{ id: string; name: string } | null>(null);
+  const [coreToRemove, setCoreToRemove] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
-  const updateCategory = useProgramFulfillment(
-    (state) => state.updateCategory
-  );
+  const updateCategory = useProgramFulfillment((state) => state.updateCategory);
   const updateCoreRequirement = useProgramFulfillment(
     (state) => state.updateCoreRequirement
   );
@@ -320,7 +319,7 @@ function CategoryItem({
               e.stopPropagation();
               setShowRemoveCategoryModal(true);
             }}
-            className='btn btn-error btn-sm btn-outline absolute right-8 z-20'
+            className='btn btn-outline btn-error btn-sm absolute right-8 z-20'
           >
             Remove
           </button>
@@ -343,8 +342,10 @@ function CategoryItem({
                   </span>
                 </span>
                 <button
-                  onClick={() => setCoreToRemove({ id: core.id, name: core.name })}
-                  className='btn btn-error btn-sm btn-outline'
+                  onClick={() =>
+                    setCoreToRemove({ id: core.id, name: core.name })
+                  }
+                  className='btn btn-outline btn-error btn-sm'
                 >
                   Remove
                 </button>
@@ -371,7 +372,7 @@ function CategoryItem({
       </div>
 
       <ConfirmationModal
-        title="Remove Category"
+        title='Remove Category'
         message={`Are you sure you want to remove the category "${category.name}"? This action cannot be undone.`}
         visible={showRemoveCategoryModal}
         onConfirm={() => {
@@ -382,7 +383,7 @@ function CategoryItem({
       />
 
       <ConfirmationModal
-        title="Remove Core"
+        title='Remove Core'
         message={`Are you sure you want to remove the core "${coreToRemove?.name}"? This action cannot be undone.`}
         visible={!!coreToRemove}
         onConfirm={() => {
@@ -400,12 +401,22 @@ function CategoryItem({
 interface ProgramItemProps {
   program: ProgramOfStudy;
   categories: Record<string, CoreCategory>;
-  progress: Record<string, {
-    satisfiedCores: number;
-    requiredCores: number;
-    cores: Record<string, { currentCredits: number; requiredCredits: number }>;
-  }>;
-  onAddCore: (categoryId: string, name: string, requiredCredits: number) => void;
+  progress: Record<
+    SemesterID,
+    {
+      satisfiedCores: number;
+      requiredCores: number;
+      cores: Record<
+        string,
+        { currentCredits: number; requiredCredits: number }
+      >;
+    }
+  >;
+  onAddCore: (
+    categoryId: string,
+    name: string,
+    requiredCredits: number
+  ) => void;
   onRemoveCategory: (id: string) => void;
   onRemoveCore: (categoryId: string, coreId: string) => void;
   onRemoveProgram: (id: string) => void;
@@ -422,7 +433,8 @@ function ProgramItem({
 }: ProgramItemProps) {
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [showRemoveProgramModal, setShowRemoveProgramModal] = useState(false);
-  const { addCategory, addCategoryToProgram, updateProgram } = useProgramFulfillment();
+  const { addCategory, addCategoryToProgram, updateProgram } =
+    useProgramFulfillment();
 
   const handleAddCategory = (name: string) => {
     const newCategoryId = addCategory(name);
@@ -439,20 +451,31 @@ function ProgramItem({
       <div className='collapse collapse-arrow mb-4 rounded-lg bg-base-100'>
         <input type='checkbox' className='h-auto w-auto' />
         <div className='collapse-title relative flex items-center justify-between pr-12'>
-          <h2 className='text-xl font-bold'>
-            <EditableText
-              value={program.name}
-              onSave={handleProgramNameChange}
-              className='text-xl'
-            />
-          </h2>
+          <div className='flex items-center gap-2'>
+            <h2 className='text-xl font-bold'>
+              <EditableText
+                value={program.name}
+                onSave={handleProgramNameChange}
+                className='text-xl'
+              />
+            </h2>
+            <span className='badge badge-neutral'>
+              {
+                program.categoryIds
+                  .map((id) => progress[id])
+                  .filter((p) => p && p.satisfiedCores === p.requiredCores)
+                  .length
+              }{' '}
+              / {program.categoryIds.length}
+            </span>
+          </div>
           <button
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               setShowRemoveProgramModal(true);
             }}
-            className='btn btn-error btn-sm btn-outline absolute right-8 z-20'
+            className='btn btn-outline btn-error btn-sm absolute right-8 z-20'
           >
             Remove Program
           </button>
@@ -489,7 +512,7 @@ function ProgramItem({
       </div>
 
       <ConfirmationModal
-        title="Remove Program"
+        title='Remove Program'
         message={`Are you sure you want to remove the program "${program.name}"? This action cannot be undone.`}
         visible={showRemoveProgramModal}
         onConfirm={() => {

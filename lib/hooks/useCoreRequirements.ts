@@ -4,7 +4,6 @@ import { useScheduleStore } from './stores/useScheduleStore';
 import { useProgramFulfillment } from './stores/useProgramFulfillment';
 import { Course, CoreCategory, CoreRequirement } from '@/types/models';
 
-
 /**
  * interface ProgramOfStudy {
  *  name: str;
@@ -13,7 +12,6 @@ import { Course, CoreCategory, CoreRequirement } from '@/types/models';
  *
  *
  */
-
 
 interface CoreProgress {
   currentCredits: number;

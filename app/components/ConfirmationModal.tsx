@@ -40,21 +40,15 @@ export default function ConfirmationModal({
   };
 
   return (
-    <dialog ref={modalRef} className="modal">
-      <div className="modal-box">
-        <h3 className="text-lg font-bold">{title}</h3>
-        <p className="py-4">{message}</p>
-        <div className="modal-action">
-          <button
-            className="btn btn-error btn-outline"
-            onClick={handleConfirm}
-          >
+    <dialog ref={modalRef} className='modal'>
+      <div className='modal-box'>
+        <h3 className='text-lg font-bold'>{title}</h3>
+        <p className='py-4'>{message}</p>
+        <div className='modal-action'>
+          <button className='btn btn-outline btn-error' onClick={handleConfirm}>
             Yes, Remove
           </button>
-          <button
-            className="btn btn-neutral"
-            onClick={handleCancel}
-          >
+          <button className='btn btn-neutral' onClick={handleCancel}>
             Cancel
           </button>
         </div>
