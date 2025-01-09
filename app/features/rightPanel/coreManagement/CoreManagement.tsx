@@ -1,15 +1,82 @@
 'use client';
 
 import { useState } from 'react';
-import { useCoreRequirementsStore } from '@/lib/hooks/stores/useCoreRequirementsStore';
+import { useProgramFulfillment } from '@/lib/hooks/stores/useProgramFulfillment';
 import { useCoreRequirements } from '@/lib/hooks/useCoreRequirements';
-import { CoreCategory } from '@/types/models';
+import { CoreCategory, ProgramOfStudy } from '@/types/models';
+import ConfirmationModal from '@/app/components/ConfirmationModal';
 
-interface AddCategoryFormProps {
+interface AddProgramFormProps {
   onSubmit: (name: string) => void;
 }
 
-function AddCategoryForm({ onSubmit }: AddCategoryFormProps) {
+function AddProgramForm({ onSubmit }: AddProgramFormProps) {
+  const [name, setName] = useState('');
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isFormValid()) return;
+    onSubmit(name);
+    setName('');
+  };
+
+  const isFormValid = () => {
+    return name.trim() !== '';
+  };
+
+  const getMissingFields = () => {
+    const missing = [];
+    if (!name.trim()) missing.push('Program Name');
+    return missing;
+  };
+
+  const getTooltipText = () => {
+    const missing = getMissingFields();
+    if (missing.length === 0) return '';
+    return `Please fill out: ${missing.join(', ')}`;
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className='border-b border-gray-200 p-4'>
+      <div className='mb-4'>
+        <label className='block text-sm font-medium text-gray-700'>
+          Program Name
+        </label>
+        <input
+          type='text'
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className='input input-bordered w-full'
+          required
+        />
+      </div>
+      <div className='relative'>
+        <button
+          type='submit'
+          disabled={!isFormValid()}
+          onMouseEnter={() => !isFormValid() && setShowTooltip(true)}
+          onMouseLeave={() => setShowTooltip(false)}
+          className={`btn btn-primary w-full ${!isFormValid() ? 'btn-disabled' : ''}`}
+        >
+          Add Program
+        </button>
+        {showTooltip && !isFormValid() && (
+          <div className='tooltip tooltip-open tooltip-error absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full'>
+            {getTooltipText()}
+          </div>
+        )}
+      </div>
+    </form>
+  );
+}
+
+interface AddCategoryFormProps {
+  programId: string;
+  onSubmit: (name: string) => void;
+}
+
+function AddCategoryForm({ programId, onSubmit }: AddCategoryFormProps) {
   const [name, setName] = useState('');
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -37,7 +104,7 @@ function AddCategoryForm({ onSubmit }: AddCategoryFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className='border-b border-gray-200 p-4'>
+    <form onSubmit={handleSubmit} className='mt-4 border-t border-gray-200 p-4'>
       <div className='mb-4'>
         <label className='block text-sm font-medium text-gray-700'>
           Category Name
@@ -46,7 +113,7 @@ function AddCategoryForm({ onSubmit }: AddCategoryFormProps) {
           type='text'
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'
+          className='input input-bordered w-full'
           required
         />
       </div>
@@ -56,20 +123,13 @@ function AddCategoryForm({ onSubmit }: AddCategoryFormProps) {
           disabled={!isFormValid()}
           onMouseEnter={() => !isFormValid() && setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
-          className={`w-full rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-            isFormValid()
-              ? 'bg-blue-500 text-white hover:bg-blue-600'
-              : 'cursor-not-allowed bg-gray-300 text-gray-500'
-          }`}
+          className={`btn btn-primary w-full ${!isFormValid() ? 'btn-disabled' : ''}`}
         >
           Add Category
         </button>
         {showTooltip && !isFormValid() && (
-          <div className='absolute bottom-full left-1/2 mb-2 -translate-x-1/2 transform whitespace-nowrap rounded-md bg-gray-900 px-3 py-2 text-sm text-white'>
+          <div className='tooltip tooltip-open tooltip-error absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full'>MouseE
             {getTooltipText()}
-            <div className='absolute left-1/2 top-full -mt-1 -translate-x-1/2 transform'>
-              <div className='border-8 border-transparent border-t-gray-900' />
-            </div>
           </div>
         )}
       </div>
@@ -103,7 +163,7 @@ function AddCoreForm({ categoryId, onSubmit }: AddCoreFormProps) {
           type='text'
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'
+          className='input input-bordered w-full'
           required
         />
       </div>
@@ -116,13 +176,13 @@ function AddCoreForm({ categoryId, onSubmit }: AddCoreFormProps) {
           min='1'
           value={requiredCredits}
           onChange={(e) => setRequiredCredits(parseInt(e.target.value))}
-          className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm'
+          className='input input-bordered w-full'
           required
         />
       </div>
       <button
         type='submit'
-        className='w-full rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+        className='btn btn-primary w-full'
       >
         Add Core
       </button>
@@ -217,10 +277,13 @@ function CategoryItem({
   onRemoveCore,
 }: CategoryItemProps) {
   const [isAddingCore, setIsAddingCore] = useState(false);
-  const updateCategory = useCoreRequirementsStore(
+  const [showRemoveCategoryModal, setShowRemoveCategoryModal] = useState(false);
+  const [coreToRemove, setCoreToRemove] = useState<{ id: string; name: string } | null>(null);
+
+  const updateCategory = useProgramFulfillment(
     (state) => state.updateCategory
   );
-  const updateCoreRequirement = useCoreRequirementsStore(
+  const updateCoreRequirement = useProgramFulfillment(
     (state) => state.updateCoreRequirement
   );
 
@@ -234,113 +297,244 @@ function CategoryItem({
     });
   };
 
-  const handleRemoveClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onRemoveCategory(category.id);
+  return (
+    <>
+      <div className='collapse collapse-arrow mb-4 bg-base-200'>
+        <input type='checkbox' className='h-auto w-auto' defaultChecked />
+        <div className='collapse-title relative flex items-center justify-between pr-12'>
+          <div className='flex items-center'>
+            <h3 className='flex items-center text-lg font-medium'>
+              <EditableText
+                value={category.name}
+                onSave={handleCategoryNameChange}
+                className='text-lg font-medium'
+              />
+              <span className='ml-2'>
+                ({progress.satisfiedCores}/{progress.requiredCores} satisfied)
+              </span>
+            </h3>
+          </div>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowRemoveCategoryModal(true);
+            }}
+            className='btn btn-error btn-sm btn-outline absolute right-8 z-20'
+          >
+            Remove
+          </button>
+        </div>
+        <div className='collapse-content'>
+          <div className='space-y-2 pt-2'>
+            {category.cores.map((core) => (
+              <div
+                key={core.id}
+                className='flex items-center justify-between rounded-lg bg-base-100 p-2'
+              >
+                <span className='flex-1'>
+                  <EditableText
+                    value={core.name}
+                    onSave={(newName) => handleCoreNameChange(core.id, newName)}
+                  />
+                  <span className='ml-2'>
+                    ({progress.cores[core.id]?.currentCredits ?? 0}/
+                    {core.requiredCredits} credits)
+                  </span>
+                </span>
+                <button
+                  onClick={() => setCoreToRemove({ id: core.id, name: core.name })}
+                  className='btn btn-error btn-sm btn-outline'
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+          {isAddingCore ? (
+            <AddCoreForm
+              categoryId={category.id}
+              onSubmit={(categoryId, name, credits) => {
+                onAddCore(categoryId, name, credits);
+                setIsAddingCore(false);
+              }}
+            />
+          ) : (
+            <button
+              onClick={() => setIsAddingCore(true)}
+              className='btn btn-ghost btn-block mt-4'
+            >
+              Add Core
+            </button>
+          )}
+        </div>
+      </div>
+
+      <ConfirmationModal
+        title="Remove Category"
+        message={`Are you sure you want to remove the category "${category.name}"? This action cannot be undone.`}
+        visible={showRemoveCategoryModal}
+        onConfirm={() => {
+          onRemoveCategory(category.id);
+          setShowRemoveCategoryModal(false);
+        }}
+        onCancel={() => setShowRemoveCategoryModal(false)}
+      />
+
+      <ConfirmationModal
+        title="Remove Core"
+        message={`Are you sure you want to remove the core "${coreToRemove?.name}"? This action cannot be undone.`}
+        visible={!!coreToRemove}
+        onConfirm={() => {
+          if (coreToRemove) {
+            onRemoveCore(category.id, coreToRemove.id);
+          }
+          setCoreToRemove(null);
+        }}
+        onCancel={() => setCoreToRemove(null)}
+      />
+    </>
+  );
+}
+
+interface ProgramItemProps {
+  program: ProgramOfStudy;
+  categories: Record<string, CoreCategory>;
+  progress: Record<string, {
+    satisfiedCores: number;
+    requiredCores: number;
+    cores: Record<string, { currentCredits: number; requiredCredits: number }>;
+  }>;
+  onAddCore: (categoryId: string, name: string, requiredCredits: number) => void;
+  onRemoveCategory: (id: string) => void;
+  onRemoveCore: (categoryId: string, coreId: string) => void;
+  onRemoveProgram: (id: string) => void;
+}
+
+function ProgramItem({
+  program,
+  categories,
+  progress,
+  onAddCore,
+  onRemoveCategory,
+  onRemoveCore,
+  onRemoveProgram,
+}: ProgramItemProps) {
+  const [isAddingCategory, setIsAddingCategory] = useState(false);
+  const [showRemoveProgramModal, setShowRemoveProgramModal] = useState(false);
+  const { addCategory, addCategoryToProgram, updateProgram } = useProgramFulfillment();
+
+  const handleAddCategory = (name: string) => {
+    const newCategoryId = addCategory(name);
+    addCategoryToProgram(program.id, newCategoryId);
+    setIsAddingCategory(false);
+  };
+
+  const handleProgramNameChange = (newName: string) => {
+    updateProgram(program.id, { name: newName });
   };
 
   return (
-    <div className='collapse collapse-arrow mb-4 bg-base-200'>
-      <input type='checkbox' className='h-auto w-auto' defaultChecked />
-      <div className='collapse-title relative'>
-        <div
-          className='flex items-center justify-between'
-          onClick={(e) => e.stopPropagation()}
-        >
-          <h3 className='flex items-center text-lg font-medium'>
+    <>
+      <div className='collapse collapse-arrow mb-4 rounded-lg bg-base-100'>
+        <input type='checkbox' className='h-auto w-auto' />
+        <div className='collapse-title relative flex items-center justify-between pr-12'>
+          <h2 className='text-xl font-bold'>
             <EditableText
-              value={category.name}
-              onSave={handleCategoryNameChange}
-              className='text-lg font-medium'
+              value={program.name}
+              onSave={handleProgramNameChange}
+              className='text-xl'
             />
-            <span className='ml-2'>
-              ({progress.satisfiedCores}/{progress.requiredCores} satisfied)
-            </span>
-          </h3>
-        </div>
-        <button
-          onClick={handleRemoveClick}
-          className='btn btn-ghost btn-sm absolute right-8 top-1/2 z-10 -translate-y-1/2 text-error'
-        >
-          Remove
-        </button>
-      </div>
-      <div className='collapse-content'>
-        <div className='space-y-2 pt-2'>
-          {category.cores.map((core) => (
-            <div
-              key={core.id}
-              className='flex items-center justify-between rounded-lg bg-base-100 p-2'
-            >
-              <span className='flex-1'>
-                <EditableText
-                  value={core.name}
-                  onSave={(newName) => handleCoreNameChange(core.id, newName)}
-                />
-                <span className='ml-2'>
-                  ({progress.cores[core.id]?.currentCredits ?? 0}/
-                  {core.requiredCredits} credits)
-                </span>
-              </span>
-              <button
-                onClick={() => onRemoveCore(category.id, core.id)}
-                className='btn btn-ghost btn-sm text-error'
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-        </div>
-        {isAddingCore ? (
-          <AddCoreForm
-            categoryId={category.id}
-            onSubmit={(categoryId, name, credits) => {
-              onAddCore(categoryId, name, credits);
-              setIsAddingCore(false);
-            }}
-          />
-        ) : (
+          </h2>
           <button
-            onClick={() => setIsAddingCore(true)}
-            className='btn btn-ghost btn-block mt-4'
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowRemoveProgramModal(true);
+            }}
+            className='btn btn-error btn-sm btn-outline absolute right-8 z-20'
           >
-            Add Core
+            Remove Program
           </button>
-        )}
+        </div>
+        <div className='collapse-content'>
+          {program.categoryIds.map((categoryId) => {
+            const category = categories[categoryId];
+            if (!category) return null;
+            return (
+              <CategoryItem
+                key={categoryId}
+                category={category}
+                progress={progress[categoryId]}
+                onAddCore={onAddCore}
+                onRemoveCategory={onRemoveCategory}
+                onRemoveCore={onRemoveCore}
+              />
+            );
+          })}
+          {isAddingCategory ? (
+            <AddCategoryForm
+              programId={program.id}
+              onSubmit={handleAddCategory}
+            />
+          ) : (
+            <button
+              onClick={() => setIsAddingCategory(true)}
+              className='btn btn-ghost btn-block mt-4'
+            >
+              Add Category
+            </button>
+          )}
+        </div>
       </div>
-    </div>
+
+      <ConfirmationModal
+        title="Remove Program"
+        message={`Are you sure you want to remove the program "${program.name}"? This action cannot be undone.`}
+        visible={showRemoveProgramModal}
+        onConfirm={() => {
+          onRemoveProgram(program.id);
+          setShowRemoveProgramModal(false);
+        }}
+        onCancel={() => setShowRemoveProgramModal(false)}
+      />
+    </>
   );
 }
 
 export default function CoreManagement() {
   const {
     categories,
+    programs,
+    addProgram,
+    removeProgram,
     addCategory,
     removeCategory,
     addCoreToCategory,
     removeCoreFromCategory,
-  } = useCoreRequirementsStore();
+  } = useProgramFulfillment();
 
   const { calculateAllProgress } = useCoreRequirements();
   const progress = calculateAllProgress();
 
-  const handleAddCategory = (name: string) => {
-    addCategory(name);
+  const handleAddProgram = (name: string) => {
+    addProgram(name);
   };
 
   return (
     <div className='h-full overflow-y-auto'>
-      <AddCategoryForm onSubmit={handleAddCategory} />
+      <AddProgramForm onSubmit={handleAddProgram} />
       <div className='space-y-4 p-4'>
-        {Object.values(categories).map((category) => (
-          <CategoryItem
-            key={category.id}
-            category={category}
-            progress={progress[category.id]}
+        {Object.values(programs).map((program) => (
+          <ProgramItem
+            key={program.id}
+            program={program}
+            categories={categories}
+            progress={progress}
             onAddCore={addCoreToCategory}
             onRemoveCategory={removeCategory}
             onRemoveCore={removeCoreFromCategory}
+            onRemoveProgram={removeProgram}
           />
         ))}
       </div>

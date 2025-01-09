@@ -1,8 +1,19 @@
 'use client';
 
 import { useScheduleStore } from './stores/useScheduleStore';
-import { useCoreRequirementsStore } from './stores/useCoreRequirementsStore';
+import { useProgramFulfillment } from './stores/useProgramFulfillment';
 import { Course, CoreCategory, CoreRequirement } from '@/types/models';
+
+
+/**
+ * interface ProgramOfStudy {
+ *  name: str;
+ *  coreCategories<CoreCategory_ids>[];
+ * }
+ *
+ *
+ */
+
 
 interface CoreProgress {
   currentCredits: number;
@@ -19,7 +30,7 @@ interface CategoryProgress {
 
 export function useCoreRequirements() {
   const courses = useScheduleStore((state) => state.courses);
-  const categories = useCoreRequirementsStore((state) => state.categories);
+  const categories = useProgramFulfillment((state) => state.categories);
 
   const calculateCoreProgress = (
     core: CoreRequirement,

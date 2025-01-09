@@ -39,13 +39,13 @@ export interface ScheduleState {
 /*
 
 TODO:
-Certainly, I think the Schedule store API can be improved greatly. 
+Certainly, I think the Schedule store API can be improved greatly.
 As I code to reach the MVP, I will set aside this task to a later point.
 
 I think the overall engine API can be improved as well. However, the featureset
 of the MVP is not so crazy that it'd be near impossible to refactor. I will have
-some time at the end of the semester to clean this up, and make sure that the 
-foundation of this project is insured for the future 
+some time at the end of the semester to clean this up, and make sure that the
+foundation of this project is insured for the future
 (so peeps don't replicate inefficiencies for the sake of consistency)
 
 */
@@ -102,4 +102,40 @@ export interface CoreRequirementsActions {
     coreId: string,
     updates: Partial<CoreRequirement>
   ) => void;
+}
+
+export interface ProgramOfStudy {
+  id: string;
+  name: string;
+  categoryIds: string[];
+}
+
+export interface ProgramFulfillmentState {
+  categories: Record<string, CoreCategory>;
+  programs: Record<string, ProgramOfStudy>;
+}
+
+export interface ProgramFulfillmentActions {
+  // Category actions
+  addCategory: (name: string) => string;
+  removeCategory: (id: string) => void;
+  addCoreToCategory: (
+    categoryId: string,
+    coreName: string,
+    requiredCredits: number
+  ) => void;
+  removeCoreFromCategory: (categoryId: string, coreId: string) => void;
+  updateCategory: (categoryId: string, updates: Partial<CoreCategory>) => void;
+  updateCoreRequirement: (
+    categoryId: string,
+    coreId: string,
+    updates: Partial<CoreRequirement>
+  ) => void;
+
+  // Program actions
+  addProgram: (name: string) => void;
+  removeProgram: (id: string) => void;
+  updateProgram: (id: string, updates: Partial<ProgramOfStudy>) => void;
+  addCategoryToProgram: (programId: string, categoryId: string) => void;
+  removeCategoryFromProgram: (programId: string, categoryId: string) => void;
 }
