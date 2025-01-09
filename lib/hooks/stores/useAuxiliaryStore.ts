@@ -7,11 +7,11 @@ type AuxiliaryStore = {
   activeID: SemesterID;
   currentInfoID: string;
   currentInfoType: 'course' | 'semester';
-  activeTab: 'info' | 'core' | 'settings';
+  activeTab: 'info' | 'tracker' | 'settings';
   setRecentlyMovedToNewContainer: (flag: RefObject<boolean>) => void;
   setActiveID: (id: SemesterID) => void;
   setCurrentInfo: (id: string, type: 'course' | 'semester') => void;
-  setActiveTab: (tab: 'info' | 'core' | 'settings') => void;
+  setActiveTab: (tab: 'info' | 'tracker' | 'settings') => void;
 };
 
 /**
@@ -36,7 +36,8 @@ const useAuxiliaryStore = create<AuxiliaryStore>()((set) => ({
       activeTab: 'info', // Switch to info tab when selection changes
     });
   },
-  setActiveTab: (tab: 'info' | 'core' | 'settings') => set({ activeTab: tab }),
+  setActiveTab: (tab: 'info' | 'tracker' | 'settings') =>
+    set({ activeTab: tab }),
 }));
 
 export default useAuxiliaryStore;

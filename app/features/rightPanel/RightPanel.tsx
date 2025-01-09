@@ -1,9 +1,9 @@
 import { useTransition } from 'react';
 import useAuxiliaryStore from '@/lib/hooks/stores/useAuxiliaryStore';
 import InfoDisplay from './courseInfoDisplay/InfoDisplay';
-import CoreManagement from './coreManagement/CoreManagement';
+import FulfillmentTracker from './fulfillmentTracker/FulfillmentTracker';
 
-type Tab = 'info' | 'core' | 'settings';
+type Tab = 'info' | 'tracker' | 'settings';
 
 interface TabButtonProps {
   isActive: boolean;
@@ -48,10 +48,10 @@ export default function RightPanel() {
           Info
         </TabButton>
         <TabButton
-          isActive={activeTab === 'core'}
-          onClick={() => handleTabChange('core')}
+          isActive={activeTab === 'tracker'}
+          onClick={() => handleTabChange('tracker')}
         >
-          Core
+          Tracker
         </TabButton>
         <TabButton
           isActive={activeTab === 'settings'}
@@ -67,7 +67,7 @@ export default function RightPanel() {
           className={`transition-opacity duration-200 ${isPending ? 'opacity-50' : 'opacity-100'}`}
         >
           {activeTab === 'info' && <InfoDisplay />}
-          {activeTab === 'core' && <CoreManagement />}
+          {activeTab === 'tracker' && <FulfillmentTracker />}
           {activeTab === 'settings' && (
             <div className='p-4 text-gray-500'>
               Settings panel coming soon...
