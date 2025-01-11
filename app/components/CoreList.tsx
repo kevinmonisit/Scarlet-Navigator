@@ -5,7 +5,7 @@ import clsx from 'clsx';
 interface CoreListProps {
   color: string;
   cores: string[];
-  handleRemoveCore?: (core: string) => void | undefined;
+  handleRemoveCore?: (core: string) => void;
   handleOnClick?: (core: string) => void;
 }
 
@@ -39,7 +39,7 @@ function CoreList(props: CoreListProps) {
               onClick={() => handleRemoveCore(core)}
               className='ml-1 text-blue-400 hover:text-blue-600'
             >
-              ×
+              x
             </button>
           )}
         </div>

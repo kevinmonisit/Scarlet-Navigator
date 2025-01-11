@@ -6,6 +6,19 @@ export enum STORE_NAMES {
   semesters = 'semesters',
 }
 
+
+/**
+ * TODO:
+ *
+ * CoursesBySemesterID map is unnecessary because each Semester object
+ * has their own "courses" array that is ordered. There's no need to
+ * maintain a separate map. This just duplicates the data.
+ *
+ * One thing you can do to fix this is wherever you try to access
+ * CoursesBySemesterID, replace it with a Store API that uses
+ * the semester ID and returns semesterMap[semesterID].courses.
+*/
+
 type CourseID = string | UniqueIdentifier;
 type SemesterID = string | UniqueIdentifier;
 type CourseByID = Record<CourseID, Course>;
